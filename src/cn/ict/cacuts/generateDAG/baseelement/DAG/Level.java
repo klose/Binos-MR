@@ -1,6 +1,6 @@
 package cn.ict.cacuts.generateDAG.baseelement.DAG;
 
-public class Flow {
+public class Level {
 
 	/**
 	 * @param args
