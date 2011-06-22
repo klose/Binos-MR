@@ -1,11 +1,12 @@
 package cn.ict.cacuts.mapreduce;
-
 import java.io.IOException;
-
-
-
-
-
+/**
+ * Mapper : the base workflow of mapper operation.
+ * @author jiangbing
+ *
+ * @param <KEY>
+ * @param <VALUE>
+ */
 public abstract class Mapper<KEY, VALUE> {
 	MapContext<KEY, VALUE> context = new MapContext<KEY, VALUE>();
 	  /**
@@ -24,6 +25,7 @@ public abstract class Mapper<KEY, VALUE> {
 //			context.output(tmp, 1);
 //		}
 //	}
+	
 	  /**
 	   * Expert users can override this method for more complete control over the
 	   * execution of the Mapper.
