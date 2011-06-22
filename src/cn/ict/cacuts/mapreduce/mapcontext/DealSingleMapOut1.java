@@ -21,11 +21,15 @@ public class DealSingleMapOut1<KEY, VALUE> {
 	boolean finishedDealBackupList = false;
 
 	public void deal(ArrayList dealList) {
-	//	sort();
+		Sort tt = new Sort(dealList);
 	//	combine();
 	//	writeFile();
 		System.out.println("prepared to deal");
+		System.out.println(useList);
+		System.out.println(list.size());
 	}
+
+
 
 	private void receive(ArrayList receiveList) {
 		if (!finishedRecive) {
@@ -113,6 +117,12 @@ public class DealSingleMapOut1<KEY, VALUE> {
 		ArrayList receiveList= new ArrayList();
 		receiveList.add("key1 , 1");
 		receiveList.add("key2 , 2");
+		receiveList.add("key3 , 3");
+		receiveList.add("key4 , 4");
+		receiveList.add("key5 , 5");
+		receiveList.add("key6 , 6");
+		receiveList.add("key7 , 7");
+		receiveList.add("key8 , 8");
 		tt.receive(receiveList);
 		tt.FinishedReceive();
 	}
