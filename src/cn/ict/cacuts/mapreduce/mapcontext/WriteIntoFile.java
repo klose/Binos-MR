@@ -7,28 +7,29 @@ import java.util.ArrayList;
 
 public class WriteIntoFile {
 
-	public String interResultPathPrefix = System.getProperty("user.home") + "/CactusTest/";
+//	public String interResultPathPrefix = System.getProperty("user.home") + "/CactusTest/";
 	
-	public String fileName = interResultPathPrefix ;
+	public String fileName  ;
 	public WriteIntoFile(){}
 	public WriteIntoFile(String fileName){
-		this.fileName += fileName; 
+		this.fileName = fileName; 
 	}
 	
 	public void setFileName(String fileName){
-		this.fileName += fileName;
+		this.fileName = fileName;
 	}
 	
 	public String getFileName(){
 		return this.fileName ;
 	}
+
 	
 	public void writeIntoFile(ArrayList pairs ) { 	
 		String outString = "";
 		BufferedWriter out;
 		try {
 			out = new BufferedWriter(new FileWriter(this.fileName,true));
-			
+
 			for (int i = 0; i < pairs.size(); i++) {
 				outString = pairs.get(i).toString();
 				out.write(outString + "\n");
@@ -40,7 +41,7 @@ public class WriteIntoFile {
 	}
 	
 	public void writeIntoFile(ArrayList pairs ,String fileName) {
-		this.fileName += fileName; 		
+	//	this.fileName += fileName; 		
 		String outString = "";
 		BufferedWriter out;
 		try {
@@ -56,6 +57,38 @@ public class WriteIntoFile {
 		}
 	}
 	
+	public void writeIntoFile(Object[] pairs ) { 	
+		String outString = "";
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(this.fileName,true));
+			//System.out.println("pairs.length " + pairs.length);
+			for (int i = 0; i < pairs.length; i++) {
+				outString = pairs[i].toString();
+				out.write(outString + "\n");
+			}
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void writeIntoFile(Object[] pairs ,String fileName) {
+		//this.fileName += fileName; 		
+		String outString = "";
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(this.fileName,true));
+			
+			for (int i = 0; i < pairs.length; i++) {
+				outString = pairs[i].toString();
+				out.write(outString + "\n");
+			}
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * @param args
 	 */
