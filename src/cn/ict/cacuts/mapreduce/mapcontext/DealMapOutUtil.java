@@ -27,7 +27,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 		this.taskId = taskId;
 		genericFileName();
 	}
-	
+
 	public DealMapOutUtil(String taskId, int numberReduce) {
 		this.taskId = taskId;
 		this.numberOfReduce = numberReduce;
@@ -38,24 +38,20 @@ public class DealMapOutUtil<KEY, VALUE> {
 		fileName = new String[numberOfReduce];
 		for (int i = 0; i < numberOfReduce; i++) {
 			fileName[i] = filePrefix + taskId + "_out_" + i;
-		//	System.out.println(fileName[i]);
+			// System.out.println(fileName[i]);
 		}
 	}
 
 	public void receive(KEY key, VALUE value) {
-
 		if (!finishedReceive) {
 			if (writeInputPairs) {
 				inputPairs.add(key + "," + value);
-
 				if (inputPairs.size() == size) {
 					writeInputPairs = false;
 					finishedWriteInputPairs = false;
 					hashInputPairs(inputPairs);
-
 					inputPairs.clear();
 					finishedWriteInputPairs = true;
-
 					dealHashed();
 				}
 			} else {
@@ -72,17 +68,17 @@ public class DealMapOutUtil<KEY, VALUE> {
 				}
 
 			}
-		} 
-//		else {
-//			if (!inputPairs.isEmpty()) {
-//				hashInputPairs(inputPairs);
-//				dealHashed();
-//			}
-//			if (!backupInputPairs.isEmpty()) {
-//				hashInputPairs(backupInputPairs);
-//				dealHashed();
-//			}
-//		}
+		}
+		// else {
+		// if (!inputPairs.isEmpty()) {
+		// hashInputPairs(inputPairs);
+		// dealHashed();
+		// }
+		// if (!backupInputPairs.isEmpty()) {
+		// hashInputPairs(backupInputPairs);
+		// dealHashed();
+		// }
+		// }
 	}
 
 	public void FinishedReceive() {
@@ -102,22 +98,17 @@ public class DealMapOutUtil<KEY, VALUE> {
 	@SuppressWarnings("unchecked")
 	public void hashInputPairs(ArrayList inputpairs) {
 		KEY key;
-//		VALUE value;
 		for (int i = 0; i < numberOfReduce; i++) {
 			lists[i] = new ArrayList();
 		}
 
 		HashPartitioner partioner = new HashPartitioner();
-		//System.out.println(" inputpairs.size();" +  inputpairs.size());
+		// System.out.println(" inputpairs.size();" + inputpairs.size());
 		for (int i = 0; i < inputpairs.size(); i++) {
 			key = (KEY) inputpairs.get(i).toString().split(",")[0];
 			lists[partioner.getPartition(key, numberOfReduce)].add(inputpairs
 					.get(i));
 		}
-
-//		for (int i = 0; i < numberOfReduce; i++) {
-//			System.out.println(lists[i]);
-//		}
 	}
 
 	/**
@@ -127,10 +118,10 @@ public class DealMapOutUtil<KEY, VALUE> {
 		System.out.println(!lists[0].isEmpty());
 		if (!lists[0].isEmpty()) {
 			DealSingleMapOut1[] dealThreadi = new DealSingleMapOut1[lists.length];
-			//System.out.println(" lists.length "+ lists.length);
+			// System.out.println(" lists.length "+ lists.length);
 			for (int i = 0; i < lists.length; i++) {
-				//System.out.println("fileName[i]  " + fileName[i]);
-				//System.out.println("lists[i]  " + lists[i]);
+				// System.out.println("fileName[i]  " + fileName[i]);
+				// System.out.println("lists[i]  " + lists[i]);
 				dealThreadi[i] = new DealSingleMapOut1(fileName[i], lists[i]);
 				dealThreadi[i].start();
 			}
