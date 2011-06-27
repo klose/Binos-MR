@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
 import cn.ict.cacuts.mapreduce.mapcontext.HashPartitioner;
 
 public class MapContext<KEY, VALUE> {
@@ -38,7 +39,10 @@ public class MapContext<KEY, VALUE> {
 	/**
 	 * here suppose that two ArrayList both with the size of 1024*1024 is enough
 	 * */
-	public void output(KEY key, VALUE value) {}
+	public void output(KEY key, VALUE value) {
+		DealMapOutUtil receive = new DealMapOutUtil();
+		receive.receive(key, value);
+	}
 //	public void output(KEY key, VALUE value) {
 //
 //		if (!finishedWrite) {

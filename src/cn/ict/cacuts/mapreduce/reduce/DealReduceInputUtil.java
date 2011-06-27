@@ -56,13 +56,6 @@ public class DealReduceInputUtil {
 		ArrayList readed = readFile.readMethod2();
 		return readed;
 	}
-
-	// public ArrayList mergeFiles(ArrayList dealed,ArrayList justReaded){
-	// ArrayList newArray = new ArrayList();
-	// newArray = dealed.addAll(justReaded);
-	//
-	// }
-
 	public ArrayList reduceClass(ArrayList sorted) {
 		ArrayList combined = new ArrayList();
 		//TODO combine
