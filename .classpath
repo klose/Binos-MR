@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/hadoop-hdfs-0.21.0.jar"/>
 	<classpathentry kind="lib" path="lib/jobCompiler.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="conf"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

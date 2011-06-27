@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+<property>
+  <name>mapreduce.jobtracker.address</name>
+  <value>10.5.0.55:26667</value>
+  <description>The host and port that the MapReduce job tracker runs
+  at.  If "local", then jobs are run in-process as a single map
+  and reduce task.
+  </description>
+</property>
+<property>
+	<name>mapreduce.task.io.sort.mb</name>
+	<value>1</value>
+</property>
+<property>
+  <name>mapred.child.java.opts</name>
+ 	<value>-Xmx1024m</value>
+  <description>Java opts for the task tracker child processes.  
+  The following symbol, if present, will be interpolated: @taskid@ is replaced 
+  by current TaskID. Any other occurrences of '@' will go unchanged.
+  For example, to enable verbose gc logging to a file named for the taskid in
+  /tmp and to set the heap maximum to be a gigabyte, pass a 'value' of:
+        -Xmx1024m -verbose:gc -Xloggc:/tmp/@taskid@.gc
+  
+  The configuration variable mapred.child.ulimit can be used to control the
+  maximum virtual memory of the child processes. 
+  </description>
+</property>
+
+
+</configuration>
