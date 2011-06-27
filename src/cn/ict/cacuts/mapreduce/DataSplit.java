@@ -1,5 +1,7 @@
 package cn.ict.cacuts.mapreduce;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,10 +11,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.BlockLocation;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableUtils;
+
 import org.apache.log4j.Logger;
 
 import com.transformer.compiler.JobConfiguration;
@@ -106,47 +112,39 @@ public class DataSplit {
 	                                String[] hosts) {
 	    return new FileSplitIndex(file, start, length, hosts);
 	  }
-	class FileSplitIndex {
-		  private Path file;
-		  private long start;
-		  private long length;
-		  private String[] hosts;
-		  public FileSplitIndex() {}
 
-		  /** Constructs a split index with host information
-		   *
-		   * @param file the file name
-		   * @param start the position of the first byte in the file to process
-		   * @param length the number of bytes in the file to process
-		   * @param hosts the list of hosts containing the block, possibly null
-		   */
-		  public FileSplitIndex(Path file, long start, long length, String[] hosts) {
-		    this.file = file;
-		    this.start = start;
-		    this.length = length;
-		    this.hosts = hosts;
-		  }
-		  /** The file containing this split's data. */
-		  public Path getPath() { return file; }
-		  
-		  /** The position of the first byte in the file to process. */
-		  public long getStart() { return start; }
-		  
-		  /** The number of bytes in the file to process. */
-		  public long getLength() { return length; }
-
-		  @Override
-		  public String toString() { return file + ":" + start + "+" + length + "host:" + hosts.length; }
-	}
+	
 	public static void main(String[] args) {
 		MRConfig config = new MRConfig();
 		Path p = new Path("input");
-		try {
+		long time = System.currentTimeMillis();
+		try {	
 			DataSplit ds = new DataSplit(p);
 			List<FileSplitIndex> list = ds.getSplits(config);
 			for (FileSplitIndex splitIndex: list) {
 				System.out.println(splitIndex.toString());
 			}
+			
+			System.out.println("used time:" + (System.currentTimeMillis() - time)) ;
+			for(int i = 0; i < list.size(); i++) {
+				HdfsFileLineReader hflr = new HdfsFileLineReader();
+				hflr.initialize(list.get(i));
+				while (hflr.nextKeyValue()) {
+					System.out.println("key:" + hflr.getCurrentKey() + "value:" + hflr.getCurrentValue());
+				}
+				FSDataOutputStream out = fs.create(new Path(String.valueOf(i)));
+				list.get(i).write(out);
+				out.close();
+			}
+			System.out.println("used time:" + (System.currentTimeMillis() - time)) ;
+			for(int i = 0; i < list.size(); i++) {
+				FSDataInputStream in = fs.open(new Path(String.valueOf(i)));
+				FileSplitIndex fsi = new FileSplitIndex();
+				fsi.readFields(in);
+				System.out.println(fsi.toString());
+				in.close();
+			}
+			System.out.println("used time:" + (System.currentTimeMillis() - time)) ;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
