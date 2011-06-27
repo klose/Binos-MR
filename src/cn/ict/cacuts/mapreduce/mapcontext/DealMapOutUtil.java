@@ -32,11 +32,12 @@ public class DealMapOutUtil<KEY, VALUE> {
 		setOutputPath(outputPath);
 		this.numberOfReduce = outputPath.length;
 	}
-	public void receive(KEY key, VALUE value) {
+	public void receive(KEY key, VALUE value)  {
 		if (!finishedReceive) {
 			if (writeInputPairs) {
 				inputPairs.add(key + " , " + value);
 				if (inputPairs.size() == size) {
+					System.out.println("inputPairs.size() == size "  + inputPairs.size());
 					writeInputPairs = false;
 					finishedWriteInputPairs = false;
 					hashInputPairs(inputPairs);
@@ -47,6 +48,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 			} else {
 				backupInputPairs.add(key + " , " + value);
 				if (backupInputPairs.size() == size) {
+					System.out.println("backupInputPairs.size() == size "  + backupInputPairs.size());
+					finishedWriteBackupInputPairs = false;
 					if (finishedWriteInputPairs) {
 						writeInputPairs = true;
 					}
@@ -71,8 +74,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 		// }
 	}
 
-	public void FinishedReceive() {
+	public void FinishedReceive()  {
 		this.finishedReceive = true;
+		System.out.println("***********************over********************");
 		if (!inputPairs.isEmpty()) {
 			hashInputPairs(inputPairs);
 			dealHashed();
@@ -99,13 +103,15 @@ public class DealMapOutUtil<KEY, VALUE> {
 			lists[partioner.getPartition(key, numberOfReduce)].add(inputpairs
 					.get(i));
 		}
+		
 	}
 
 	/**
 	 * suppose that the hashed result is even ----> while(!lists[0].isEmpty())
+	 * @throws InterruptedException 
 	 * */
-	public void dealHashed() {
-		System.out.println(!lists[0].isEmpty());
+	public void dealHashed()  {
+		System.out.println("begin to deal hash   " + !lists[0].isEmpty());
 		if (!lists[0].isEmpty()) {
 			DealSingleMapOut1[] dealThreadi = new DealSingleMapOut1[lists.length];
 			// System.out.println(" lists.length "+ lists.length);
@@ -114,8 +120,15 @@ public class DealMapOutUtil<KEY, VALUE> {
 				// System.out.println("lists[i]  " + lists[i]);
 				dealThreadi[i] = new DealSingleMapOut1(fileName[i], lists[i]);
 				dealThreadi[i].start();
+				try {
+					dealThreadi[i].join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
+		
 		for (int i = 0; i < lists.length; i++) {
 			lists[i].clear();
 		}
@@ -133,6 +146,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	
 	/**
 	 * @param args
+	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) {
 		String[] keys = { "pear", "banana", "orange", "cat", "apple", "moon",

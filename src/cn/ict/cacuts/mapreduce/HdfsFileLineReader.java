@@ -100,8 +100,10 @@ public class HdfsFileLineReader {
 		// We always read one extra line, which lies outside the upper
 		// split limit i.e. (end - 1)
 		while (getFilePosition() <= end) {
+			
 			newSize = in.readLine(value, maxLineLength,
 					Math.max(maxBytesToConsume(pos), maxLineLength));
+			System.out.println("end:" + end + "pos:" +pos);
 			if (newSize == 0) {
 				break;
 			}

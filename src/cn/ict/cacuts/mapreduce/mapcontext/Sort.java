@@ -15,12 +15,14 @@ public class Sort {
 		ArrayList sorted = new ArrayList();
 		String key;
 		Object[] sortedResult = sort.toArray();
+		System.out.println("sort.length ： " + sort.size());
+		System.out.println("sortedResult.length ： " + sortedResult.length);
 		Arrays.sort(sortedResult);
-		
+		//System.out.println("finished sort  " );
 		for(int i = 0 ; i < sortedResult.length ; i ++){
 			sorted.add(sortedResult[i]);
 		}
-		
+		//System.out.println(" finished add " );
 		return sortedResult;
 	}
 	

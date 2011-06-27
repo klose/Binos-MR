@@ -15,6 +15,9 @@ public class DealSingleMapOut1 extends Thread {
 	}
 
 	public void run() {
+		System.out.println(" into the DealSingleMapOut1    ");
+		System.out.println("fileName ： "  + fileName);
+		System.out.println("list.size() : " + list.size());
 		finishedDeal = false;
 		Sort testSort = new Sort(list);
 		Object[] sortedResult = testSort.beginSort();

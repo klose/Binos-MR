@@ -47,6 +47,8 @@ public class MapContext<KEY, VALUE> {
 	}
 
 	public void output(KEY key, VALUE value) {
+		//System.out.println("key : " + key);
+		//System.out.println("value : " + value);
 		receive.receive(key, value);
 	}
 	
