@@ -45,7 +45,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	public void receive(KEY key, VALUE value) {
 		if (!finishedReceive) {
 			if (writeInputPairs) {
-				inputPairs.add(key + "," + value);
+				inputPairs.add(key + " , " + value);
 				if (inputPairs.size() == size) {
 					writeInputPairs = false;
 					finishedWriteInputPairs = false;
@@ -55,7 +55,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 					dealHashed();
 				}
 			} else {
-				backupInputPairs.add(key + "," + value);
+				backupInputPairs.add(key + " , " + value);
 				if (backupInputPairs.size() == size) {
 					if (finishedWriteInputPairs) {
 						writeInputPairs = true;
@@ -105,7 +105,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 		HashPartitioner partioner = new HashPartitioner();
 		// System.out.println(" inputpairs.size();" + inputpairs.size());
 		for (int i = 0; i < inputpairs.size(); i++) {
-			key = (KEY) inputpairs.get(i).toString().split(",")[0];
+			key = (KEY) inputpairs.get(i).toString().split(" , ")[0];
 			lists[partioner.getPartition(key, numberOfReduce)].add(inputpairs
 					.get(i));
 		}

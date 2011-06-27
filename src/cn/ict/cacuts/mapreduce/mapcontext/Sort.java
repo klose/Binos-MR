@@ -7,16 +7,34 @@ import java.util.Map;
 public class Sort {
 
 	public ArrayList sort = new ArrayList();
-	Sort(ArrayList sort){
+	public Sort(ArrayList sort){
 		this.sort = sort;
 	}
 	
 	public Object[] beginSort(){
+		ArrayList sorted = new ArrayList();
 		String key;
 		Object[] sortedResult = sort.toArray();
 		Arrays.sort(sortedResult);
 		
+		for(int i = 0 ; i < sortedResult.length ; i ++){
+			sorted.add(sortedResult[i]);
+		}
+		
 		return sortedResult;
+	}
+	
+	public ArrayList beginSort1(){
+		ArrayList sorted = new ArrayList();
+		String key;
+		Object[] sortedResult = sort.toArray();
+		Arrays.sort(sortedResult);
+		
+		for(int i = 0 ; i < sortedResult.length ; i ++){
+			sorted.add(sortedResult[i]);
+		}
+		
+		return sorted;
 	}
 	
 	/**
