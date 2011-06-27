@@ -2,11 +2,18 @@ package cn.ict.cacuts.mapreduce.mapcontext;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import cn.ict.cacuts.mapreduce.MRConfig;
+import cn.ict.cacuts.mapreduce.MapContext;
+
 public class DealMapOutUtil<KEY, VALUE> {
 
-	public String filePrefix = System.getProperty("user.home") + "/CactusTest/";
-	public String taskId = "map_1";
-	int numberOfReduce = 2;
+//	public String filePrefix = System.getProperty("user.home") + "/CactusTest/";
+//	public String taskId = "map_1";
+	private final static Log LOG = LogFactory.getLog(DealMapOutUtil.class);
+	int numberOfReduce = MRConfig.getReduceTaskNum();
 	public int size = 1024 * 1024;
 	ArrayList inputPairs = new ArrayList();
 	ArrayList backupInputPairs = new ArrayList();
@@ -19,29 +26,12 @@ public class DealMapOutUtil<KEY, VALUE> {
 	boolean finishedWriteInputPairs = false;
 	boolean finishedWriteBackupInputPairs = false;
 
-	public DealMapOutUtil() {
-		genericFileName();
+	
+	public  DealMapOutUtil() {}
+	public DealMapOutUtil(String[] outputPath) {
+		setOutputPath(outputPath);
+		this.numberOfReduce = outputPath.length;
 	}
-
-	public DealMapOutUtil(String taskId) {
-		this.taskId = taskId;
-		genericFileName();
-	}
-
-	public DealMapOutUtil(String taskId, int numberReduce) {
-		this.taskId = taskId;
-		this.numberOfReduce = numberReduce;
-		genericFileName();
-	}
-
-	public void genericFileName() {
-		fileName = new String[numberOfReduce];
-		for (int i = 0; i < numberOfReduce; i++) {
-			fileName[i] = filePrefix + taskId + "_out_" + i;
-			// System.out.println(fileName[i]);
-		}
-	}
-
 	public void receive(KEY key, VALUE value) {
 		if (!finishedReceive) {
 			if (writeInputPairs) {
@@ -130,31 +120,17 @@ public class DealMapOutUtil<KEY, VALUE> {
 			lists[i].clear();
 		}
 	}
-
-	public void setFilePrefix(String filePrefix) {
-		this.filePrefix = filePrefix;
+	public void setOutputPath(String[] outputPath) {
+		this.fileName = outputPath;
+		if (outputPath.length <= 0) {
+			LOG.error("You should set map output path.");
+		}
 	}
-
-	public String getFilePrefix() {
-		return this.filePrefix;
-	}
-
-	public void setNumberReduce(int numberReduce) {
-		this.numberOfReduce = numberReduce;
-	}
-
 	public int getNumberReduce() {
 		return numberOfReduce;
 	}
 
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-
-	public String getTaskId() {
-		return this.taskId;
-	}
-
+	
 	/**
 	 * @param args
 	 */

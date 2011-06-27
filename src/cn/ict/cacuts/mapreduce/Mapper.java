@@ -8,7 +8,7 @@ import java.io.IOException;
  * @param <VALUE>
  */
 public abstract class Mapper<KEY, VALUE> {
-	MapContext<KEY, VALUE> context = new MapContext<KEY, VALUE>();
+	public Mapper() {}
 	  /**
 	   * Called once at the beginning of the task.
 	   */
@@ -37,6 +37,7 @@ public abstract class Mapper<KEY, VALUE> {
 	    while (context.hasNextLine()) {
 	      map(context.getNextLine(), context);
 	    }
+	    context.flush();
 	    cleanup(context);
 	  }
 	  

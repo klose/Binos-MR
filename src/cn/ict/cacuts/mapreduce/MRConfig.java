@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 
+
 /**
  * configure the arguments of map reduce.
  * @author jiangbing
@@ -17,6 +18,10 @@ public class MRConfig {
 	public static int reduceTaskMem = 100*1024*1024;
 	public static int reduceTaskNum = 1;
 	public static long splitFileSize = 64*1024*1024; //use a hdfs block size as default value.
+	public static Class mapContextKeyClass = Integer.class;
+	public static Class mapContextValueClass = String.class;
+	private  static Class<? extends Mapper> mapClass;
+	
 	static {
 		Configuration conf = new Configuration();
 		FileSystem fs;
@@ -57,5 +62,24 @@ public class MRConfig {
 	}
 	public static void setSplitFileSize(long splitFileSize) {
 		MRConfig.splitFileSize = splitFileSize;
+	}
+	public  static Class getMapContextKeyClass() {
+		return mapContextKeyClass;
+	}
+	public static void setMapContextKeyClass(Class mapContextKeyClass) {
+		MRConfig.mapContextKeyClass = mapContextKeyClass;
+	}
+	public static Class getMapContextValueClass() {
+		return mapContextValueClass;
+	}
+	public static void setMapContextValueClass(Class mapContextValueClass) {
+		MRConfig.mapContextValueClass = mapContextValueClass;
+		
+	}
+	public static Class<? extends Mapper> getMapClass() {
+		return mapClass;
+	}
+	public static void setMapClass(Class<? extends Mapper> mapClass) {
+		MRConfig.mapClass =  mapClass;
 	}
 }
