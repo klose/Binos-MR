@@ -8,13 +8,15 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
+import cn.ict.cacuts.mapreduce.mapcontext.HashPartitioner;
 
 public class MapContext<KEY, VALUE> {
-	
+
 	private final static Log LOG = LogFactory.getLog(MapContext.class);
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
-	//private Path spiltIndexPath;
+	private	DealMapOutUtil receive = new DealMapOutUtil();
 	private FileSplitIndex splitIndex = new FileSplitIndex();
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
 	static {
@@ -34,11 +36,30 @@ public class MapContext<KEY, VALUE> {
 	}
 	public boolean hasNextLine() throws IOException {
 		return lineReader.nextKeyValue();
+	public MapContext() {
+
 	}
+
 	public String getNextLine() {
 		return lineReader.getCurrentValue().toString();
 	}
+
 	public void output(KEY key, VALUE value) {
+			receive.receive(key, value);
+	}
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String[] keys = { "key1", "key2", "key3", "key4", "key5", "key6" , "key7"};
+		int[] values = { 1, 2, 3, 4, 5, 6 ,7};
+		MapContext tt = new MapContext();
+		for (int i = 0; i < keys.length; i++) {
+			tt.output(keys[i], values[i]);
+		}
+	//	tt.Finished();
 		
 	}
+
 }
