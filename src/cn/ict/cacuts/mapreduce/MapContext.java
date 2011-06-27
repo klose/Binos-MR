@@ -36,6 +36,7 @@ public class MapContext<KEY, VALUE> {
 	}
 	public boolean hasNextLine() throws IOException {
 		return lineReader.nextKeyValue();
+	}
 	public MapContext() {
 
 	}
