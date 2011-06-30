@@ -21,7 +21,9 @@ public class MRConfig {
 	public static Class mapContextKeyClass = Integer.class;
 	public static Class mapContextValueClass = String.class;
 	private  static Class<? extends Mapper> mapClass;
+	static String tempMapOutFilesPathPrefix;
 	
+
 	static {
 		Configuration conf = new Configuration();
 		FileSystem fs;
@@ -81,5 +83,11 @@ public class MRConfig {
 	}
 	public static void setMapClass(Class<? extends Mapper> mapClass) {
 		MRConfig.mapClass =  mapClass;
+	}
+	public static String getTempMapOutFilesPathPrefix() {
+		return tempMapOutFilesPathPrefix;
+	}
+	public static void setTempMapOutFilesPathPrefix(String tempMapOutFilesPathPrefix) {
+		tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 	}
 }

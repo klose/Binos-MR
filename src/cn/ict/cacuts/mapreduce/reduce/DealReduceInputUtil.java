@@ -15,6 +15,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 	ArrayList dealed = new ArrayList();
 	public String reduceOutPutFileName;
 	public Map<KEY, ArrayList<VALUE>> keyValues;
+	private boolean finishedReceive = false;
 
 	public void beginToReduce() {
 		prepared();
@@ -121,6 +122,12 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		return this.reduceOutPutFileName;
 	}
 
+
+	public void FinishedReceive() {
+		this.finishedReceive  = true;
+		//////////////////////////////////////////need to deal////////////////////////
+	}
+	
 	/**
 	 * @param args
 	 */
@@ -145,5 +152,6 @@ public class DealReduceInputUtil<KEY, VALUE> {
 			System.out.println("value : " + value1);
 		}
 	}
+
 
 }
