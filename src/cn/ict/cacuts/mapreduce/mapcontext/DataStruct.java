@@ -1,6 +1,8 @@
 package cn.ict.cacuts.mapreduce.mapcontext;
 
-public class DataStruct<KEY,VALUE> {
+import java.io.Serializable;
+
+public class DataStruct<KEY,VALUE> implements Serializable{
 
 
 	public KEY key;
@@ -41,6 +43,5 @@ public class DataStruct<KEY,VALUE> {
 		int partionNum = 1;
 		DataStruct tt = new DataStruct(key,value,partionNum);
 		System.out.println(tt.getKey());
-
 	}
 }
