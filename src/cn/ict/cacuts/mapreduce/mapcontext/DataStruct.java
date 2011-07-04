@@ -9,7 +9,7 @@ public class DataStruct<KEY,VALUE> implements Serializable{
 	public VALUE value;
 	public int partionNum;
 	
-	DataStruct(KEY key,VALUE value,int partionNum){
+	public DataStruct(KEY key,VALUE value,int partionNum){
 		this.key = key;
 		this.value = value;
 		this.partionNum = partionNum;
