@@ -1,15 +1,21 @@
 package temporary;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import org.apache.hadoop.fs.Path;
+
+import cn.ict.cacuts.mapreduce.mapcontext.KVPair;
 
 import cn.ict.cacuts.mapreduce.Merger;
 
 public class testMerger {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Merger merger = new Merger();
-		String prefixPath = "/tmp/CactusTest/tmpMapOut_";
+		String prefixPath = "testCase/testMerger/tmpMapOut_";
 		Path [] inputPath  = new Path[5];
 		for (int i = 0; i < inputPath.length; i++) {
 			inputPath[i] = new Path(prefixPath + (i+1));
@@ -21,10 +27,30 @@ public class testMerger {
 		String index[] = {"33,51,16", "33,50,17", "34,49,17", "33,51,16", "33,50,17"};
 		try {
 			merger.merge(inputPath, index, outputPath, false);
-		} catch (IOException e) {
+		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
+		for (int j = 0; j < 3; j++) {
+			FileInputStream fis = new FileInputStream(outputPath[j].toUri().getPath());
+			//ByteArrayInputStream bais = new ByteArrayInputStream(fis);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			
+			Object tmp = null;
+			System.out.println("*********************************");
+			while (null!=(tmp = ois.readObject())){
+				System.out.println((KVPair)tmp);
+				if (fis.available() == 0) {
+					break;
+				}
+			}
+				
+			ois.close();
+			fis.close();
+		}
+	
 		
 	}
 }

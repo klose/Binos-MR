@@ -6,9 +6,13 @@ import java.io.Serializable;
 public class KVPair<KEY,VALUE> implements Serializable{
 
 
-	public KEY key;
-	public VALUE value;
-	public int partitionNum;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private KEY key;
+	private VALUE value;
+	private int partitionNum;
 	
 	public KVPair(){}
 	public KVPair(KEY key,VALUE value,int partitionNum){
@@ -35,7 +39,10 @@ public class KVPair<KEY,VALUE> implements Serializable{
 	public void setpartitionNum(int partitionNum) {
 		this.partitionNum = partitionNum;
 	}
-
+	public String toString() {
+		return key + ":" + value + ":" +partitionNum;
+		
+	}
 	/**
 	 * @param args
 	 */

@@ -14,8 +14,8 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
+import cn.ict.cacuts.mapreduce.mapcontext.KVPair;
 
-import temporary.testDataStruct.KVPair;
 
 /**
  * Merge small files into large file. 
@@ -215,7 +215,7 @@ public class Merger extends PriorityQueue{
 		if (a1.getKey() instanceof String) {
 			compare = (a1.getKey().toString()).compareTo
 				(b1.getKey().toString());
-			if (compare < -1) {
+			if (compare < 0) {
 				return true;
 			}
 		}

@@ -7,7 +7,7 @@ public class KVPair<K,V> implements Serializable{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	
 	
 	private K Key;
 	private V value;

@@ -39,8 +39,8 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());
-			fout.write(-1);
-			fout.write(-1);
+//			fout.write(-1);
+//			fout.write(-1);
 			fout.flush();
 			bout.close();
 			oos.close();
@@ -61,8 +61,8 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());	
-			fout.write(-1);
-			fout.write(-1);
+//			fout.write(-1);
+//			fout.write(-1);
 			fout.flush();
 			bout.close();
 			oos.close();
@@ -83,8 +83,8 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());	
-			fout.write(-1);
-			fout.write(-1);
+//			fout.write(-1);
+//			fout.write(-1);
 			fout.flush();
 			bout.close();
 			oos.close();
@@ -105,8 +105,8 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());	
-			fout.write(-1);
-			fout.write(-1);
+//			fout.write(-1);
+//			fout.write(-1);
 			fout.flush();
 			bout.close();
 			oos.close();
