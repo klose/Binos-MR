@@ -15,7 +15,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
 import cn.ict.cacuts.mapreduce.mapcontext.KVPair;
-
+import cn.ict.cacuts.mapreduce.mapcontext.KVList;
 
 /**
  * Merge small files into large file. 
@@ -36,7 +36,7 @@ public class Merger extends PriorityQueue{
 	 * @param isDelete: whether or not to delete the file as the map phase ends.
 	 * @throws IOException
 	 */
-	public  void merge(Path[] input, String[] index, Path[] output, boolean isDelete) throws IOException {
+	public <K extends Object, V extends Object> void merge(Path[] input, String[] index, Path[] output, boolean isDelete) throws IOException {
 		int length = input.length;
 		//FileInputStream[] in = new FileInputStream[length];
 		ObjectInputStream[] ois = new ObjectInputStream[length];
@@ -93,8 +93,29 @@ public class Merger extends PriorityQueue{
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();   
 			ObjectOutputStream oos = new ObjectOutputStream(bout);
 			FileOutputStream fout = new FileOutputStream(output[k].toUri().getPath());
+			//boolean isNewObject = true;
+			K originKey = null;
+			KVList list = null;
 			for (int i = 0; i < allocateNum; i++) {
-				oos.writeObject(pop());
+				KVPair<K, V> pair = (KVPair<K, V>) pop();
+				K key = pair.getKey();
+				if (!key.equals(originKey)) {
+					//isNewObject = true;
+					if (list != null) {
+						oos.writeObject(list);
+						list = null;
+					}
+					list = new KVList(pair);
+				}
+				else {
+					//isNewObject = false;
+					list.addVal(pair.getValue());
+				}
+				originKey = key;
+			}
+			if (list != null) {
+				oos.writeObject(list);
+				list = null;
 			}
 			oos.flush();
 			fout.write(bout.toByteArray());
@@ -146,7 +167,7 @@ public class Merger extends PriorityQueue{
 		/*get the record number of each part in every input path.
 		 * and initialize the value of correlative variables*/
 		for (int i = 0; i < length; i++) {
-			inputFile[i] = new File(input[i].getName());
+			inputFile[i] = new File(input[i].toUri().getPath());
 			ois[i] = new ObjectInputStream( 
 					new FileInputStream(inputFile[i]));
 			String[] tmp = index[i].split(",");
@@ -186,7 +207,8 @@ public class Merger extends PriorityQueue{
 			}
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();   
 			ObjectOutputStream oos = new ObjectOutputStream(bout);
-			FileOutputStream fout = new FileOutputStream(output[k].getName());
+			FileOutputStream fout = new FileOutputStream(output[k].toUri().getPath());
+			
 			for (int i = 0; i < allocateNum; i++) {
 				oos.writeObject(pop());
 			}

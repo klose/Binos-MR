@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 
 import org.apache.hadoop.fs.Path;
 
+import cn.ict.cacuts.mapreduce.mapcontext.KVList;
 import cn.ict.cacuts.mapreduce.mapcontext.KVPair;
 
 import cn.ict.cacuts.mapreduce.Merger;
@@ -33,6 +34,7 @@ public class testMerger {
 		}
 		
 
+		int total = 0;
 		for (int j = 0; j < 3; j++) {
 			FileInputStream fis = new FileInputStream(outputPath[j].toUri().getPath());
 			//ByteArrayInputStream bais = new ByteArrayInputStream(fis);
@@ -40,13 +42,15 @@ public class testMerger {
 			
 			Object tmp = null;
 			System.out.println("*********************************");
+		
 			while (null!=(tmp = ois.readObject())){
-				System.out.println((KVPair)tmp);
+				System.out.println(((KVList)tmp));
+				total += ((KVList)tmp).getValue().size();
 				if (fis.available() == 0) {
 					break;
 				}
 			}
-				
+			System.out.println(total);
 			ois.close();
 			fis.close();
 		}
