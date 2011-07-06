@@ -17,7 +17,7 @@ public class testKV2 {
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
 		ObjectOutputStream oos = new ObjectOutputStream(bout);
-		FileOutputStream fout = new FileOutputStream("/tmp/kvtest2");
+		FileOutputStream fout = new FileOutputStream(System.getProperty("user.home")+ "/CactusTest/" + "vv");
 		// 获取输入输出通道  
 		//FileChannel fcin = fin.getChannel();  
 		//FileChannel fcout = fout.getChannel();
@@ -53,7 +53,7 @@ public class testKV2 {
 		System.out.println("write 100000 kvpair used time:" + writeTime + "ms");
 		System.out.println("Start Read");
 		time = System.currentTimeMillis();
-		FileInputStream fis = new FileInputStream("/tmp/kvtest");
+		FileInputStream fis = new FileInputStream(System.getProperty("user.home")+ "/CactusTest/" + "vv");
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		for (long j = 0; j < recordNum; j++) {
 			KVPair pair = (KVPair) ois.readObject();

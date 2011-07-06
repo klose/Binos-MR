@@ -15,15 +15,17 @@ public class DealMapOutUtil<KEY, VALUE> {
 	// "/CactusTest/";
 	// public String taskId = "map_1";
 	private final static Log LOG = LogFactory.getLog(DealMapOutUtil.class);
-	int numberOfReduce = MRConfig.getReduceTaskNum();
-	public int size = 1024 * 1024;
+	////int numberOfReduce = MRConfig.getReduceTaskNum();
+	int numberOfReduce = 3;
+	////public int size = 1024 * 1024;
+	public int size = 100;
 	ArrayList inputPairs = new ArrayList();
 	ArrayList backupInputPairs = new ArrayList();
 	ArrayList[] lists = new ArrayList[numberOfReduce];
 	String[] fileName;
-	String[] mapOutFileIndex;
+	String[] mapOutFileIndex = new String[100];//suppose there are no more than 100 interfile
 	int[] innerFilePartionIndex;
-	DataStruct element;
+	KVPair element;
 
 	boolean inputFull = false;
 	boolean writeInputPairs = true;
@@ -34,8 +36,10 @@ public class DealMapOutUtil<KEY, VALUE> {
 	int tmpFileNum = 0;
 
 	HashPartitioner hashPartitioner = new HashPartitioner();
-	String tempMapOutFilesPathPrefix = MRConfig.getTempMapOutFilesPathPrefix()
-			+ "tmpMapOut_";
+////	String tempMapOutFilesPathPrefix = MRConfig.getTempMapOutFilesPathPrefix()
+//			+ "tmpMapOut_";
+	String tempMapOutFilesPathPrefix = System.getProperty("user.home")+ "/CactusTest/"
+	+ "tmpMapOut_";
 
 	public DealMapOutUtil() {
 	}
@@ -53,7 +57,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				partionedNum = hashPartitioner
 						.getPartition(key, numberOfReduce);
 				innerFilePartionIndex[partionedNum]++;
-				element = new DataStruct(key, value, partionedNum);
+				element = new KVPair(key, value, partionedNum);
 				inputPairs.add(element);
 				if (inputPairs.size() == size) {
 					System.out.println("inputPairs.size() == size "
@@ -69,7 +73,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				partionedNum = hashPartitioner
 						.getPartition(key, numberOfReduce);
 				innerFilePartionIndex[partionedNum]++;
-				element = new DataStruct(key, value, partionedNum);
+				element = new KVPair(key, value, partionedNum);
 				backupInputPairs.add(element);
 				if (backupInputPairs.size() == size) {
 					System.out.println("backupInputPairs.size() == size "
@@ -94,18 +98,17 @@ public class DealMapOutUtil<KEY, VALUE> {
 	}
 
 	public void dealFileIndex(int[] innerFilePartionIndex) {
-		String indexString = null;
+		String indexString = "";
 		for (int i = 0; i < innerFilePartionIndex.length; i++) {
-			indexString += innerFilePartionIndex[i] + " , ";
+			indexString += innerFilePartionIndex[i] + ",";			
 		}
-		mapOutFileIndex[tmpFileNum] = indexString.substring(0, indexString.length() - 3);
+		mapOutFileIndex[tmpFileNum] = indexString.substring(0, indexString.length() - 1);
 	}
 
 
 
 	public void sortAndSaveDatas(ArrayList inputPairs) {
 		String fileName;
-
 		fileName = tempMapOutFilesPathPrefix + tmpFileNum;
 		SaveDatas(sortDatas(inputPairs), fileName);
 	}
@@ -156,10 +159,16 @@ public class DealMapOutUtil<KEY, VALUE> {
 		String[] keys = { "pear", "banana", "orange", "cat", "apple", "moon",
 				"egg" };
 		int[] values = { 1, 7, 5, 10, 2, 4, 11 };
+		int[] partitions = { 3,2,1,3,2,1 ,2};
 
+		
 		DealMapOutUtil tt = new DealMapOutUtil();
-		for (int i = 0; i < keys.length; i++) {
-			tt.receive(keys[i], values[i]);
+//		for (int i = 0; i < keys.length; i++) {
+//			tt.receive(keys[i], values[i]);
+//		}
+		
+		for (int i = 0; i < 500; i++) {
+			tt.receive(keys[i%6], i);
 		}
 		tt.FinishedReceive();
 	}

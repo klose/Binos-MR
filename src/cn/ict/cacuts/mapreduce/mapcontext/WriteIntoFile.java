@@ -1,8 +1,12 @@
 package cn.ict.cacuts.mapreduce.mapcontext;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class WriteIntoFile {
@@ -25,64 +29,69 @@ public class WriteIntoFile {
 	}
 
 	public void writeIntoFile(ArrayList pairs) {
-		String outString = "";
-		BufferedWriter out;
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
+		ObjectOutputStream oos;
 		try {
-			out = new BufferedWriter(new FileWriter(this.fileName, true));
-
+			oos = new ObjectOutputStream(bout);
+			FileOutputStream fout = new FileOutputStream(this.fileName, true);
 			for (int i = 0; i < pairs.size(); i++) {
-				outString = pairs.get(i).toString();
-				out.write(outString + "\n");
+				oos.writeObject(pairs.get(i));
 			}
-			out.close();
-		} catch (Exception e) {
+			oos.flush();			
+			fout.write(bout.toByteArray());
+			fout.write(-1-1);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void writeIntoFile(ArrayList pairs, String fileName) {
-		String outString = "";
-		BufferedWriter out;
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
+		ObjectOutputStream oos;
 		try {
-			out = new BufferedWriter(new FileWriter(fileName, true));
-
+			oos = new ObjectOutputStream(bout);
+			FileOutputStream fout = new FileOutputStream(fileName, true);
 			for (int i = 0; i < pairs.size(); i++) {
-				outString = pairs.get(i).toString();
-				out.write(outString + "\n");
+				oos.writeObject(pairs.get(i));
 			}
-			out.close();
-		} catch (Exception e) {
+			oos.flush();			
+			fout.write(bout.toByteArray());	
+			fout.write(-1-1);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void writeIntoFile(Object[] pairs) {
-		String outString = "";
-		BufferedWriter out;
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
+		ObjectOutputStream oos;
 		try {
-			out = new BufferedWriter(new FileWriter(this.fileName, true));
+			oos = new ObjectOutputStream(bout);
+			FileOutputStream fout = new FileOutputStream(this.fileName, true);
 			for (int i = 0; i < pairs.length; i++) {
-				outString = pairs[i].toString();
-				out.write(outString + "\n");
+				oos.writeObject(pairs[i]);
 			}
-			out.close();
-		} catch (Exception e) {
+			oos.flush();			
+			fout.write(bout.toByteArray());	
+			fout.write(-1-1);	
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void writeIntoFile(Object[] pairs, String fileName) {
-		String outString = "";
-		BufferedWriter out;
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
+		ObjectOutputStream oos;
 		try {
-			out = new BufferedWriter(new FileWriter(fileName, true));
-
+			oos = new ObjectOutputStream(bout);
+			FileOutputStream fout = new FileOutputStream(fileName, true);
 			for (int i = 0; i < pairs.length; i++) {
-				outString = pairs[i].toString();
-				out.write(outString + "\n");
+				oos.writeObject(pairs[i]);
 			}
-			out.close();
-		} catch (Exception e) {
+			oos.flush();			
+			fout.write(bout.toByteArray());	
+			fout.write(-1-1);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

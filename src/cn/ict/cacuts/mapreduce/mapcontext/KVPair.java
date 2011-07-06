@@ -1,18 +1,20 @@
+
 package cn.ict.cacuts.mapreduce.mapcontext;
 
 import java.io.Serializable;
 
-public class DataStruct<KEY,VALUE> implements Serializable{
+public class KVPair<KEY,VALUE> implements Serializable{
 
 
 	public KEY key;
 	public VALUE value;
-	public int partionNum;
+	public int partitionNum;
 	
-	public DataStruct(KEY key,VALUE value,int partionNum){
+	public KVPair(){}
+	public KVPair(KEY key,VALUE value,int partitionNum){
 		this.key = key;
 		this.value = value;
-		this.partionNum = partionNum;
+		this.partitionNum = partitionNum;
 	}
 
 	public KEY getKey() {
@@ -27,11 +29,11 @@ public class DataStruct<KEY,VALUE> implements Serializable{
 	public void setValue(VALUE value) {
 		this.value = value;
 	}
-	public int getPartionNum() {
-		return partionNum;
+	public int getpartitionNum() {
+		return partitionNum;
 	}
-	public void setPartionNum(int partionNum) {
-		this.partionNum = partionNum;
+	public void setpartitionNum(int partitionNum) {
+		this.partitionNum = partitionNum;
 	}
 
 	/**
@@ -40,8 +42,8 @@ public class DataStruct<KEY,VALUE> implements Serializable{
 	public static void main(String[] args) {
 		String key = "hello";
 		int value = 2;
-		int partionNum = 1;
-		DataStruct tt = new DataStruct(key,value,partionNum);
+		int partitionNum = 1;
+		KVPair tt = new KVPair(key,value,partitionNum);
 		System.out.println(tt.getKey());
 	}
 }
