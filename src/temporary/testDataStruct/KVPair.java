@@ -20,6 +20,9 @@ public class KVPair<K,V> implements Serializable{
 		this.value = value;
 		this.partition = partition;
 	}
+	public K getKey() {
+		return Key;
+	}
 	public String toString() {
 		return Key + ":" + value + ":" +partition;
 		
