@@ -39,7 +39,12 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());
-			fout.write(-1-1);
+			fout.write(-1);
+			fout.write(-1);
+			fout.flush();
+			bout.close();
+			oos.close();
+			fout.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +61,12 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());	
-			fout.write(-1-1);
+			fout.write(-1);
+			fout.write(-1);
+			fout.flush();
+			bout.close();
+			oos.close();
+			fout.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +83,12 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());	
-			fout.write(-1-1);	
+			fout.write(-1);
+			fout.write(-1);
+			fout.flush();
+			bout.close();
+			oos.close();
+			fout.close();	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -90,7 +105,12 @@ public class WriteIntoFile {
 			}
 			oos.flush();			
 			fout.write(bout.toByteArray());	
-			fout.write(-1-1);
+			fout.write(-1);
+			fout.write(-1);
+			fout.flush();
+			bout.close();
+			oos.close();
+			fout.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

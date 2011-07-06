@@ -11,9 +11,6 @@ import cn.ict.cacuts.mapreduce.MapContext;
 
 public class DealMapOutUtil<KEY, VALUE> {
 
-	// public String filePrefix = System.getProperty("user.home") +
-	// "/CactusTest/";
-	// public String taskId = "map_1";
 	private final static Log LOG = LogFactory.getLog(DealMapOutUtil.class);
 	////int numberOfReduce = MRConfig.getReduceTaskNum();
 	int numberOfReduce = 3;
@@ -23,8 +20,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 	ArrayList backupInputPairs = new ArrayList();
 	ArrayList[] lists = new ArrayList[numberOfReduce];
 	String[] fileName;
-	String[] mapOutFileIndex = new String[100];//suppose there are no more than 100 interfile
-	int[] innerFilePartionIndex;
+	public String[] mapOutFileIndex;//suppose there are no more than 100 interfile
+	int[] innerFilePartionIndex =  new int[numberOfReduce];
 	KVPair element;
 
 	boolean inputFull = false;
@@ -35,6 +32,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 	int partionedNum;
 	int tmpFileNum = 0;
 
+	String indexString = "";
+	
 	HashPartitioner hashPartitioner = new HashPartitioner();
 ////	String tempMapOutFilesPathPrefix = MRConfig.getTempMapOutFilesPathPrefix()
 //			+ "tmpMapOut_";
@@ -53,7 +52,6 @@ public class DealMapOutUtil<KEY, VALUE> {
 
 		if (!finishedReceive) {
 			if (writeInputPairs) {
-				innerFilePartionIndex = new int[numberOfReduce];
 				partionedNum = hashPartitioner
 						.getPartition(key, numberOfReduce);
 				innerFilePartionIndex[partionedNum]++;
@@ -65,11 +63,11 @@ public class DealMapOutUtil<KEY, VALUE> {
 					writeInputPairs = false;
 					finishedWriteInputPairs = false;
 					dealReceivedUtil(inputPairs, innerFilePartionIndex);
+					innerFilePartionIndex =  new int[numberOfReduce];
 					inputPairs.clear();
 					finishedWriteInputPairs = true;
 				}
 			} else {
-				innerFilePartionIndex = new int[numberOfReduce];
 				partionedNum = hashPartitioner
 						.getPartition(key, numberOfReduce);
 				innerFilePartionIndex[partionedNum]++;
@@ -83,6 +81,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 						writeInputPairs = true;
 					}
 					dealReceivedUtil(backupInputPairs, innerFilePartionIndex);
+					innerFilePartionIndex =  new int[numberOfReduce];
 					backupInputPairs.clear();
 					finishedWriteBackupInputPairs = true;
 				}
@@ -91,18 +90,19 @@ public class DealMapOutUtil<KEY, VALUE> {
 		}
 	}
 
+
+
 	public void dealReceivedUtil(ArrayList inputPairs,int[] innerFilePartionIndex) {
 		tmpFileNum++;
-		dealFileIndex(innerFilePartionIndex);
+		dealFileIndexContext(innerFilePartionIndex);
 		sortAndSaveDatas(inputPairs);
 	}
 
-	public void dealFileIndex(int[] innerFilePartionIndex) {
-		String indexString = "";
+	public void dealFileIndexContext(int[] innerFilePartionIndex) {
 		for (int i = 0; i < innerFilePartionIndex.length; i++) {
 			indexString += innerFilePartionIndex[i] + ",";			
 		}
-		mapOutFileIndex[tmpFileNum] = indexString.substring(0, indexString.length() - 1);
+		indexString +=";";
 	}
 
 
@@ -126,20 +126,26 @@ public class DealMapOutUtil<KEY, VALUE> {
 	}
 
 	public void FinishedReceive() {
-		this.finishedReceive = true;
-		System.out.println("***********************over********************");
+		this.finishedReceive = true;		
 		if (!inputPairs.isEmpty()) {
-			// hashInputPairs(inputPairs);
 			dealReceivedUtil(inputPairs, innerFilePartionIndex);
 			inputPairs.clear();
 		}
 		if (!backupInputPairs.isEmpty()) {
-			// hashInputPairs(backupInputPairs);
 			dealReceivedUtil(backupInputPairs, innerFilePartionIndex);
 			backupInputPairs.clear();
 		}
+		dealFileIndex();
+		System.out.println("***********************over********************");
 	}
 	
+	public void dealFileIndex(){
+		indexString = indexString.substring(0, indexString.length() - 1);
+		mapOutFileIndex = indexString.split(";");
+		for(int i = 0 ; i < mapOutFileIndex.length ; i ++){
+			mapOutFileIndex[i] = mapOutFileIndex[i].substring(0, mapOutFileIndex[i].length() - 1);
+		}
+	}
 	public void setOutputPath(String[] outputPath) {
 		this.fileName = outputPath;
 		if (outputPath.length <= 0) {
@@ -170,6 +176,11 @@ public class DealMapOutUtil<KEY, VALUE> {
 		for (int i = 0; i < 500; i++) {
 			tt.receive(keys[i%6], i);
 		}
+		
+
 		tt.FinishedReceive();
+		for(int i = 0 ; i < tt.mapOutFileIndex.length ; i ++ ){
+			System.out.println( tt.mapOutFileIndex[i]);
+		}
 	}
 }

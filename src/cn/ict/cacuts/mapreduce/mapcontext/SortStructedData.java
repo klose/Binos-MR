@@ -75,8 +75,6 @@ public class SortStructedData {
 				int partionNum2 = o2.getpartitionNum();
 				Object key1 = o1.getKey();
 				Object key2 = o2.getKey();
-				System.out.println(compare(partionNum1, partionNum2));
-				System.out.println(compare(key1,key2));
 				return (compare(partionNum1, partionNum2) == 0 ? (compare(key1,
 						key2) == 0 ? 0 : compare(key1, key2)) : compare(
 						partionNum1, partionNum2));
