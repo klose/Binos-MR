@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import cn.ict.cacuts.mapreduce.mapcontext.Sort;
 import cn.ict.cacuts.mapreduce.mapcontext.WriteIntoFile;
 
 public class DealReduceInputUtil<KEY, VALUE> {
