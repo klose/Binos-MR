@@ -13,19 +13,16 @@ import java.util.Vector;
 	
 	private K key;
 	private final Vector<V> value;
-	private int partition;
 
 	public KVList(K key, V value, int partition) {
 		this.key = key;
 		this.value = new Vector<V>();
 		this.value.add(value);
-		this.partition = partition;
 	}
 	public KVList(KVPair<K,V> pair) {
 		this.key = pair.getKey();
 		this.value = new Vector<V>();
 		this.value.add(pair.getValue());
-		this.partition = pair.getpartitionNum();
 	}
 	public void addVal(V value) {
 		this.value.add(value);
@@ -41,7 +38,7 @@ import java.util.Vector;
 		for (V v: this.value) {
 			res += v + ":";
 		}
-		return res + partition;
+		return res;
 	}
 	@Override
 	public Iterator<V> iterator() {

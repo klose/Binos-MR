@@ -12,7 +12,11 @@ import cn.ict.cacuts.mapreduce.mapcontext.KVList;
 import cn.ict.cacuts.mapreduce.mapcontext.KVPair;
 
 import cn.ict.cacuts.mapreduce.Merger;
-
+/**
+ * test the merger.
+ * @author jiangbing
+ *
+ */
 public class testMerger {
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 		Merger merger = new Merger();
@@ -32,8 +36,6 @@ public class testMerger {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-
 		int total = 0;
 		for (int j = 0; j < 3; j++) {
 			FileInputStream fis = new FileInputStream(outputPath[j].toUri().getPath());
@@ -55,6 +57,28 @@ public class testMerger {
 			fis.close();
 		}
 	
-		
+		String prefixPath1 = "testCase/testMerger/tmpMapOut_output";
+		Path[] inputPath1 = new Path[3];
+		for (int i = 0; i < inputPath1.length; i++) {
+			inputPath1[i] = new Path(prefixPath1 + i);
+		}
+		Path output1 = new Path("testCase/testMerger/tmpMapOut_output_final");
+		merger.merge(inputPath1, output1, false);
+		FileInputStream fis = new FileInputStream(output1.toUri().getPath());
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		Object tmp = null;
+		System.out.println("*********************************");
+		total = 0;
+		while (null!=(tmp = ois.readObject())){
+			System.out.println(((KVList)tmp));
+			total += ((KVList)tmp).getValue().size();
+			System.out.println(total);
+			if (fis.available() == 0) {
+				break;
+			}
+		}
+		System.out.println(total);
+		ois.close();
+		fis.close();
 	}
 }

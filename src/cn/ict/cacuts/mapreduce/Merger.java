@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -19,7 +21,7 @@ import cn.ict.cacuts.mapreduce.mapcontext.KVList;
 
 /**
  * Merge small files into large file. 
- * @author jiangbing
+ * @author Bing Jiang
  *
  */
 public class Merger extends PriorityQueue{
@@ -38,7 +40,6 @@ public class Merger extends PriorityQueue{
 	 */
 	public <K extends Object, V extends Object> void merge(Path[] input, String[] index, Path[] output, boolean isDelete) throws IOException {
 		int length = input.length;
-		//FileInputStream[] in = new FileInputStream[length];
 		ObjectInputStream[] ois = new ObjectInputStream[length];
 		File[] inputFile = new File[length];
 		int [][] readCount = new int[input.length][output.length];
@@ -119,13 +120,13 @@ public class Merger extends PriorityQueue{
 			}
 			oos.flush();
 			fout.write(bout.toByteArray());
+			
 			fout.close();
 			oos.close();
 			bout.close();
 		}
 		for (ObjectInputStream oisTmp: ois) {
 			oisTmp.close();
-			
 		}
 		if (isDelete) {
 			for (int i = 0; i < length; i++) {
@@ -133,8 +134,107 @@ public class Merger extends PriorityQueue{
 			}
 		}
 	}
-	public void merge(Path[] input, Path output, boolean isDelete) {
+	/**
+	 * Merge a array of files into a large sequential file
+	 * @param input: the array of file 
+	 * @param output: the file that merge some files into.
+	 * @param isDelete: whether to delete the file at the end of successful operation.
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void merge(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
+		int length = input.length;
+		ObjectInputStream[] ois = new ObjectInputStream[length];
+		FileInputStream[] fis = new FileInputStream[length];
+		File[] inputFile = new File[length];
+		boolean[] isSkipPath = new boolean[length];
+		int initialSize = length;
+		for (int i = 0; i < length; i++) {
+			String path = input[i].toUri().getPath();
+			inputFile[i] = new File(path);
+			fis[i] = new FileInputStream(path);
+			ois[i] = new ObjectInputStream(fis[i]);	
+			
+			//System.out.println(ois[i].available());
+			/*eliminate the file without data.*/
+			if (inputFile[i].length() >0) {
+				isSkipPath[i] = false;
+			}
+			else {
+				isSkipPath[i] = true;
+				initialSize --;
+			}
+		}
 		
+		/*handle special situation: each file has no data.*/
+		if (initialSize <= 0) {
+			return;
+		}
+		
+		/*initialize the heap size*/
+		initialize(initialSize);
+		
+		/*searchPathIndex is used to store the KVList in the Priority Queue and correlated index of input stream. 
+		 */
+		Map<KVList, Integer> searchPathIndex = new WeakHashMap<KVList,Integer>(initialSize);
+		
+		/*initialize the heap with first record from every file.*/
+		for (int i = 0; i < length && !isSkipPath[i]; i++) {
+			try {
+				KVList tmp = (KVList)(ois[i].readObject());
+				insert((KVList)tmp);
+				searchPathIndex.put(tmp, i);
+				if (fis[i].available() == 0) {
+					isSkipPath[i] = true;
+					initialSize --;
+				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		ObjectOutputStream oos = new ObjectOutputStream(
+				new FileOutputStream(output.toUri().getPath()));
+		System.out.println(output.toUri().getPath());
+		while (true) {
+			if (initialSize == 0) {
+				break;
+			}
+			KVList tmp = (KVList)pop();
+			oos.writeObject(tmp);
+			int i = searchPathIndex.get(tmp);
+			searchPathIndex.remove(tmp);
+			if (fis[i].available() <= 0) {
+				isSkipPath[i] = true;
+				initialSize --;
+			}
+			else {
+				try {
+					tmp = (KVList)(ois[i].readObject());
+					searchPathIndex.put(tmp, i);
+					insert(tmp);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		KVList tmp = null; 
+		while ((tmp = (KVList) pop()) != null) {
+			oos.writeObject(tmp);
+		}
+		searchPathIndex.clear();
+		oos.flush();
+		oos.close();
+		for (ObjectInputStream oisTmp: ois) {
+			oisTmp.close();
+		}
+		if (isDelete) {
+			for (int i = 0; i < length; i++) {
+				inputFile[i].delete();
+			}
+		}
 	}
 	/**
 	 * Merge the intermediate file that map() generate.The function will generate the array of output path whose 
@@ -217,6 +317,8 @@ public class Merger extends PriorityQueue{
 			fout.close();
 			oos.close();
 			bout.close();
+			/*clear the Priority Queue*/
+			clear();
 		}
 		for (ObjectInputStream oisTmp: ois) {
 			oisTmp.close();
@@ -231,20 +333,45 @@ public class Merger extends PriorityQueue{
 	@Override
 	protected boolean lessThan(Object a, Object b) {
 		// TODO Auto-generated method stub
-		KVPair a1 = (KVPair)a;
-		KVPair b1 = (KVPair)b;
-		int compare;
-		if (a1.getKey() instanceof String) {
-			compare = (a1.getKey().toString()).compareTo
-				(b1.getKey().toString());
-			if (compare < 0) {
-				return true;
+		//KVPair a1 = (KVPair)a;
+		//KVPair b1 = (KVPair)b;
+	
+		if (a.getClass() == KVList.class) {
+			KVList a1 = (KVList)a;
+			KVList b1 = (KVList)b;
+			int compare;
+			if (a1.getKey() instanceof String) {
+				compare = (a1.getKey().toString()).compareTo
+					(b1.getKey().toString());
+				if (compare < 0) {
+					return true;
+				}
 			}
+			else if (a1.getKey() instanceof Integer){
+				if ((Integer)a1.getKey() < (Integer)b1.getKey()) {
+					return true;
+				}
+			}
+			return false;
 		}
-		else if (a1.getKey() instanceof Integer){
-			if ((Integer)a1.getKey() < (Integer)b1.getKey()) {
-				return true;
+		
+		if (a.getClass() == KVPair.class) {
+			KVPair a1 = (KVPair)a;
+			KVPair b1 = (KVPair)b;
+			int compare;
+			if (a1.getKey() instanceof String) {
+				compare = (a1.getKey().toString()).compareTo
+					(b1.getKey().toString());
+				if (compare < 0) {
+					return true;
+				}
 			}
+			else if (a1.getKey() instanceof Integer){
+				if ((Integer)a1.getKey() < (Integer)b1.getKey()) {
+					return true;
+				}
+			}
+			return false;
 		}
 		return false;
 	}
