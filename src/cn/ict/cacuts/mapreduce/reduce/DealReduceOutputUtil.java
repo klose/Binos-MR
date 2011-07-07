@@ -31,7 +31,9 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	public DealReduceOutputUtil() {
 	}
 
+
 	public DealReduceOutputUtil(String[] outputPath) {
+
 		setOutputPath(outputPath);
 	}
 
@@ -88,8 +90,10 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		System.out.println("***********************over********************");
 	}
 
+
 	public void setOutputPath(String[] outputPath) {
 		this.fileName = outputPath[0];
+
 		if (outputPath == null) {
 			LOG.error("You should set map output path.");
 		}
@@ -104,7 +108,9 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 				"egg" };
 		int[] values = { 1, 7, 5, 10, 2, 4, 11 };
 		int[] partitions = { 3, 2, 1, 3, 2, 1, 2 };
+
 		String[] fileName = {System.getProperty("user.home")+ "/CactusTest/" + "tmpReduceOut"};
+
 		DealReduceOutputUtil tt = new DealReduceOutputUtil();
 		tt.setOutputPath(fileName);
 		 for (int i = 0; i < keys.length; i++) {
