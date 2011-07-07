@@ -21,8 +21,10 @@ public class ReduceContext <KEY, VALUE>{
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
 	private DealReduceInputUtil receive = new DealReduceInputUtil();
+	private DealReduceOutputUtil outPut = new DealReduceOutputUtil();
 	private FileSplitIndex splitIndex = new FileSplitIndex();
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
+	private String[] inputPath;
 	private String[] outputPath;
 	static {
 		try {
@@ -53,19 +55,33 @@ public class ReduceContext <KEY, VALUE>{
 	public void output(KEY key, VALUE value) {
 		//System.out.println("key : " + key);
 		//System.out.println("value : " + value);
-		receive.receive(key, value);
+		outPut.receive(key, value);
+	}
+	
+	public String[] getInputPath(){
+		return inputPath;
+	}
+	
+	public void setInputPath(String[] inPutPath) {
+		this.inputPath = inPutPath;
+		this.receive.setInputFilePath(inPutPath);
 	}
 	
 	public String[] getOutputPath() {
 		return outputPath;
 	}
-	public void setInputPath(String[] inPutPath) {
-		this.outputPath = outputPath;
-		this.receive.setInputFilePath(inPutPath);
+	
+	public void setOutputPath(String[] outPutPath) {
+		this.outputPath = outPutPath;
+		this.outPut.setOutputPath(outPutPath);
 	}
-	public void flush() {
-		// TODO Auto-generated method stub
+	
+	public void flushInput() {
 		receive.FinishedReceive();
+	}
+	
+	public void flushOutput() {
+		outPut.FinishedReceive();
 	}
 	
 	public void controlReadWhichFile(){
@@ -84,4 +100,5 @@ public class ReduceContext <KEY, VALUE>{
 	public void dealTempleFile(){
 		
 	}
+
 }
