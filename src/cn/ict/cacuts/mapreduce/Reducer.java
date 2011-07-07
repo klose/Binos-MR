@@ -1,20 +1,19 @@
 package cn.ict.cacuts.mapreduce;
 
 import java.io.IOException;
-
-public class Reducer<KEYIN,VALUEIN,KEYOUT,VALUEOUT> {
+import cn.ict.cacuts.mapreduce.reduce.*;
+public class Reducer<KEY, VALUE>  {
 
   /**
    * The <code>Context</code> passed on to the {@link Reducer} implementations.
    */
-  public abstract class Context 
-    implements ReduceContext<KEYIN,VALUEIN,KEYOUT,VALUEOUT> {
+  public abstract class Context  {
   }
 
   /**
    * Called once at the start of the task.
    */
-  protected void setup(Context context
+  protected void setup(ReduceContext context
                        ) throws IOException, InterruptedException {
     // NOTHING
   }
@@ -25,11 +24,13 @@ public class Reducer<KEYIN,VALUEIN,KEYOUT,VALUEOUT> {
    * is an identity function.
    */
   @SuppressWarnings("unchecked")
-  protected void reduce(KEYIN key, Iterable<VALUEIN> values, Context context
-                        ) throws IOException, InterruptedException {
-    for(VALUEIN value: values) {
-      context.write((KEYOUT) key, (VALUEOUT) value);
-    }
+  protected void reduce(ReduceContext context) throws IOException, InterruptedException {
+	    setup(context);
+	    while (context.hasNextLine()) {
+	      map(context.getNextLine(), context);
+	    }
+	    context.flush();
+	    cleanup(context);
   }
 
   /**
