@@ -20,31 +20,55 @@ public class ReduceContext <KEY, VALUE>{
 	private final static Log LOG = LogFactory.getLog(MapContext.class);
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
-	private DealReduceInputUtil receive = new DealReduceInputUtil();
-	private FileSplitIndex splitIndex = new FileSplitIndex();
-	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
+	private DealReduceInputUtil receive ;
+	private DealReduceOutputUtil outPut = new DealReduceOutputUtil();
+
+	//private FileSplitIndex splitIndex = new FileSplitIndex();
+	private HdfsFileLineReader lineReader = new HdfsFileLineReader();   /////line reader should not be hdfs reader
+	
+	String[] reduceRemoteReadFiles;
+	String[] tmpLocalFilePath;
 	private String[] outputPath;
+	
 	static {
 		try {
 			fs = FileSystem.get(conf);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			LOG.error("Cannot open HDFS.");
 		}
 	}
-	public ReduceContext(Path inputPath) throws IOException {
-		//this.spiltIndexPath = inputPath;
-		FSDataInputStream in = fs.open(inputPath);
-		splitIndex.readFields(in);
-		lineReader.initialize(splitIndex);
-	}
-	public boolean hasNextLine() throws IOException {
-		return lineReader.nextKeyValue();
-	}
+	
 	public ReduceContext() {
 
 	}
+	public ReduceContext(String[] reduceRemoteReadFiles,String[] tmpLocalFilePath,String[] outputPath) {
+		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
+		this.tmpLocalFilePath = tmpLocalFilePath;
+		this.outputPath = outputPath;
+	}
+	/**
+	 * read remote file and save them
+	 * */
+	public void init(){
+		receive = new DealReduceInputUtil(reduceRemoteReadFiles,tmpLocalFilePath[0]);
+		receive.prepared();
+		
+	}
+	/**
+	 * need to modify*************
+	 * */
+	public ReduceContext(Path inputPath) throws IOException {
+		//this.spiltIndexPath = inputPath;
+		FSDataInputStream in = fs.open(inputPath);
+		//splitIndex.readFields(in);//////////////////////
+		//lineReader.initialize(splitIndex);
+	}
+	public boolean hasNextLine() throws IOException {
+		//TODO need initialize lineReader///////////////////////////////////////////////
+		return lineReader.nextKeyValue();
+	}
+
 
 	public String getNextLine() {
 		return lineReader.getCurrentValue().toString();
@@ -53,19 +77,34 @@ public class ReduceContext <KEY, VALUE>{
 	public void output(KEY key, VALUE value) {
 		//System.out.println("key : " + key);
 		//System.out.println("value : " + value);
-		receive.receive(key, value);
+		outPut.receive(key, value);
 	}
+	
+
 	
 	public String[] getOutputPath() {
 		return outputPath;
 	}
-	public void setInputPath(String[] inPutPath) {
-		this.outputPath = outputPath;
-		this.receive.setInputFilePath(inPutPath);
+	
+	public void setOutputPath(String[] outPutPath) {
+		this.outputPath = outPutPath;
+		this.outPut.setOutputPath(outPutPath);
+	}
+	
+	public String[] getReduceRemoteReadFiles() {
+		return reduceRemoteReadFiles;
+	}
+	public void setReduceRemoteReadFiles(String[] reduceRemoteReadFiles) {
+		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
+	}
+	public String[] getTmpLocalFilePath() {
+		return tmpLocalFilePath;
+	}
+	public void setTmpLocalFilePath(String[] tmpLocalFilePath) {
+		this.tmpLocalFilePath = tmpLocalFilePath;
 	}
 	public void flush() {
-		// TODO Auto-generated method stub
-		receive.FinishedReceive();
+		outPut.FinishedReceive();
 	}
 	
 	public void controlReadWhichFile(){
@@ -84,4 +123,5 @@ public class ReduceContext <KEY, VALUE>{
 	public void dealTempleFile(){
 		
 	}
+
 }

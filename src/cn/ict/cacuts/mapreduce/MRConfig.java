@@ -21,6 +21,9 @@ public class MRConfig {
 	public static Class mapContextKeyClass = Integer.class;
 	public static Class mapContextValueClass = String.class;
 	private  static Class<? extends Mapper> mapClass;
+	private  static Class<? extends Reducer> reduceClass;
+	
+
 	static String tempMapOutFilesPathPrefix;
 	
 
@@ -90,4 +93,11 @@ public class MRConfig {
 	public static void setTempMapOutFilesPathPrefix(String tempMapOutFilesPathPrefix) {
 		tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 	}
+	public static Class<? extends Reducer> getReduceClass() {
+		return reduceClass;
+	}
+	public static void setReduceClass(Class<? extends Reducer> reduceClass) {
+		MRConfig.reduceClass = reduceClass;
+	}
+
 }

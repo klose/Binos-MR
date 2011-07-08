@@ -14,7 +14,7 @@ import java.util.Vector;
 	private K key;
 	private final Vector<V> value;
 
-	public KVList(K key, V value, int partition) {
+	public KVList(K key, V value) {
 		this.key = key;
 		this.value = new Vector<V>();
 		this.value.add(value);

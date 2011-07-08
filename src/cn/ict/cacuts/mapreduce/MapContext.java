@@ -16,7 +16,7 @@ public class MapContext<KEY, VALUE> {
 	private final static Log LOG = LogFactory.getLog(MapContext.class);
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
-	private DealMapOutUtil receive = new DealMapOutUtil();
+	private DealMapOutUtil outPut = new DealMapOutUtil();
 	private FileSplitIndex splitIndex = new FileSplitIndex();
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
 	private String[] outputPath;
@@ -49,7 +49,7 @@ public class MapContext<KEY, VALUE> {
 	public void output(KEY key, VALUE value) {
 		//System.out.println("key : " + key);
 		//System.out.println("value : " + value);
-		receive.receive(key, value);
+		outPut.receive(key, value);
 	}
 	
 	public String[] getOutputPath() {
@@ -57,11 +57,11 @@ public class MapContext<KEY, VALUE> {
 	}
 	public void setOutputPath(String[] outputPath) {
 		this.outputPath = outputPath;
-		this.receive.setOutputPath(outputPath);
+		this.outPut.setOutputPath(outputPath);
 	}
 	public void flush() {
 		// TODO Auto-generated method stub
-		receive.FinishedReceive();
+		outPut.FinishedReceive();
 	}
 	/**
 	 * @param args

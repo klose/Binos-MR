@@ -162,8 +162,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) {
-		String[] keys = { "pear", "banana", "orange", "cat", "apple", "moon",
-				"egg" };
+		String[] keys = { "pear", "banana", "orange", "cat", "apple", "moon","egg" };
 		int[] values = { 1, 7, 5, 10, 2, 4, 11 };
 		int[] partitions = { 3,2,1,3,2,1 ,2};
 
