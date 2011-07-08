@@ -70,6 +70,9 @@ public class WorkFlow {
 		}
 	}
 	
+	/**here need to declare one thing : the construct work method is used for all flow conditions ,there 
+	 * can not be phase and phase  in the same level ,but there can only be unlimited number of phase.
+	 * But in the constructFlow function ,this is only used for mapreduce condition*/
 	/**
 	 * i = 0 means split phase
 	 * i = 1 means map phase
@@ -110,6 +113,11 @@ public class WorkFlow {
 		analisisCompile(channelManager);
 	}
 	
+	public void analisisCompile(ChannelManager channelManager){
+		Map<String, TaskStruct> map = channelManager.parseDep();
+		JobCompiler compiler = new JobCompiler(map, job);
+		compiler.compile();
+	}
 	
 	public int getMapNaumber() {
 		return mapNaumber;
@@ -151,11 +159,7 @@ public class WorkFlow {
 		this.outputPath = outputPath;
 	}
 
-	public void analisisCompile(ChannelManager channelManager){
-		Map<String, TaskStruct> map = channelManager.parseDep();
-		JobCompiler compiler = new JobCompiler(map, job);
-		compiler.compile();
-	}
+
 	
 	public static void main(String[] args){
 		String[] inputPath = {System.getProperty("user.home") + "/CactusTest/" + "map_1_out_0" ,
