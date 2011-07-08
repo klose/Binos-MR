@@ -11,41 +11,35 @@ public class DealReduceInputUtil<KEY, VALUE> {
 
 	public String[] reduceInputFilePath;
 	ArrayList dealed = new ArrayList();
-	public String reduceOutPutFileName;
+	//public String reduceOutPutFileName;
 	public Map<KEY, ArrayList<VALUE>> keyValues;
 	private boolean finishedReceive = false;
-	//read remote files to save into local disk
+	// read remote files to save into local disk
 	String tmpLocalFilePath;
 	String[] reduceRemoteReadFiles;
 	String mergedTmpFileName;
-	public void beginToReduce() {
-		prepared();
-		reduceClass(dealed);
-		writeIntoFile();
+
+	public DealReduceInputUtil(){}
+	public DealReduceInputUtil(String[] reduceInputFilePath,String tmpLocalFileName) {
+		this.reduceInputFilePath = reduceInputFilePath;
+		this.tmpLocalFilePath = tmpLocalFilePath;
 	}
-
-
-	public void prepared() {
+	
+	public void prepared(){
 		readFiles();
 		merge();
 	}
 
+
 	public void readFiles() {
-		ReadRemoteFile readRemoteFile = new ReadRemoteFile(reduceInputFilePath,tmpLocalFilePath);
+		ReadRemoteFile readRemoteFile = new ReadRemoteFile(reduceInputFilePath,
+				tmpLocalFilePath);
 		this.reduceRemoteReadFiles = readRemoteFile.getReduceRemoteReadFiles();
 	}
-	
-	public void merge(){
-		//TODO   use  : String[] reduceRemoteReadFiles,String mergedTmpFileName
+
+	public void merge() {
+		// TODO use : String[] reduceRemoteReadFiles,String mergedTmpFileName/////////////////////
 	}
-
-	public ArrayList reduceClass(ArrayList sorted) {
-		ArrayList combined = new ArrayList();
-		// TODO combine
-		return combined;
-	}
-
-
 
 	public void setInputFilePath(String[] reduceInputPath) {
 		this.reduceInputFilePath = reduceInputPath;
@@ -55,25 +49,18 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		return this.reduceInputFilePath;
 	}
 
-	public void setReduceOutFileName(String reduceOutPutFileName) {
-		this.reduceOutPutFileName = reduceOutPutFileName;
+	public String getTmpLocalFilePath() {
+		return tmpLocalFilePath;
 	}
-
-	public String getReduceOutFileName() {
-		return this.reduceOutPutFileName;
+	public void setTmpLocalFilePath(String tmpLocalFilePath) {
+		this.tmpLocalFilePath = tmpLocalFilePath;
 	}
-
 	public void FinishedReceive() {
-		this.finishedReceive  = true;
-		//////////////////////////////////////////need to deal////////////////////////
+		this.finishedReceive = true;
+		// ////////////////////////////////////////need to
+		// deal////////////////////////
 	}
-	
 
-	private void writeIntoFile() {
-		WriteIntoFile write = new WriteIntoFile();
-		write.writeIntoFile(dealed, reduceOutPutFileName);
-
-	}
 	/**
 	 * @param args
 	 */
@@ -84,11 +71,11 @@ public class DealReduceInputUtil<KEY, VALUE> {
 				System.getProperty("user.home") + "/CactusTest/map_1_out_1" };
 		String reduceOutPutFileName = System.getProperty("user.home")
 				+ "/CactusTest/" + "reduce_out";
-		DealReduceInputUtil tt = new DealReduceInputUtil();
-		tt.setInputFilePath(inputPath);
-		tt.setReduceOutFileName(reduceOutPutFileName);
-		tt.beginToReduce();
-
+		DealReduceInputUtil tt = new DealReduceInputUtil(inputPath,
+				reduceOutPutFileName);
+		// tt.setInputFilePath(inputPath);
+		// tt.setReduceOutFileName(reduceOutPutFileName);
+		tt.prepared();
 		Iterator it = tt.keyValues.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
@@ -98,6 +85,5 @@ public class DealReduceInputUtil<KEY, VALUE> {
 			System.out.println("value : " + value1);
 		}
 	}
-
 
 }

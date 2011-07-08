@@ -17,10 +17,10 @@ public class Reducer<KEY, VALUE> {
 	 */
 	protected void setup(ReduceContext context) throws IOException,
 			InterruptedException {
-		// NOTHING
+		context.init();
 	}
 
-	public void reduce(String line, ReduceContext<KEY, VALUE> context) {
+	public void reduce(String line, ReduceContext<KEY, VALUE> context) {//////////////
 	}
 	/**
 	 * Advanced application writers can use the
@@ -33,8 +33,9 @@ public class Reducer<KEY, VALUE> {
 		while (context.hasNextLine()) {
 			reduce(context.getNextLine(), context);
 		}
-		context.flushInput();
-		context.flushOutput();
+//		context.flushInput();
+//		context.flushOutput();
+		context.flush();
 		cleanup(context);
 	}
 	
