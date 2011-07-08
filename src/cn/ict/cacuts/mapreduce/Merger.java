@@ -38,7 +38,8 @@ public class Merger extends PriorityQueue{
 	 * @param isDelete: whether or not to delete the file as the map phase ends.
 	 * @throws IOException
 	 */
-	public <K extends Object, V extends Object> void merge(Path[] input, String[] index, Path[] output, boolean isDelete) throws IOException {
+	public <K extends Object, V extends Object> 
+		void merge(Path[] input, String[] index, Path[] output, boolean isDelete) throws IOException {
 		int length = input.length;
 		ObjectInputStream[] ois = new ObjectInputStream[length];
 		File[] inputFile = new File[length];
@@ -258,6 +259,28 @@ public class Merger extends PriorityQueue{
 			}
 		}
 	}
+	public <K extends Object, V extends Object> 
+		void merge(String[] input, String output, boolean isDelete) throws FileNotFoundException, IOException {
+		Path[] inputPath = new Path[input.length];
+		for (int i = 0; i < input.length; i++) {
+			inputPath[i] = new Path(input[i]);
+		}
+		Path  outputPath = new Path(output);
+		merge(inputPath, outputPath, isDelete); 
+	}
+	
+	public <K extends Object, V extends Object> 
+		void merge(String[] input, String[] index, String[] output, boolean isDelete) throws IOException {
+	Path[] inputPath = new Path[input.length];
+	for (int i = 0; i < input.length; i++) {
+		inputPath[i] = new Path(input[i]);
+	}
+	Path[]  outputPath = new Path[output.length];
+	for (int i = 0; i < output.length; i++) {
+		outputPath[i] = new Path(output[i]);
+	}
+	merge(inputPath, index, outputPath, isDelete); 
+}
 	/**
 	 * Merge the intermediate file that map() generate.The function will generate the array of output path whose 
 	 * length equals the number of reduce tasks.  
