@@ -27,6 +27,10 @@ import java.util.Vector;
 	public void addVal(V value) {
 		this.value.add(value);
 	}
+	/*add all the elements in the vec to the value*/
+	public void appendVec(Vector<V> vec) {
+		this.value.addAll(vec);
+	}
 	public K getKey() {
 		return key;
 	}

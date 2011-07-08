@@ -142,7 +142,7 @@ public class Merger extends PriorityQueue{
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	public void merge(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
+	public <K extends Object, V extends Object> void merge(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
 		int length = input.length;
 		ObjectInputStream[] ois = new ObjectInputStream[length];
 		FileInputStream[] fis = new FileInputStream[length];
@@ -196,17 +196,34 @@ public class Merger extends PriorityQueue{
 		ObjectOutputStream oos = new ObjectOutputStream(
 				new FileOutputStream(output.toUri().getPath()));
 		System.out.println(output.toUri().getPath());
+		K originKey = null;
+		KVList curList = null;
 		while (true) {
 			if (initialSize == 0) {
 				break;
 			}
 			KVList tmp = (KVList)pop();
-			oos.writeObject(tmp);
+			if (curList == null) {
+				curList = tmp;
+				originKey = (K) curList.getKey();
+			}
+			else {
+				if (originKey.equals(tmp.getKey())) {
+					curList.appendVec(tmp.getValue());
+				}
+				else {
+					oos.writeObject(curList);
+					curList = tmp;
+					originKey = (K)tmp.getKey();
+				}
+			}
 			int i = searchPathIndex.get(tmp);
 			searchPathIndex.remove(tmp);
 			if (fis[i].available() <= 0) {
-				isSkipPath[i] = true;
-				initialSize --;
+				if (!isSkipPath[i]) {
+					initialSize --;
+					isSkipPath[i] = true;
+				}
 			}
 			else {
 				try {
@@ -220,11 +237,16 @@ public class Merger extends PriorityQueue{
 			}
 		}
 		
-		KVList tmp = null; 
-		while ((tmp = (KVList) pop()) != null) {
-			oos.writeObject(tmp);
+		/*ensure that the last curList is writen to file*/
+		if (curList != null)
+			oos.writeObject(curList);
+		
+		KVList remainingRecTmp = null; 
+		while ((remainingRecTmp = (KVList) pop()) != null) {
+			oos.writeObject(remainingRecTmp);
 		}
 		searchPathIndex.clear();
+		clear();
 		oos.flush();
 		oos.close();
 		for (ObjectInputStream oisTmp: ois) {
