@@ -1,5 +1,8 @@
 package cn.ict.cacuts.mapreduce.reduce;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -14,8 +17,9 @@ import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.HdfsFileLineReader;
 import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
+import cn.ict.cacuts.mapreduce.mapcontext.KVList;
 
-public class ReduceContext <KEY, VALUE>{
+public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 
 
 	private final static Log LOG = LogFactory.getLog(ReduceContext.class);
@@ -26,22 +30,15 @@ public class ReduceContext <KEY, VALUE>{
 
 	//private FileSplitIndex splitIndex = new FileSplitIndex();
 	//private HdfsFileLineReader lineReader = new HdfsFileLineReader();   /////line reader should not be hdfs reader
-	private KEY key = null;
-	private Iterable<VALUE> vlist = null;
+	private KEYIN key = null;
+	private Iterable<VALUEIN> vlist = null;
 	String[] reduceRemoteReadFiles;
 	String tmpLocalFilePath;
 	String mergeTmpFile;
 	private String[] outputPath;
 	private ObjectInputStream in;// this is used to read file
 	
-	static {
-		try {
-			fs = FileSystem.get(conf);
-		} catch (IOException e) {
-			e.printStackTrace();
-			LOG.error("Cannot open HDFS.");
-		}
-	}
+
 	
 	public ReduceContext() {
 		
@@ -59,29 +56,62 @@ public class ReduceContext <KEY, VALUE>{
 	public void init(){
 		receive = new DealReduceInputUtil(reduceRemoteReadFiles, tmpLocalFilePath, mergeTmpFile);
 		receive.prepared();
-		
+		try {
+			initStream();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	/**
-	 * need to modify*************
-	 * */
-	public ReduceContext(Path inputPath) throws IOException {
-		//this.spiltIndexPath = inputPath;
-		FSDataInputStream in = fs.open(inputPath);
-		//splitIndex.readFields(in);//////////////////////
-		//lineReader.initialize(splitIndex);
+	 * prepare the streaming for the mergeTmpFile
+	 * @throws IOException 
+	 */
+	private void initStream() throws IOException {
+		File file  =  new File(mergeTmpFile);
+		if (!file.exists()) {
+			throw new FileNotFoundException(mergeTmpFile);
+		}
+		else {
+			in = new ObjectInputStream(new FileInputStream(file));
+		}
 	}
-	public boolean hasNextLine() throws IOException {
+
+	public boolean nextKey()  {
 		//TODO need initialize lineReader///////////////////////////////////////////////
-		return lineReader.nextKeyValue();
+		KVList<KEYIN,VALUEIN> curList = null;
 		
+		try {
+			if ((curList = (KVList<KEYIN, VALUEIN>) in.readObject()) != null) {
+				key = curList.getKey();
+				vlist = (Iterable<VALUEIN>) curList.getValue().iterator();
+				return true;
+			}
+		} catch (IOException e) {
+			// read the file end.
+			return false;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
-
-	public String getNextLine() {
-		return lineReader.getCurrentValue().toString();
+	public KEYIN getCurrentKey() {
+		return this.key;
 	}
+	
+	 public Iterable<VALUEIN> getValues() {
+		 return this.vlist;
+	 }
 
-	public void output(KEY key, VALUE value) {
+	public void output(KEYOUT key, VALUEOUT value) {
 		//System.out.println("key : " + key);
 		//System.out.println("value : " + value);
 		outPut.receive(key, value);

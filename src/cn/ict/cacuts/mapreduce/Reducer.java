@@ -3,7 +3,7 @@ package cn.ict.cacuts.mapreduce;
 import java.io.IOException;
 import cn.ict.cacuts.mapreduce.reduce.*;
 
-public class Reducer<KEY, VALUE> {
+public abstract class Reducer <KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 
 	/**
 	 * The <code>Context</code> passed on to the {@link Reducer}
@@ -20,29 +20,26 @@ public class Reducer<KEY, VALUE> {
 		context.init();
 	}
 
-	public void reduce(String line, ReduceContext<KEY, VALUE> context) {//////////////
-	}
+	public abstract void reduce(KEYIN key, Iterable<VALUEIN> values, ReduceContext context); //////////////
+	
 	/**
 	 * Advanced application writers can use the
 	 * {@link #run(org.apache.hadoop.mapreduce.Reducer.Context)} method to
 	 * control how the reduce task works.
 	 */
 	@SuppressWarnings("unchecked")
-	public void run(ReduceContext<KEY,VALUE> context) throws IOException, InterruptedException {
+	public void run(ReduceContext context) throws IOException, InterruptedException {
 		setup(context);
-		while (context.hasNextLine()) {
-			reduce(context.getNextLine(), context);
+		while (context.nextKey()) {
+			reduce((KEYIN)context.getCurrentKey(), context.getValues(), context);
 		}
-//		context.flushInput();
-//		context.flushOutput();
-		context.flush();
 		cleanup(context);
 	}
 	
 	/**
 	 * Called once at the end of the task.
 	 */
-	protected void cleanup(ReduceContext<KEY,VALUE> context) throws IOException,
+	protected void cleanup(ReduceContext context) throws IOException,
 			InterruptedException {
 		// NOTHING
 	}

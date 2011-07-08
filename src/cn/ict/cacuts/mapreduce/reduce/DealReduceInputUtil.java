@@ -34,6 +34,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		readFiles();
 		merge();
 	}
+	
 
 
 	public void readFiles() {
