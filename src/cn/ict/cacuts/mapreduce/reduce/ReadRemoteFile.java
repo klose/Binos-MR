@@ -2,26 +2,41 @@ package cn.ict.cacuts.mapreduce.reduce;
 
 public class ReadRemoteFile {
 
-	String[] reduceRemoteReadFiles;
+	String[] reduceInputFilePath;//Binos URL
+	String[] readedRemoteReadFiles; // the file locally
+	String tmpLocalDirPath; // the directory of default path
 
 
 	//read files from remote and save into the local disk as it read
-	public ReadRemoteFile(String[] reduceInputFilePath, String tmpLocalFileName) {
-		// TODO Auto-generated constructor stub
+	public ReadRemoteFile(String[] reduceInputFilePath, String tmpLocalDirPath) {
+		this.reduceInputFilePath = reduceInputFilePath;
+		this.tmpLocalDirPath = tmpLocalDirPath;
+		// TODO do  read files
+		switchFileName();
+		
+	}
+	
+	public void launchFetchFiles() {
+		
+	}
+	/**
+	 * need to fill correspond code
+	 * */
+	private void switchFileName() {
+		//TODO switch/////////////////////////////////////////
 	}
 
 	public String[] getReduceRemoteReadFiles() {
-		return reduceRemoteReadFiles;
+		return readedRemoteReadFiles;
 	}
 
 	public void setReduceRemoteReadFiles(String[] reduceRemoteReadFiles) {
-		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
+		this.readedRemoteReadFiles = reduceRemoteReadFiles;
 	}
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args){
 
 	}
 

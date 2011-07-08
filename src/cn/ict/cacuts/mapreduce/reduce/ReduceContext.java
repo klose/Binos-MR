@@ -1,6 +1,7 @@
 package cn.ict.cacuts.mapreduce.reduce;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,18 +18,21 @@ import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
 public class ReduceContext <KEY, VALUE>{
 
 
-	private final static Log LOG = LogFactory.getLog(MapContext.class);
+	private final static Log LOG = LogFactory.getLog(ReduceContext.class);
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
 	private DealReduceInputUtil receive ;
 	private DealReduceOutputUtil outPut = new DealReduceOutputUtil();
 
 	//private FileSplitIndex splitIndex = new FileSplitIndex();
-	private HdfsFileLineReader lineReader = new HdfsFileLineReader();   /////line reader should not be hdfs reader
-	
+	//private HdfsFileLineReader lineReader = new HdfsFileLineReader();   /////line reader should not be hdfs reader
+	private KEY key = null;
+	private Iterable<VALUE> vlist = null;
 	String[] reduceRemoteReadFiles;
-	String[] tmpLocalFilePath;
+	String tmpLocalFilePath;
+	String mergeTmpFile;
 	private String[] outputPath;
+	private ObjectInputStream in;// this is used to read file
 	
 	static {
 		try {
@@ -40,18 +44,20 @@ public class ReduceContext <KEY, VALUE>{
 	}
 	
 	public ReduceContext() {
-
+		
 	}
-	public ReduceContext(String[] reduceRemoteReadFiles,String[] tmpLocalFilePath,String[] outputPath) {
+	public ReduceContext(String[] reduceRemoteReadFiles, String tmpLocalFilePath,
+			String mergeTmpFile, String[] outputPath) {
 		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
 		this.tmpLocalFilePath = tmpLocalFilePath;
 		this.outputPath = outputPath;
+		this.mergeTmpFile = mergeTmpFile;
 	}
 	/**
 	 * read remote file and save them
 	 * */
 	public void init(){
-		receive = new DealReduceInputUtil(reduceRemoteReadFiles,tmpLocalFilePath[0]);
+		receive = new DealReduceInputUtil(reduceRemoteReadFiles, tmpLocalFilePath, mergeTmpFile);
 		receive.prepared();
 		
 	}
@@ -67,6 +73,7 @@ public class ReduceContext <KEY, VALUE>{
 	public boolean hasNextLine() throws IOException {
 		//TODO need initialize lineReader///////////////////////////////////////////////
 		return lineReader.nextKeyValue();
+		
 	}
 
 
@@ -97,10 +104,10 @@ public class ReduceContext <KEY, VALUE>{
 	public void setReduceRemoteReadFiles(String[] reduceRemoteReadFiles) {
 		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
 	}
-	public String[] getTmpLocalFilePath() {
+	public String getTmpLocalFilePath() {
 		return tmpLocalFilePath;
 	}
-	public void setTmpLocalFilePath(String[] tmpLocalFilePath) {
+	public void setTmpLocalFilePath(String tmpLocalFilePath) {
 		this.tmpLocalFilePath = tmpLocalFilePath;
 	}
 	public void flush() {
