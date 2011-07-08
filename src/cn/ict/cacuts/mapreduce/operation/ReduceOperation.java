@@ -32,7 +32,8 @@ public class ReduceOperation implements Operation{
 //		Class valueClass = conf.getMapContextValueClass();	
 		ReduceContext context;
 		try {
-			context = new ReduceContext(new Path(inputPath[0]));///////////problem xxxxxxxxxxxxxxxxxxxxxxxxx
+			context = new ReduceContext();///////////problem xxxxxxxxxxxxxxxxxxxxxxxxx
+			context.setReduceRemoteReadFiles(inputPath);
 			context.setOutputPath(outputPath);
 			Class<? extends Reducer>  reduceClass = MRConfig.getReduceClass();
 			Constructor<Reducer> meth = (Constructor<Reducer>) reduceClass.getConstructor(new Class[0]);
