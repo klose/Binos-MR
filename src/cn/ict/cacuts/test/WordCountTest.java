@@ -35,8 +35,8 @@ public class WordCountTest {
 		// System.err.println("Usage: wordcount <in> <out>");
 		// System.exit(2);
 		// }
-		String[] inputFileName = {};
-		String[] outputFileName = {};
+		String[] inputFileName = {"input"};
+		String[] outputFileName = {"output"};
 		MRJob job = new MRJob(conf, "word count");
 		job.setInputFileName(inputFileName);
 		job.setOutputFileName(outputFileName);

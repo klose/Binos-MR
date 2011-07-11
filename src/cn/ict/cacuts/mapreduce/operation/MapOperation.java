@@ -26,8 +26,7 @@ public class MapOperation implements Operation{
 		if (inputPath.length != 1) {
 			LOG.error("The input of Map Task should have one input.");
 		}
-//		Class keyClass = conf.getMapContextKeyClass();
-//		Class valueClass = conf.getMapContextValueClass();	
+
 		MapContext context;
 		try {
 			context = new MapContext(new Path(inputPath[0]));
@@ -62,6 +61,7 @@ public class MapOperation implements Operation{
 			e.printStackTrace();
 		} 
 	}
+	
 	public static void main(String [] args) {
 		
 	}

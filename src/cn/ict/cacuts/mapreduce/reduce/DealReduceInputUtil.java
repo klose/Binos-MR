@@ -8,12 +8,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
+import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.Merger;
 import cn.ict.cacuts.mapreduce.mapcontext.WriteIntoFile;
+
+
 
 public class DealReduceInputUtil<KEY, VALUE> {
 
 	public String[] reduceInputFilePath;
+	public BinosURL[] binosURLInput;
 	ArrayList dealed = new ArrayList();
 	//public String reduceOutPutFileName;
 //	public Map<KEY, Vector<VALUE>> keyValue;
@@ -28,6 +32,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		this.reduceInputFilePath = reduceInputFilePath;
 		this.tmpLocalFilePath = tmpLocalFilePath;
 		this.mergedTmpFileName = mergedTmpFileName;
+	
 	}
 	
 	public void prepared(){
@@ -38,8 +43,14 @@ public class DealReduceInputUtil<KEY, VALUE> {
 
 
 	public void readFiles() {
-		ReadRemoteFile readRemoteFile = new ReadRemoteFile(reduceInputFilePath,
-				tmpLocalFilePath);
+		ReadRemoteFile readRemoteFile = null;
+		try {
+			readRemoteFile = new ReadRemoteFile(reduceInputFilePath,
+					tmpLocalFilePath);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		readRemoteFile.launchFetchFiles();
 		this.readedRemoteReadFiles = readRemoteFile.getReduceRemoteReadFiles();
 	}
