@@ -28,11 +28,12 @@ public class ReduceOperation implements Operation{
 		if (inputPath.length != 1) {
 			LOG.error("The input of Map Task should have one input.");
 		}
+		
 //		Class keyClass = conf.getMapContextKeyClass();
 //		Class valueClass = conf.getMapContextValueClass();	
 		ReduceContext context;
 		try {
-			context = new ReduceContext(new Path(inputPath[0]));///////////problem xxxxxxxxxxxxxxxxxxxxxxxxx
+			context = new ReduceContext(inputPath,"/tmp/Cacuts/", "merge_final", outputPath);
 			context.setOutputPath(outputPath);
 			Class<? extends Reducer>  reduceClass = MRConfig.getReduceClass();
 			Constructor<Reducer> meth = (Constructor<Reducer>) reduceClass.getConstructor(new Class[0]);

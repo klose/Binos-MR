@@ -48,7 +48,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
 		this.tmpLocalFilePath = tmpLocalFilePath;
 		this.outputPath = outputPath;
-		this.mergeTmpFile = mergeTmpFile;
+		this.mergeTmpFile = tmpLocalFilePath + mergeTmpFile;
 	}
 	/**
 	 * read remote file and save them
