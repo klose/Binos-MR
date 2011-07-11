@@ -21,20 +21,35 @@ public class WorkFlow {
 	JobStruct job = new JobStruct();
 	private static final String PhaseStruct = null;
 	ArrayList<Class <? extends Operation>>   works = new ArrayList();
-	int mapNaumber = 2;
+	
+	int mapNumber = 2;
 	int reduceNumber = 1;
-	int parallelNumber = 1;
+	int parallelNumber = 1;   // the split parallel number
 	String[] inputPath;
 	String[] outputPath;
-	public void setClass(){
-		
+
+	
+	public WorkFlow(){
+		works.add(0,(Class<? extends Operation>) DataSplit.class);
 	}
 	
-	public void addOperationClass(Class<? extends Operation> cls) {		
-		works.add(cls);
-	} 	
+	public void addMapClass(Class<? extends Mapper> cls) {		
+		works.add(1,(Class<? extends Operation>) cls);
+	}
+	public void addReduceClass(Class<? extends Reducer> cls) {		
+		works.add(2,(Class<? extends Operation>) cls);
+
+	}
+//	public void addOperationClass(Class<? extends Operation> cls) {		
+//		works.add(taskNum,cls);
+//		taskNum ++ ;
+//	} 	
 	
 	public void constructWorkFlow(){
+		if(works.size() != 3 ){
+			System.err.println("make sure that you have add the map class and the reduce class");
+			System.exit(2);
+		}
 		constructWork();
 		constructFlow(job.getPhaseStruct());
 	}
@@ -44,6 +59,7 @@ public class WorkFlow {
 		ParallelLevel pal = new ParallelLevel(ParallelLevel.assignFirstLevel());
 		PhaseStruct phase;
 		TaskStruct task;
+
 		int i;
 		for(i = 0 ; i < works.size() ; i ++ ){
 			if(i < works.size() - 1){
@@ -55,14 +71,13 @@ public class WorkFlow {
 			job.addPhaseStruct(phase);
 			task = new TaskStruct();
 			task.setOperationClass(works.get(i));
-			//parallelNumber = 4;///////////////////////////////////here need to read  the user configuration
 			if(i == 0 ){
 				phase.addTask(task, parallelNumber, inputPath);
 			}else{
 				if( i < works.size() - 1){
-					phase.addTask(task, parallelNumber);
+					phase.addTask(task, mapNumber );
 				}else{
-					phase.addTask(task, parallelNumber,outputPath);
+					phase.addTask(task, reduceNumber,outputPath);
 				}
 				
 			}		
@@ -70,9 +85,39 @@ public class WorkFlow {
 		}
 	}
 	
-	/**here need to declare one thing : the construct work method is used for all flow conditions ,there 
-	 * can not be phase and phase  in the same level ,but there can only be unlimited number of phase.
-	 * But in the constructFlow function ,this is only used for mapreduce condition*/
+//	public void constructWork(){
+//		String pathPrefix = JobConfiguration.getPathHDFSPrefix();		
+//		ParallelLevel pal = new ParallelLevel(ParallelLevel.assignFirstLevel());
+//		PhaseStruct phase;
+//		TaskStruct task;
+//		int i;
+//		for(i = 0 ; i < works.size() ; i ++ ){
+//			if(i < works.size() - 1){
+//				phase  = new PhaseStruct(pal);
+//			}else{
+//				phase  = new PhaseStruct(pal.assignEndLevel());
+//			}	
+//			
+//			job.addPhaseStruct(phase);
+//			task = new TaskStruct();
+//			task.setOperationClass(works.get(i));
+//			//parallelNumber = 4;///////////////////////////////////here need to read  the user configuration
+//			if(i == 0 ){
+//				phase.addTask(task, parallelNumber, inputPath);
+//			}else{
+//				if( i < works.size() - 1){
+//					phase.addTask(task, parallelNumber);
+//				}else{
+//					phase.addTask(task, parallelNumber,outputPath);
+//				}
+//				
+//			}		
+//			pal = pal.nextLevel();
+//		}
+//	}	
+//	/**here need to declare one thing : the construct work method is used for all flow conditions ,there 
+//	 * can not be phase and phase  in the same level ,but there can only be unlimited number of phase.
+//	 * But in the constructFlow function ,this is only used for mapreduce condition*/
 	/**
 	 * i = 0 means split phase
 	 * i = 1 means map phase
@@ -119,12 +164,12 @@ public class WorkFlow {
 		compiler.compile();
 	}
 	
-	public int getMapNaumber() {
-		return mapNaumber;
+	public int getMapNumber() {
+		return mapNumber;
 	}
 
-	public void setMapNaumber(int mapNaumber) {
-		this.mapNaumber = mapNaumber;
+	public void setMapNumber(int mapNumber) {
+		this.mapNumber = mapNumber;
 	}
 
 	public int getReduceNumber() {
@@ -158,20 +203,18 @@ public class WorkFlow {
 	public void setOutputPath(String[] outputPath) {
 		this.outputPath = outputPath;
 	}
-
-
 	
-	public static void main(String[] args){
-		String[] inputPath = {System.getProperty("user.home") + "/CactusTest/" + "map_1_out_0" ,
-				System.getProperty("user.home") + "/CactusTest/" + "map_1_out_1"};
-		String[] outputPath = {System.getProperty("user.home") + "/CactusTest/" + "reduce_out"};
-		WorkFlow tt = new WorkFlow();
-		tt.addOperationClass(TestWorkFlow_Work1.class);
-		tt.addOperationClass(TestWorkFlow_Work2.class);
-		tt.addOperationClass(TestWorkFlow_Work3.class);
-		tt.setInputPath(inputPath);
-		tt.setOutputPath(outputPath);
-		tt.constructWorkFlow();
-		//System.out.println(tt.works.size());
-	}
+//	public static void main(String[] args){
+//		String[] inputPath = {System.getProperty("user.home") + "/CactusTest/" + "map_1_out_0" ,
+//				System.getProperty("user.home") + "/CactusTest/" + "map_1_out_1"};
+//		String[] outputPath = {System.getProperty("user.home") + "/CactusTest/" + "reduce_out"};
+//		WorkFlow tt = new WorkFlow();
+//		tt.addMapClass(TestWorkFlow_Work1.class);
+//		tt.addOperationClass(TestWorkFlow_Work2.class);
+//		tt.addOperationClass(TestWorkFlow_Work3.class);
+//		tt.setInputPath(inputPath);
+//		tt.setOutputPath(outputPath);
+//		tt.constructWorkFlow();
+//		//System.out.println(tt.works.size());
+//	}
 }

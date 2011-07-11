@@ -34,6 +34,7 @@ public class ReduceOperation implements Operation{
 		ReduceContext context;
 		try {
 			context = new ReduceContext(inputPath,"/tmp/Cacuts/", "merge_final", outputPath);
+			context.setReduceRemoteReadFiles(inputPath);
 			context.setOutputPath(outputPath);
 			Class<? extends Reducer>  reduceClass = MRConfig.getReduceClass();
 			Constructor<Reducer> meth = (Constructor<Reducer>) reduceClass.getConstructor(new Class[0]);
