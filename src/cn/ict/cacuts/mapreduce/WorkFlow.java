@@ -10,9 +10,7 @@ import org.apache.hadoop.fs.Path;
 import cn.ict.cacuts.mapreduce.operation.MapOperation;
 import cn.ict.cacuts.mapreduce.operation.ReduceOperation;
 import cn.ict.cacuts.mapreduce.operation.SplitOperation;
-import cn.ict.cacuts.test.TestWorkFlow_Work1;
-import cn.ict.cacuts.test.TestWorkFlow_Work2;
-import cn.ict.cacuts.test.TestWorkFlow_Work3;
+
 import cn.ict.cacuts.test.WordCountTest;
 
 import com.transformer.compiler.Channel;

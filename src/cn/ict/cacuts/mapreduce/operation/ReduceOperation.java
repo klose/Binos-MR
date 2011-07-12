@@ -15,29 +15,30 @@ import cn.ict.cacuts.mapreduce.Reducer;
 import cn.ict.cacuts.mapreduce.reduce.ReduceContext;
 import cn.ict.cacuts.test.WordCountTest;
 
+import com.transformer.compiler.JobProperties;
 import com.transformer.compiler.Operation;
 
 public class ReduceOperation implements Operation{
 	private static final Log LOG = LogFactory.getLog(ReduceOperation.class);
 	@Override
-	public void operate(String[] inputPath, String[] outputPath) {
+	public void operate(JobProperties properties, String[] inputPath, String[] outputPath) {
 		// TODO Auto-generated method stub
 		
-//		if (MRConfig.getReduceTaskNum() != outputPath.length) {
-//			LOG.error("The number of reduce task conflicted with the number of output.");
-//		}
-		if (inputPath.length != 1) {
+		if (Integer.parseInt(properties.getProperty("reduce.task.num")) != outputPath.length) {
+			LOG.error("The number of reduce task conflicted with the number of output.");
+			return;
+		}
+		if (Integer.parseInt(properties.getProperty("map.task.num")) != 1) {
 			LOG.error("The input of Map Task should have one input.");
+			return;
 		}
 		
-//		Class keyClass = conf.getMapContextKeyClass();
-//		Class valueClass = conf.getMapContextValueClass();	
 		ReduceContext context;
 		try {
 			context = new ReduceContext(inputPath,"/tmp/Cacuts/", "merge_final", outputPath);
 			context.setReduceRemoteReadFiles(inputPath);
 			context.setOutputPath(outputPath);
-			Class<? extends Reducer>  reduceClass = WordCountTest.IntSumReducer.class;
+			Class<? extends Reducer>  reduceClass = (Class<? extends Reducer>) Class.forName(properties.getProperty("reducer.class"));
 			//Class<? extends Reducer>  reduceClass = MRConfig.getReduceClass();
 			Constructor<Reducer> meth = (Constructor<Reducer>) reduceClass.getConstructor(new Class[0]);
 			meth.setAccessible(true);
@@ -64,6 +65,9 @@ public class ReduceOperation implements Operation{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 

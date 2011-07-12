@@ -7,6 +7,6 @@ public class testSplitOperation {
 		SplitOperation so = new SplitOperation();
 		String[] input = {"input"};
 		String[] output = {"0","1", "2"};
-		so.operate(input, output);
+		so.operate(null,input, output);
 	}
 }

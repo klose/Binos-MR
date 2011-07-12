@@ -6,9 +6,7 @@ import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Mapper;
 import cn.ict.cacuts.mapreduce.Reducer;
 import cn.ict.cacuts.mapreduce.WorkFlow;
-import cn.ict.cacuts.test.TestWorkFlow_Work1;
-import cn.ict.cacuts.test.TestWorkFlow_Work2;
-import cn.ict.cacuts.test.TestWorkFlow_Work3;
+
 
 public class MRJob extends MRJobContext {
 	public static enum JobState {

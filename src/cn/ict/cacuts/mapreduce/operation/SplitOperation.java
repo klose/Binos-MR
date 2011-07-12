@@ -15,6 +15,7 @@ import cn.ict.cacuts.mapreduce.DataSplit;
 import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.MRConfig;
 
+import com.transformer.compiler.JobProperties;
 import com.transformer.compiler.Operation;
 
 public class SplitOperation implements Operation{
@@ -31,10 +32,15 @@ public class SplitOperation implements Operation{
 		}
 	}
 	@Override
-	public void operate(String[] inputPath, String[] outputPath) {
+	public void operate(JobProperties properties, String[] inputPath, String[] outputPath) {
 		// TODO Auto-generated method stub
 		if (inputPath.length != 1) {
 			LOG.error("the number of input path : " + inputPath.length);
+			return;
+		}
+		if (Integer.parseInt(properties.getProperty("map.task.num")) != outputPath.length) {
+			LOG.error("the numer of output path:" + outputPath.length + " doesnot equal to map task num!");
+			return;
 		}
 		try {
 			MRConfig conf = new MRConfig("split");

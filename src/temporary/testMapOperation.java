@@ -1,5 +1,7 @@
 package temporary;
 
+import com.transformer.compiler.JobProperties;
+
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Mapper;
@@ -36,6 +38,10 @@ public class testMapOperation {
 		String outputPath[] = {"/tmp/testmapout0", "/tmp/testmapoutput1"};
 //		MRConfig.setMapClass(testMapper.class);
 //		MRConfig.setReduceTaskNum(2);
-		new MapOperation().operate(inputPath, outputPath);
+		JobProperties properties = new JobProperties("testMapOperation");
+		properties.addProperty("map.task.num", "1");
+		properties.addProperty("reduce.task.num", "2");
+		properties.addProperty("mapper.class", testMapper.class.getName());
+		new MapOperation().operate(properties,inputPath, outputPath);
 	}
 }
