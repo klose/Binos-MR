@@ -16,18 +16,16 @@ public class MRJob extends MRJobContext {
 	};
 
 	private JobState state = JobState.DEFINE;
-	public static MRConfig conf;
-
-	public MRJob() {
-		this(conf = new MRConfig());
-	}
+	public MRConfig conf;
 
 	public MRJob(MRConfig config) {
 		super(config, null);
+		conf = config;
 	}
 
 	public MRJob(MRConfig config, String jobName) {
 		super(config, jobName);
+		conf = config;
 	}
 
 	private void ensureState(JobState state) throws IllegalStateException {
@@ -49,7 +47,7 @@ public class MRJob extends MRJobContext {
 
 	public void setNumReduceTasks(int tasks) throws IllegalStateException {
 		ensureState(JobState.DEFINE);
-		conf.setReduceTaskMem(tasks);
+		conf.setReduceTaskNum(tasks);
 	}
 
 	public void setWorkingDirectory(Path dir) {
@@ -125,13 +123,8 @@ public class MRJob extends MRJobContext {
 
 	public void submit() {
 
-		WorkFlow workFlow = new WorkFlow();
-		workFlow.setInputPath(conf.getInputFileName());
-		workFlow.setOutputPath(conf.getOutputFileName());
-		workFlow.addMapClass(conf.getMapClass());
-		workFlow.addReduceClass(conf.getReduceClass());
+		WorkFlow workFlow = new WorkFlow(conf);
 		workFlow.constructWorkFlow();
-
 		state = JobState.RUNNING;
 	}
 

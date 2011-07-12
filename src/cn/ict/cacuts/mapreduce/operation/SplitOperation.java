@@ -37,7 +37,7 @@ public class SplitOperation implements Operation{
 			LOG.error("the number of input path : " + inputPath.length);
 		}
 		try {
-			MRConfig conf = new MRConfig();
+			MRConfig conf = new MRConfig("split");
 			final DataSplit split = new DataSplit(new Path(inputPath[0]));
 			List<FileSplitIndex> list = split.getSplits(conf);
 			if (list.size() != outputPath.length) {

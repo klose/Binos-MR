@@ -5,9 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import org.apache.hadoop.io.Text;
-
 import cn.ict.binos.transmit.BinosDataClient;
 import cn.ict.binos.transmit.BinosURL;
 

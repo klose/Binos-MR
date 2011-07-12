@@ -29,11 +29,13 @@ public class MapContext<KEY, VALUE> {
 			LOG.error("Cannot open HDFS.");
 		}
 	}
-	public MapContext(Path inputPath) throws IOException {
+	public MapContext(String inputPath, String[] outputPath) throws IOException {
 		//this.spiltIndexPath = inputPath;
-		FSDataInputStream in = fs.open(inputPath);
+		this.outputPath = outputPath;
+		FSDataInputStream in = fs.open(new Path(inputPath));
 		splitIndex.readFields(in);
 		lineReader.initialize(splitIndex);
+		
 	}
 	public boolean hasNextLine() throws IOException {
 		return lineReader.nextKeyValue();

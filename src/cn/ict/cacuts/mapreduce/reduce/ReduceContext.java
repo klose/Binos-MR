@@ -112,8 +112,6 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 	 }
 
 	public void output(KEYOUT key, VALUEOUT value) {
-		//System.out.println("key : " + key);
-		//System.out.println("value : " + value);
 		outPut.receive(key, value);
 	}
 	

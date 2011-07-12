@@ -15,7 +15,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	////int numberOfReduce = MRConfig.getReduceTaskNum();
 	int numberOfReduce = 3;
 	////public int size = 1024 * 1024;
-	public int size = 100;
+	public int size = 1000;
 	ArrayList inputPairs = new ArrayList();
 	ArrayList backupInputPairs = new ArrayList();
 	ArrayList[] lists = new ArrayList[numberOfReduce];
@@ -140,6 +140,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	}
 	
 	public void dealFileIndex(){
+		System.out.println("dealFileIndex:" + indexString);
 		indexString = indexString.substring(0, indexString.length() - 1);
 		mapOutFileIndex = indexString.split(";");
 		for(int i = 0 ; i < mapOutFileIndex.length ; i ++){

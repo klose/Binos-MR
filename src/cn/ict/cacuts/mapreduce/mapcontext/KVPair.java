@@ -4,8 +4,6 @@ package cn.ict.cacuts.mapreduce.mapcontext;
 import java.io.Serializable;
 
 public class KVPair<KEY,VALUE> implements Serializable{
-
-
 	/**
 	 * 
 	 */

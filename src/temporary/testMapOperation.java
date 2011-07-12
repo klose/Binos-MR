@@ -34,8 +34,8 @@ public class testMapOperation {
 	public static void main(String [] args) {
 		String inputPath[] = {"0"};
 		String outputPath[] = {"/tmp/testmapout0", "/tmp/testmapoutput1"};
-		MRConfig.setMapClass(testMapper.class);
-		MRConfig.setReduceTaskNum(2);
+//		MRConfig.setMapClass(testMapper.class);
+//		MRConfig.setReduceTaskNum(2);
 		new MapOperation().operate(inputPath, outputPath);
 	}
 }

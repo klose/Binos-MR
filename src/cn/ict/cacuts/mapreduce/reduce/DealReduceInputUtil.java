@@ -101,17 +101,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 				 "/CactusTest/merger_final";
 		DealReduceInputUtil tt = new DealReduceInputUtil(inputPath,
 				reduceOutPutFileName, mergeFilePath);
-		// tt.setInputFilePath(inputPath);
-		// tt.setReduceOutFileName(reduceOutPutFileName);
 		tt.prepared();
-//		Iterator it = tt.keyValues.entrySet().iterator();
-//		while (it.hasNext()) {
-//			Map.Entry entry = (Map.Entry) it.next();
-//			Object key1 = entry.getKey();
-//			Object value1 = entry.getValue();
-//			System.out.println("key : " + key1);
-//			System.out.println("value : " + value1);
-//		}
 	}
 
 }

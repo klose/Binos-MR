@@ -1,5 +1,7 @@
 package cn.ict.cacuts.test;
-
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import org.apache.hadoop.io.Text;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Mapper;
@@ -8,41 +10,46 @@ import cn.ict.cacuts.mapreduce.reduce.ReduceContext;
 import cn.ict.cacuts.userinterface.MRJob;
 
 public class WordCountTest {
-
-	public static class TokenizerMapper extends Mapper<Object, Object> {
+	public static class TokenizerMapper extends Mapper<String, Integer> {
+		String word = new String();
+		Integer one = new Integer(1);
 		@Override
-		public void map(String line, MapContext<Object, Object> context) {
+		public void map(String line, MapContext<String, Integer> context) {
 			// TODO Auto-generated method stub
-			System.out.println("hello , i am in the map");
+			StringTokenizer itr = new StringTokenizer(line.toString());
+		      while (itr.hasMoreTokens()) {
+		        word = itr.nextToken();
+		        context.output(word, one);
+		      }
 		}
 	}
 
 	public static class IntSumReducer extends
-			Reducer<Object, Object, Object, Object> {
+			Reducer<String, Integer, String, Integer> {
 		@Override
-		public void reduce(Object key, Iterable<Object> values,
+		public void reduce(String key, Iterable<Integer> values,
 				ReduceContext context) {
 			// TODO Auto-generated method stub
+			int sum = 0;
+			Iterator<Integer> iter = values.iterator();
+			while (iter.hasNext()) {
+				sum += iter.next().intValue();
+			}
+			context.output(key, new Integer(sum));
 			System.out.println("hello , i am in the reduce");
 		}
 	}
 
 	public static void main(String[] args) throws Exception {
-		MRConfig conf = new MRConfig();
-		// String[] otherArgs = new GenericOptionsParser(conf,
-		// args).getRemainingArgs();
-		// if (otherArgs.length != 2) {
-		// System.err.println("Usage: wordcount <in> <out>");
-		// System.exit(2);
-		// }
-		String[] inputFileName = {"input"};
-		String[] outputFileName = {"output"};
-		MRJob job = new MRJob(conf, "word count");
+		MRConfig conf = new MRConfig("wordcount");
+		String inputFileName[] = {"input"};
+		String outputFileName[] = {"output1", "output2"};
+		MRJob job = new MRJob(conf, "wordcount");
 		job.setInputFileName(inputFileName);
 		job.setOutputFileName(outputFileName);
 		job.setMapperClass(TokenizerMapper.class);
-		job.setCombinerClass(IntSumReducer.class);
 		job.setReducerClass(IntSumReducer.class);
+		job.setNumReduceTasks(2);
 		job.submit();
 	}
 }

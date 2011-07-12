@@ -1,8 +1,12 @@
 package cn.ict.cacuts.mapreduce;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
@@ -15,31 +19,28 @@ import cn.ict.cacuts.mapreduce.reduce.FinalKVPair;
  * @author jiangbing
  *
  */
-public class MRConfig {
+public class  MRConfig {
 	/*there are default values*/
-	public static String jobName = "testJob";
-	public static int mapTaskMem = 100*1024*1024;
-	public static int mapTaskNum = 1;
-	public static int reduceTaskMem = 100*1024*1024;
-	public static int reduceTaskNum = 1;
-	public static long splitFileSize = 64*1024*1024; //use a hdfs block size as default value.
-	public static Class mapContextKeyClass = Integer.class;
-	public static Class mapContextValueClass = String.class;
-	private  static Class<? extends DataSplit> splitClass; //////////////////////////need to check
-	private  static Class<? extends Mapper> mapClass;
-	private  static Class<? extends Reducer> reduceClass;
-	private  static Class<? > finalOutputKeyValueTypeClass = FinalKVPair.class;
-	private  static Class<?> mapOutputKeyValueTypeClass = KVList.class;
-	private  static Path workingDirectory;
-
-	static String tempMapOutFilesPathPrefix;
-	
-	private String[] inputFileName;
-	private String[] outputFileName;
-
+	private  String jobName = "testJob";
+	private  int mapTaskMem = 100*1024*1024;
+	private  int mapTaskNum = 1;
+	private  int reduceTaskMem = 100*1024*1024;
+	private  int reduceTaskNum = 1;
+	private  static long splitFileSize = 64*1024*1024; //use a hdfs block size as default value.
+	private  Class mapContextKeyClass = String.class;
+	private  Class mapContextValueClass = Integer.class;
+	private   Class<? extends Mapper> mapClass;
+	private   Class<? extends Reducer> reduceClass;
+	private   Class<? > finalOutputKeyValueTypeClass = FinalKVPair.class;
+	private   Class mapOutputKeyValueTypeClass = KVList.class;
+	private   Path workingDirectory;
+	private String tempMapOutFilesPathPrefix;
+	private  String[] inputFileName;
+	private  String[] outputFileName;
+	private  static Configuration conf;
+	private  static FileSystem fs;
 	static {
-		Configuration conf = new Configuration();
-		FileSystem fs;
+		conf = new Configuration();
 		try {
 			fs = FileSystem.get(conf);
 			splitFileSize = fs.getDefaultBlockSize();
@@ -48,106 +49,134 @@ public class MRConfig {
 			e.printStackTrace();
 		}	
 	}
-	
-	public static String getJobName() {
+	public MRConfig(String jobName) {
+		setJobName(jobName);
+	}
+	public  String getJobName() {
 		return jobName;
 	}
-	public static void setJobName(String jobName) {
-		MRConfig.jobName = jobName;
+	public  void setJobName(String jobName) {
+		this.jobName = jobName;
 	}
-	public static int getMapTaskMem() {
+	public  int getMapTaskMem() {
 		return mapTaskMem;
 	}
-	public static void setMapTaskMem(int mapTaskMem) {
-		MRConfig.mapTaskMem = mapTaskMem;
+	public  void setMapTaskMem(int mapTaskMem) {
+		this.mapTaskMem = mapTaskMem;
 	}
-	public static int getMapTaskNum() {
+	
+	public  int getMapTaskNum(Path path) {
+		try {
+			FileStatus status = fs.getFileStatus(path);
+			long fileLen = status.getLen();
+			if (fileLen % splitFileSize != 0) {
+				mapTaskNum = (int)(fileLen/splitFileSize + 1);
+			}
+			else {
+				mapTaskNum = (int)(fileLen/splitFileSize);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return mapTaskNum;
 	}
-	public static void setMapTaskNum(int mapTaskNum) {
-		MRConfig.mapTaskNum = mapTaskNum;
-	}
-	public static int getReduceTaskMem() {
+	
+	public  int getReduceTaskMem() {
 		return reduceTaskMem;
 	}
-	public static void setReduceTaskMem(int reduceTaskMem) {
-		MRConfig.reduceTaskMem = reduceTaskMem;
+	public  void setReduceTaskMem(int reduceTaskMem) {
+		this.reduceTaskMem = reduceTaskMem;
 	}
-	public static int getReduceTaskNum() {
+	public  int getReduceTaskNum() {
 		return reduceTaskNum;
 	}
-	public static void setReduceTaskNum(int reduceTaskNum) {
-		MRConfig.reduceTaskNum = reduceTaskNum;
+	public  void setReduceTaskNum(int reduceTaskNum) {
+		this.reduceTaskNum = reduceTaskNum;
 	}
-	public static long getSplitFileSize() {
+	public  long getSplitFileSize() {
 		return splitFileSize;
 	}
-	public static void setSplitFileSize(long splitFileSize) {
-		MRConfig.splitFileSize = splitFileSize;
+	public  void setSplitFileSize(long splitFileSize) {
+		this.splitFileSize = splitFileSize;
 	}
-	public  static Class getMapContextKeyClass() {
+	public  long getDefaultHDFSBlockSize() {
+		return fs.getDefaultBlockSize();
+	}
+	public   Class getMapContextKeyClass() {
 		return mapContextKeyClass;
 	}
-	public static void setMapContextKeyClass(Class mapContextKeyClass) {
-		MRConfig.mapContextKeyClass = mapContextKeyClass;
+	public  void setMapContextKeyClass(Class mapContextKeyClass) {
+		this.mapContextKeyClass = mapContextKeyClass;
 	}
-	public static Class getMapContextValueClass() {
+	public  Class getMapContextValueClass() {
 		return mapContextValueClass;
 	}
-	public static void setMapContextValueClass(Class mapContextValueClass) {
-		MRConfig.mapContextValueClass = mapContextValueClass;
+	public  void setMapContextValueClass(Class mapContextValueClass) {
+		this.mapContextValueClass = mapContextValueClass;
 		
 	}
-	public static Class<? extends Mapper> getMapClass() {
+	public  Class<? extends Mapper> getMapClass() {
 		return mapClass;
 	}
-	public static void setMapClass(Class<? extends Mapper> mapClass) {
-		MRConfig.mapClass =  mapClass;
+	public  void setMapClass(Class<? extends Mapper> mapClass) {
+		this.mapClass =  mapClass;
 	}
-	public static String getTempMapOutFilesPathPrefix() {
+	public  String getTempMapOutFilesPathPrefix() {
 		return tempMapOutFilesPathPrefix;
 	}
-	public static void setTempMapOutFilesPathPrefix(String tempMapOutFilesPathPrefix) {
+	public  void setTempMapOutFilesPathPrefix(String tempMapOutFilesPathPrefix) {
 		tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 	}
-	public static Class<? extends Reducer> getReduceClass() {
+	public  Class<? extends Reducer> getReduceClass() {
 		return reduceClass;
 	}
-	public static void setReduceClass(Class<? extends Reducer> reduceClass) {
-		MRConfig.reduceClass = reduceClass;
+	public  void setReduceClass(Class<? extends Reducer> reduceClass) {
+		this.reduceClass = reduceClass;
 	}
-	public static Path getWorkingDirectory() {
+	public  Path getWorkingDirectory() {
 		return workingDirectory;
 	}
-	public static void setWorkingDirectory(Path workingDirectory) {
-		MRConfig.workingDirectory = workingDirectory;
+	public  void setWorkingDirectory(Path workingDirectory) {
+		this.workingDirectory = workingDirectory;
 	}
-	public static Class<?> getFinalOutputKeyValueTypeClass() {
+	public  Class<?> getFinalOutputKeyValueTypeClass() {
 		return finalOutputKeyValueTypeClass;
 	}
-	public static void setFinalOutputKeyValueTypeClass(
+	public  void setFinalOutputKeyValueTypeClass(
 			Class<?> finalOutputKeyValueTypeClass) {
-		MRConfig.finalOutputKeyValueTypeClass = finalOutputKeyValueTypeClass;
+		this.finalOutputKeyValueTypeClass = finalOutputKeyValueTypeClass;
 	}
-	public static Class<?> getMapOutputKeyValueTypeClass() {
+	public  Class<?> getMapOutputKeyValueTypeClass() {
 		return mapOutputKeyValueTypeClass;
 	}
-	public static void setMapOutputKeyValueTypeClass(
+	public  void setMapOutputKeyValueTypeClass(
 			Class<?> mapOutputKeyValueTypeClass) {
-		MRConfig.mapOutputKeyValueTypeClass = mapOutputKeyValueTypeClass;
+		this.mapOutputKeyValueTypeClass = mapOutputKeyValueTypeClass;
 	}
-	public String[] getInputFileName() {
+	public  String[] getInputFileName() {
 		return inputFileName;
 	}
-	public void setInputFileName(String[] inputFileName) {
-		this.inputFileName = inputFileName;
+	public  void setInputFileName(String[] inputFile) {
+		inputFileName = inputFile;
 	}
-	public String[] getOutputFileName() {
+	public  String[] getOutputFileName() {
 		return outputFileName;
 	}
-	public void setOutputFileName(String[] outputFileName) {
-		this.outputFileName = outputFileName;
+	public  void setOutputFileName(String[] outputFile) {
+		outputFileName = outputFile;
 	}
-
 	
+	/**
+	 * Parse the run-time scheduler required information.
+	 * @return
+	 */
+	public Map<String, String> parseMRConfig() {
+		Map<String, String> configMap = new HashMap<String, String>();
+		configMap.put("mapper.class", getMapClass().getName());
+		configMap.put("reducer.class", getReduceClass().getName());
+		configMap.put("map.task.num", String.valueOf(this.mapTaskNum));
+		configMap.put("reduce.task.num", String.valueOf(this.getReduceTaskNum()));	
+		return configMap;
+	}
 }

@@ -66,7 +66,7 @@ public class DataSplit {
 			BlockLocation[] blkLocations = fs.getFileBlockLocations (status, 0, length);
 			long fileBlockSize = status.getBlockSize();
 			if (splitSize != fileBlockSize) {
-				LOG.error(status.getPath() + " split size:" + fileBlockSize
+				LOG.warn(status.getPath() + " split size:" + fileBlockSize
 						+ " and the MR config split size : " + splitSize  + ", conflicts.");
 			}
 			long bytesRemaining = length;
@@ -113,41 +113,4 @@ public class DataSplit {
 	    return new FileSplitIndex(file, start, length, hosts);
 	  }
 
-	
-	public static void main(String[] args) {
-		MRConfig config = new MRConfig();
-		Path p = new Path("input");
-		long time = System.currentTimeMillis();
-		try {	
-			DataSplit ds = new DataSplit(p);
-			List<FileSplitIndex> list = ds.getSplits(config);
-			for (FileSplitIndex splitIndex: list) {
-				System.out.println(splitIndex.toString());
-			}
-			
-			System.out.println("used time:" + (System.currentTimeMillis() - time)) ;
-			for(int i = 0; i < list.size(); i++) {
-				HdfsFileLineReader hflr = new HdfsFileLineReader();
-				hflr.initialize(list.get(i));
-				while (hflr.nextKeyValue()) {
-					System.out.println("key:" + hflr.getCurrentKey() + "value:" + hflr.getCurrentValue());
-				}
-				FSDataOutputStream out = fs.create(new Path(String.valueOf(i)));
-				list.get(i).write(out);
-				out.close();
-			}
-			System.out.println("used time:" + (System.currentTimeMillis() - time)) ;
-			for(int i = 0; i < list.size(); i++) {
-				FSDataInputStream in = fs.open(new Path(String.valueOf(i)));
-				FileSplitIndex fsi = new FileSplitIndex();
-				fsi.readFields(in);
-				System.out.println(fsi.toString());
-				in.close();
-			}
-			System.out.println("used time:" + (System.currentTimeMillis() - time)) ;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-	}
 }
