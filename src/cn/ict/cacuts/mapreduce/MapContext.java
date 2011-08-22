@@ -1,6 +1,7 @@
 package cn.ict.cacuts.mapreduce;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,6 +9,10 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+
+import cn.ict.binos.transmit.BinosDataClient;
+import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
 import cn.ict.cacuts.mapreduce.mapcontext.HashPartitioner;
 
@@ -16,7 +21,7 @@ public class MapContext<KEY, VALUE> {
 	private final static Log LOG = LogFactory.getLog(MapContext.class);
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
-	private DealMapOutUtil outPut = new DealMapOutUtil();
+	private DealMapOutUtil outPut;
 	private FileSplitIndex splitIndex = new FileSplitIndex();
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
 	private String[] outputPath;
@@ -29,11 +34,13 @@ public class MapContext<KEY, VALUE> {
 			LOG.error("Cannot open HDFS.");
 		}
 	}
-	public MapContext(String inputPath, String[] outputPath) throws IOException {
+	public MapContext(String inputPath, String[] outputPath) throws Exception {
 		//this.spiltIndexPath = inputPath;
 		this.outputPath = outputPath;
-		FSDataInputStream in = fs.open(new Path(inputPath));
-		splitIndex.readFields(in);
+		this.outPut = new DealMapOutUtil(this.outputPath);
+		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
+		//FSDataInputStream in = fs.open(new Path(inputPath));
+		splitIndex.readFields(ins);
 		lineReader.initialize(splitIndex);
 		
 	}

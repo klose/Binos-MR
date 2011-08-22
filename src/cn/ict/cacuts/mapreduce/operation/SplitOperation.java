@@ -1,6 +1,8 @@
 package cn.ict.cacuts.mapreduce.operation;
 
+import java.io.DataOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -9,8 +11,11 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 import org.apache.log4j.Logger;
 
+import cn.ict.binos.transmit.BinosDataClient;
+import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.DataSplit;
 import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.MRConfig;
@@ -49,12 +54,17 @@ public class SplitOperation implements Operation{
 			if (list.size() != outputPath.length) {
 				LOG.error("The number of map task conflicts with the number of output path.");
 			}
+			
 			for(int i = 0; i < outputPath.length; i++) {
-				FSDataOutputStream out = fs.create(new Path(outputPath[i]));
+				BinosURL url = new BinosURL(new Text(outputPath[i]));
+				OutputStream out = BinosDataClient.getOutputStream(url);
 				list.get(i).write(out);
 				out.close();
 			}
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

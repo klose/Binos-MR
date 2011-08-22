@@ -3,6 +3,8 @@ package cn.ict.cacuts.mapreduce;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -49,23 +51,23 @@ public class FileSplitIndex {
 		  }
 		  return buf.toString();
 	  }
-	  public void write(DataOutput out) throws IOException{
-			WritableUtils.writeString(out,file.toString());
-			WritableUtils.writeVLong(out, start);
-			WritableUtils.writeVLong(out, length);
-			WritableUtils.writeVInt(out, hosts.length);
+	  public void write(OutputStream out) throws IOException{
+			WritableUtils.writeString((DataOutput) out,file.toString());
+			WritableUtils.writeVLong((DataOutput) out, start);
+			WritableUtils.writeVLong((DataOutput) out, length);
+			WritableUtils.writeVInt((DataOutput) out, hosts.length);
 		      for (int i = 0; i < hosts.length; i++) {
-		        Text.writeString(out, hosts[i]);
+		        Text.writeString((DataOutput) out, hosts[i]);
 		      }
 	  }
 
-	public void readFields(DataInput in) throws IOException {
-		file = new Path(WritableUtils.readString(in));
-		start = WritableUtils.readVLong(in);
-		length = WritableUtils.readVLong(in);
-		hosts = new String[WritableUtils.readVInt(in)];
+	public void readFields(InputStream in) throws IOException {
+		file = new Path(WritableUtils.readString((DataInput) in));
+		start = WritableUtils.readVLong((DataInput) in);
+		length = WritableUtils.readVLong((DataInput) in);
+		hosts = new String[WritableUtils.readVInt((DataInput) in)];
 		for (int i = 0; i < hosts.length; i++) {
-			hosts[i] = new String(Text.readString(in));
+			hosts[i] = new String(Text.readString((DataInput) in));
 		}
 	}
 }

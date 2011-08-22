@@ -24,11 +24,15 @@ public class ReduceOperation implements Operation{
 	public void operate(JobProperties properties, String[] inputPath, String[] outputPath) {
 		// TODO Auto-generated method stub
 		
-		if (Integer.parseInt(properties.getProperty("reduce.task.num")) != outputPath.length) {
+//		if (Integer.parseInt(properties.getProperty("reduce.task.num")) != outputPath.length) {
+//			LOG.error("The number of reduce task conflicted with the number of output.");
+//			return;
+//		}
+		if (outputPath.length < 1) {
 			LOG.error("The number of reduce task conflicted with the number of output.");
 			return;
 		}
-		if (Integer.parseInt(properties.getProperty("map.task.num")) != 1) {
+		if (Integer.parseInt(properties.getProperty("map.task.num")) != inputPath.length) {
 			LOG.error("The input of Map Task should have one input.");
 			return;
 		}

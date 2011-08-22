@@ -103,7 +103,7 @@ public class HdfsFileLineReader {
 			
 			newSize = in.readLine(value, maxLineLength,
 					Math.max(maxBytesToConsume(pos), maxLineLength));
-			System.out.println("end:" + end + "pos:" +pos);
+			//System.out.println("end:" + end + "pos:" +pos);
 			if (newSize == 0) {
 				break;
 			}

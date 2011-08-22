@@ -22,11 +22,12 @@ import com.transformer.compiler.Operation;
 import com.transformer.compiler.ParallelLevel;
 import com.transformer.compiler.PhaseStruct;
 import com.transformer.compiler.TaskStruct;
+import com.transformer.compiler.TransmitType;
+import com.transformer.compiler.Tunnel;
 /**
  * construct the work flow.
  * using compiler to construct the flow of job.
  * @author jiangbing
- *
  */
 public class WorkFlow {
 	private static final Log LOG = LogFactory.getLog(WorkFlow.class);
@@ -72,7 +73,7 @@ public class WorkFlow {
 	}
 	
 	public void constructWork(){
-		String pathPrefix = JobConfiguration.getPathHDFSPrefix();		
+		//String pathPrefix = JobConfiguration.getPathHDFSPrefix();		
 		ParallelLevel pal = new ParallelLevel(ParallelLevel.assignFirstLevel());
 		PhaseStruct phase;
 		TaskStruct task;
@@ -123,7 +124,7 @@ public class WorkFlow {
 		PhaseStruct phase0 = phases.get(0); //split
 		PhaseStruct phase1 = phases.get(1); //map
 		PhaseStruct phase2 = phases.get(2); //reduce
-		
+	
 		
 		ChannelManager channelManager = new ChannelManager();
 		//split to map
@@ -132,18 +133,23 @@ public class WorkFlow {
 		{	
 			channel0_1[i] = new Channel(phase0.getTaskStruct()[0],i,phase1.getTaskStruct()[i],0);			
 		}
-		channelManager.addChannels(channel0_1);
+		Tunnel tunnel0_1 = new Tunnel(phase0, phase1, channel0_1, TransmitType.HDFS);
+		
+		channelManager.addTunnel(tunnel0_1);
+		
 		//map to reduce
 		
-		
+		ArrayList<Channel> tmp = new ArrayList<Channel>();
 		for(int i = 0 ;i<phase2.getParallelNum();i++)
 		{	
 			Channel[] channel1_2 = new Channel[phase1.getParallelNum()];
 			for(int j = 0 ;j<phase1.getParallelNum();j++){
 				channel1_2[j] = new Channel(phase1.getTaskStruct()[j],i,phase2.getTaskStruct()[i],j);
+				tmp.add(channel1_2[j]);
 			}
-			channelManager.addChannels(channel1_2);
 		}
+		Tunnel tunnel1_2 = new Tunnel(phase1, phase2, tmp.toArray(new Channel[0]), TransmitType.HTTP);
+		channelManager.addTunnel(tunnel1_2);
 		analisisCompile(channelManager);
 	}
 	
@@ -161,16 +167,4 @@ public class WorkFlow {
 		this.parallelNumber = parallelNumber;
 	}
 
-	
-//	public static void main(String[] args){
-//		String[] inputPath = {"input"};
-//		String[] outputPath = {"output"};
-//		WorkFlow tt = new WorkFlow();
-//		tt.setMapClass(WordCountTest.TokenizerMapper.class);
-//		tt.setReduceClass(WordCountTest.IntSumReducer.class);
-//		tt.setInputPath(inputPath);
-//		tt.setOutputPath(outputPath);
-//		tt.constructWorkFlow();
-//		//System.out.println(tt.works.size());
-//	}
 }
