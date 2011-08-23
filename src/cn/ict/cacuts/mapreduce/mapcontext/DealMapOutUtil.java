@@ -9,9 +9,11 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.serializer.Serializer;
 import org.apache.http.entity.SerializableEntity;
 
+import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Merger;
@@ -28,8 +30,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 	private ArrayList inputPairs = new ArrayList();
 	private ArrayList backupInputPairs = new ArrayList();
 	private final ArrayList[] lists;
-	String[] fileName;
-	public  String[] mapOutFileIndex;//suppose there are no more than 100 interfile
+	private String[] fileName;
+	public  String[] mapOutFileIndex = null;//suppose there are no more than 100 interfile
 	private final int[] innerFilePartionIndex ;
 	KVPair element;
 	private static long capacity = 0; // current capacity
@@ -47,7 +49,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	HashPartitioner hashPartitioner = new HashPartitioner();
 ////	String tempMapOutFilesPathPrefix = MRConfig.getTempMapOutFilesPathPrefix()
 //			+ "tmpMapOut_";
-	String tempMapOutFilesPathPrefix = System.getProperty("user.home")+ "/CactusTest/"
+	private final String tempMapOutFilesPathPrefix = System.getProperty("user.home")+ "/CactusTest/"
 	+ "tmpMapOut_";
 
 
@@ -166,7 +168,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 		tt.setFileName(fileName);
 		tt.writeIntoFile(sorted);
 	}
-
+	/**
+	 * the last phase of map process is to merge.
+	 */
 	public void FinishedReceive() {
 		this.finishedReceive = true;		
 		if (!inputPairs.isEmpty()) {
@@ -178,6 +182,43 @@ public class DealMapOutUtil<KEY, VALUE> {
 			backupInputPairs.clear();
 		}
 		dealFileIndex();
+		
+		/*Merge the small file into the number of file.*/
+		
+		Merger merge = new Merger();
+		Path[] inputPath;
+		Path[] outputPath;
+		if (tmpFileNum > 0) {
+			inputPath = new Path[tmpFileNum];
+			for (int i = 0; i < tmpFileNum; i++) {
+				inputPath[i] = new Path(tempMapOutFilesPathPrefix + (i+1));
+			}
+			if (null != fileName) {
+				outputPath = new Path[fileName.length];
+				for (int i = 0; i < fileName.length; i++) {
+					outputPath[i] = new Path( BinosURL.getPath(
+							new BinosURL(new Text(fileName[i]) )));
+				}
+				if (null != mapOutFileIndex)
+					try {
+						merge.merge(inputPath, mapOutFileIndex, outputPath, false);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+			else {
+				LOG.error("MapPhase: Merge process occurs a error: \n" 
+						+ "There are no files configured!");
+				System.exit(-1);
+			}
+		}
+		else {
+			LOG.error("MapPhase: Merge process occurs a error: \n" 
+					+ "There are " + this.tmpFileNum + "intermediate files.");
+			System.exit(-1);
+		}
+		
 		System.out.println("***********************over********************");
 	}
 	
