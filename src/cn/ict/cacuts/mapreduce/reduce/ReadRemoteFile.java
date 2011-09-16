@@ -5,13 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.apache.commons.logging.Log;
 import org.apache.hadoop.io.Text;
+import org.apache.log4j.Logger;
+
 import cn.ict.binos.transmit.BinosDataClient;
 import cn.ict.binos.transmit.BinosURL;
 
 public class ReadRemoteFile {
 	
-	
+	private static Logger LOG = Logger.getLogger(ReadRemoteFile.class);
+	private volatile boolean isReadOver = false;// identify the end of the process of reading files
+	private Object lock = new Object();
 	String[] reduceInputFilePath;//Binos URL
 	String[] readedRemoteReadFiles; // the file locally
 	String tmpLocalDirPath; // the directory of default path
@@ -32,31 +38,59 @@ public class ReadRemoteFile {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				
-				for (int i = 0; i < fileCount; i++) {
-					try {
-						InputStream in = BinosDataClient.getInputStream(binosURLInput[i]);
-						OutputStream out = new FileOutputStream(tmpLocalDirPath + "/" + i);
-						byte[] buffer = new byte[8192];
-						int k;
-			            while ((k = in.read(buffer)) != -1) {
-			            	out.write(buffer, 0, k);
-			            }
-			            out.close();
-			            in.close();
-			 		} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
+				synchronized (lock) {
+					for (int i = 0; i < fileCount; i++) {
+						if ("LOCAL".equals((binosURLInput[i].getServiceType()))) {
+							readedRemoteReadFiles[i] = new String(
+									binosURLInput[i].getServiceOpsUrl());
+							LOG.info("Find a local file:"
+									+ binosURLInput[i].toString());
+							continue;
+						}
+						try {
+							InputStream in = BinosDataClient
+									.getInputStream(binosURLInput[i]);
+							OutputStream out = new FileOutputStream(
+									tmpLocalDirPath + "/" + i);
+							readedRemoteReadFiles[i] = new String(
+									tmpLocalDirPath + "/" + i);
+							byte[] buffer = new byte[8192];
+							int k;
+							while ((k = in.read(buffer)) != -1) {
+								out.write(buffer, 0, k);
+							}
+							out.close();
+							in.close();
+							LOG.info("fetch a remote file from "
+									+ binosURLInput[i].toString() + " to "
+									+ readedRemoteReadFiles[i]);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					isReadOver = true;
+					lock.notifyAll();
 				}
 			}
 		};
 		fetchThread.start();
+		synchronized(lock) {
+			while (!isReadOver) {
+				try {
+					lock.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/*change the file path to BinosURL, ensure whether tmpLocalDirPath exists.*/
 	private void initializePath() throws FileNotFoundException {
 		this.binosURLInput = new BinosURL[reduceInputFilePath.length];
+		this.readedRemoteReadFiles = new String[reduceInputFilePath.length];
 		for (int i = 0; i < reduceInputFilePath.length; i++) {
 			this.binosURLInput[i] = new BinosURL(new Text(reduceInputFilePath[i]));
 		}
@@ -77,7 +111,7 @@ public class ReadRemoteFile {
 	 * @param args
 	 */
 	public static void main(String[] args){
-
+		
 	}
 
 }

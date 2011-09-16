@@ -34,6 +34,7 @@ public class WriteIntoFile {
 		try {
 			oos = new ObjectOutputStream(bout);
 			FileOutputStream fout = new FileOutputStream(this.fileName, true);
+			
 			for (int i = 0; i < pairs.size(); i++) {
 				oos.writeObject(pairs.get(i));
 			}

@@ -89,7 +89,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				
 				inputPairs.add(element);
 				capacity += getBytes(element).length;
-				System.out.println(element.toString() + " length:" + getBytes(element).length);
+				//System.out.println(element.toString() + " length:" + getBytes(element).length);
 				if (capacity >= size) {
 					System.out.println("inputPairs.size() == size capacity:"+
 							capacity + " "
@@ -110,7 +110,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				innerFilePartionIndex[partionedNum]++;
 				element = new KVPair(key, value, partionedNum);
 				backupInputPairs.add(element);
-				System.out.println(element.toString() + " length:" + getBytes(element).length);
+				//System.out.println(element.toString() + " length:" + getBytes(element).length);
 				capacity += getBytes(element).length;
 				
 				if (capacity >= size) {

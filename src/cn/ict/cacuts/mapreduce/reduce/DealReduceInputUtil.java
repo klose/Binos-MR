@@ -58,6 +58,13 @@ public class DealReduceInputUtil<KEY, VALUE> {
 	public void merge() {
 		Merger merge = new Merger();
 		try {
+			
+			if (null == readedRemoteReadFiles) {
+				System.out.println("null == readedRemoteReadFiles");
+			}
+			for (String tmp: readedRemoteReadFiles) {
+				System.out.println("readedRemoteReadFiles:"+tmp);
+			}
 			merge.merge(readedRemoteReadFiles, mergedTmpFileName, false) ;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

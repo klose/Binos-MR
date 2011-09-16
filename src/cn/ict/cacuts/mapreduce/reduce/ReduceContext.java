@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,7 +48,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 			String mergeTmpFile, String[] outputPath) {
 		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
 		this.tmpLocalFilePath = tmpLocalFilePath;
-		this.outputPath = outputPath;
+		setOutputPath(outputPath);
 		this.mergeTmpFile = tmpLocalFilePath + mergeTmpFile;
 	}
 	/**
@@ -84,7 +85,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 		try {
 			if ((curList = (KVList<KEYIN, VALUEIN>) in.readObject()) != null) {
 				key = curList.getKey();
-				vlist = (Iterable<VALUEIN>) curList.getValue().iterator();
+				vlist = (Iterable<VALUEIN>) curList;
 				return true;
 			}
 		} catch (IOException e) {
@@ -121,9 +122,12 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 		return outputPath;
 	}
 	
-	public void setOutputPath(String[] outPutPath) {
-		this.outputPath = outPutPath;
-		this.outPut.setOutputPath(outPutPath);
+	private void setOutputPath(String[] outPutPath) {
+		this.outputPath = new String[outPutPath.length];
+		for (int i = 0; i < outPutPath.length; ++i) {
+			this.outputPath[i] = new String(this.tmpLocalFilePath + "/" + outPutPath[i]);
+		}
+		this.outPut.setOutputPath(this.outputPath);
 	}
 	
 	public String[] getReduceRemoteReadFiles() {

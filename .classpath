@@ -10,8 +10,8 @@
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/hadoop-common-0.21.0.jar" sourcepath="/HadoopCommon"/>
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/dom4j-2.0.0-ALPHA-2.jar"/>
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/commons-logging-api-1.1.jar"/>
-	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/binos.jar"/>
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/log4j-1.2.15.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Transformer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Binos"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

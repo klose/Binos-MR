@@ -36,12 +36,14 @@ public class ReduceOperation implements Operation{
 			LOG.error("The input of Map Task should have one input.");
 			return;
 		}
-		
+		System.out.println(inputPath.length+ "inputpath" + inputPath[0]);
+		System.out.println(outputPath.length + "outputPath" + outputPath[0]);
+		System.out.println();
+		System.out.println();
 		ReduceContext context;
 		try {
-			context = new ReduceContext(inputPath,"/tmp/Cacuts/", "merge_final", outputPath);
-			context.setReduceRemoteReadFiles(inputPath);
-			context.setOutputPath(outputPath);
+			context = new ReduceContext(inputPath, properties.getProperty("tmpDir"), "/merge_final", outputPath);
+			
 			Class<? extends Reducer>  reduceClass = (Class<? extends Reducer>) Class.forName(properties.getProperty("reducer.class"));
 			//Class<? extends Reducer>  reduceClass = MRConfig.getReduceClass();
 			Constructor<Reducer> meth = (Constructor<Reducer>) reduceClass.getConstructor(new Class[0]);

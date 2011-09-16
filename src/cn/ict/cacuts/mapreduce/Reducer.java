@@ -1,6 +1,8 @@
 package cn.ict.cacuts.mapreduce;
 
 import java.io.IOException;
+import java.util.Iterator;
+
 import cn.ict.cacuts.mapreduce.reduce.*;
 
 public abstract class Reducer <KEYIN, VALUEIN, KEYOUT, VALUEOUT> {

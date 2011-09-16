@@ -38,7 +38,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	}
 
 	public void receive(KEY key, VALUE value) {
-
+		LOG.info("receive key=" + key + " value=" + value);
 		if (!finishedReceive) {
 			if (writeInputPairs) {
 				element = new FinalKVPair(key, value);
@@ -91,9 +91,9 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	}
 
 
-	public void setOutputPath(String[] outputPath) {
+	public void setOutputPath(String[] outputPath) {	
 		this.fileName = outputPath[0];
-
+		LOG.info("store the output path at:" + this.fileName);
 		if (outputPath == null) {
 			LOG.error("You should set map output path.");
 		}
