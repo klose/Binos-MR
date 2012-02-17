@@ -49,12 +49,13 @@ public class DealMapOutUtil<KEY, VALUE> {
 	HashPartitioner hashPartitioner = new HashPartitioner();
 ////	String tempMapOutFilesPathPrefix = MRConfig.getTempMapOutFilesPathPrefix()
 //			+ "tmpMapOut_";
-	private final String tempMapOutFilesPathPrefix = System.getProperty("user.home")+ "/CactusTest/"
-	+ "tmpMapOut_";
+	//private final String tempMapOutFilesPathPrefix = System.getProperty("user.home")+ "/CactusTest/"
+	//+ "tmpMapOut_";
+	private final String tempMapOutFilesPathPrefix;
 
-
-	public DealMapOutUtil(String[] outputPath) {
+	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix) {
 		setOutputPath(outputPath);
+		this.tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 		this.numberOfReduce = outputPath.length;
 		lists = new ArrayList[this.numberOfReduce];
 		innerFilePartionIndex = new int[this.numberOfReduce];

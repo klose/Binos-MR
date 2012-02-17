@@ -24,6 +24,7 @@ public class MapContext<KEY, VALUE> {
 	private DealMapOutUtil outPut;
 	private FileSplitIndex splitIndex = new FileSplitIndex();
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
+	private final String tempMapOutFilesPathPrefix; // =  "/opt/jiangbing/CactusTest/"
 	private String[] outputPath;
 	static {
 		try {
@@ -34,10 +35,12 @@ public class MapContext<KEY, VALUE> {
 			LOG.error("Cannot open HDFS.");
 		}
 	}
-	public MapContext(String inputPath, String[] outputPath) throws Exception {
+	public MapContext(String inputPath, String[] outputPath, String workingDir) throws Exception {
 		//this.spiltIndexPath = inputPath;
-		this.outputPath = outputPath;
-		this.outPut = new DealMapOutUtil(this.outputPath);
+		
+		setOutputPath(outputPath);
+		this.tempMapOutFilesPathPrefix = workingDir + "/" + "tmpMapOut_"; 
+		this.outPut = new DealMapOutUtil(this.outputPath, this.tempMapOutFilesPathPrefix);
 		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
 		//FSDataInputStream in = fs.open(new Path(inputPath));
 		splitIndex.readFields(ins);
@@ -46,9 +49,6 @@ public class MapContext<KEY, VALUE> {
 	}
 	public boolean hasNextLine() throws IOException {
 		return lineReader.nextKeyValue();
-	}
-	public MapContext() {
-
 	}
 
 	public String getNextLine() {
@@ -72,20 +72,10 @@ public class MapContext<KEY, VALUE> {
 		// TODO Auto-generated method stub
 		outPut.FinishedReceive();
 	}
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String[] keys = { "key1", "key2", "key3", "key4", "key5", "key6" , "key7"};
-		int[] values = { 1, 2, 3, 4, 5, 6 ,7};
-		MapContext tt = new MapContext();
-		for (int i = 0; i < keys.length; i++) {
-			tt.output(keys[i], values[i]);
-		}
-	//	tt.Finished();
-		
+	public String getTempMapOutFilesPathPrefix() {
+		return tempMapOutFilesPathPrefix;
 	}
+	
 	
 
 }

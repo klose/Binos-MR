@@ -36,7 +36,7 @@ public class WordCountTest {
 				sum += iter.next().intValue();
 			}
 			context.output(key, new Integer(sum));
-			System.out.println("hello , i am in the reduce");
+			
 		}
 	}
 

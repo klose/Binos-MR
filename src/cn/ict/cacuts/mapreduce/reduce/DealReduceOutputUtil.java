@@ -16,7 +16,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	private final static Log LOG = LogFactory
 			.getLog(DealReduceOutputUtil.class);
 	// //public int size = 1024 * 1024;
-	public int size = 100;
+	public int size = 128 * 1024;
 	ArrayList inputPairs = new ArrayList();
 	ArrayList backupInputPairs = new ArrayList();
 	String fileName;
@@ -38,7 +38,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	}
 
 	public void receive(KEY key, VALUE value) {
-		LOG.info("receive key=" + key + " value=" + value);
+		//LOG.info("receive key=" + key + " value=" + value);
 		if (!finishedReceive) {
 			if (writeInputPairs) {
 				element = new FinalKVPair(key, value);

@@ -83,7 +83,10 @@ public class Merger extends PriorityQueue{
 				}
 			}
 			initialize(allocateNum);
-			for (int i = 0; (i < length) && (!isSkipPath[i]); i++) {
+			for (int i = 0; i < length; i++) {
+				if (isSkipPath[i]) {
+					continue;
+				}
 				for (int j = 0; j < readCount[i][k]; j++)
 					try {
 						insert((KVPair)(ois[i].readObject()));

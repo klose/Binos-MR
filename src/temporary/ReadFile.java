@@ -1,4 +1,4 @@
-package cn.ict.cacuts.mapreduce.reduce;
+package temporary;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

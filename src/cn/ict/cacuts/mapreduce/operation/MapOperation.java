@@ -31,8 +31,8 @@ public class MapOperation implements Operation{
 
 		MapContext context;
 		try {
-			context = new MapContext(inputPath[0], outputPath);
-			context.setOutputPath(outputPath);
+			context = new MapContext(inputPath[0], outputPath, properties.getProperty("tmpDir"));
+			
 			//Class<? extends Mapper>  mapClass = MRConfig.getMapClass();
 			
 			Class<? extends Mapper>  mapClass = (Class<? extends Mapper>) Class.forName(properties.getProperty("mapper.class"));

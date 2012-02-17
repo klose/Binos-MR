@@ -18,7 +18,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 
 	public String[] reduceInputFilePath;
 	public BinosURL[] binosURLInput;
-	ArrayList dealed = new ArrayList();
+	
 	//public String reduceOutPutFileName;
 //	public Map<KEY, Vector<VALUE>> keyValue;
 	private boolean finishedReceive = false;
