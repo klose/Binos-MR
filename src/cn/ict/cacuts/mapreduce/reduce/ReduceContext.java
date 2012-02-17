@@ -27,7 +27,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 	private static Configuration conf = new Configuration();	
 	private static FileSystem fs;
 	private DealReduceInputUtil receive ;
-	private DealReduceOutputUtil outPut = new DealReduceOutputUtil();
+	private DealReduceOutputUtil outPut ;
 
 	//private FileSplitIndex splitIndex = new FileSplitIndex();
 	//private HdfsFileLineReader lineReader = new HdfsFileLineReader();   /////line reader should not be hdfs reader
@@ -48,6 +48,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 			String mergeTmpFile, String[] outputPath) {
 		this.reduceRemoteReadFiles = reduceRemoteReadFiles;
 		this.tmpLocalFilePath = tmpLocalFilePath;
+		this.outPut = new DealReduceOutputUtil(outputPath);
 		setOutputPath(outputPath);
 		this.mergeTmpFile = tmpLocalFilePath + mergeTmpFile;
 	}

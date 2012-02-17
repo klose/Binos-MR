@@ -38,7 +38,8 @@ public class MapContext<KEY, VALUE> {
 	public MapContext(String inputPath, String[] outputPath, String workingDir) throws Exception {
 		//this.spiltIndexPath = inputPath;
 		
-		setOutputPath(outputPath);
+		this.outputPath  = outputPath;
+		//setOutputPath(outputPath);
 		this.tempMapOutFilesPathPrefix = workingDir + "/" + "tmpMapOut_"; 
 		this.outPut = new DealMapOutUtil(this.outputPath, this.tempMapOutFilesPathPrefix);
 		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
@@ -64,10 +65,10 @@ public class MapContext<KEY, VALUE> {
 	public String[] getOutputPath() {
 		return outputPath;
 	}
-	public void setOutputPath(String[] outputPath) {
-		this.outputPath = outputPath;
-		this.outPut.setOutputPath(outputPath);
-	}
+//	public void setOutputPath(String[] outputPath) {
+//		this.outputPath = outputPath;
+//		this.outPut.setOutputPath(outputPath);
+//	}
 	public void flush() {
 		// TODO Auto-generated method stub
 		outPut.FinishedReceive();

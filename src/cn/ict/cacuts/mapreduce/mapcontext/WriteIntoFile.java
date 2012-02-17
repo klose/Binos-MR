@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class WriteIntoFile {
 
@@ -28,7 +29,7 @@ public class WriteIntoFile {
 		return this.fileName;
 	}
 
-	public void writeIntoFile(ArrayList pairs) {
+	public void writeIntoFile(List pairs) {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
 		ObjectOutputStream oos;
 		try {

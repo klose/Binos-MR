@@ -35,6 +35,7 @@ public abstract class Reducer <KEYIN, VALUEIN, KEYOUT, VALUEOUT> {
 		while (context.nextKey()) {
 			reduce((KEYIN)context.getCurrentKey(), context.getValues(), context);
 		}
+		context.flush();
 		cleanup(context);
 	}
 	
