@@ -8,8 +8,10 @@ import java.io.ObjectInputStream;
 
 import org.apache.hadoop.fs.Path;
 
-import cn.ict.cacuts.mapreduce.mapcontext.KVList;
-import cn.ict.cacuts.mapreduce.mapcontext.KVPair;
+import com.transformer.compiler.DataState;
+
+import cn.ict.cacuts.mapreduce.map.KVList;
+import cn.ict.cacuts.mapreduce.map.KVPair;
 
 import cn.ict.cacuts.mapreduce.Merger;
 /**
@@ -31,7 +33,7 @@ public class testMerger {
 		}
 		String index[] = {"33,51,16", "33,50,17", "34,49,17", "33,51,16", "33,50,17"};
 		try {
-			merger.merge(inputPath, index, outputPath, false);
+			merger.merge(inputPath, index, outputPath, false,DataState.LOCAL_FILE);
 		}catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

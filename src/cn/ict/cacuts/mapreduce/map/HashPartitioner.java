@@ -1,4 +1,4 @@
-package cn.ict.cacuts.mapreduce.mapcontext;
+package cn.ict.cacuts.mapreduce.map;
 
 public class HashPartitioner<K, V> {
 	public int getPartition(K key, V value, int numReduceTasks) {

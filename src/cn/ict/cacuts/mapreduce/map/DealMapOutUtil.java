@@ -1,4 +1,4 @@
-package cn.ict.cacuts.mapreduce.mapcontext;
+package cn.ict.cacuts.mapreduce.map;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -13,20 +13,21 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.serializer.Serializer;
 import org.apache.http.entity.SerializableEntity;
 
+import com.transformer.compiler.DataState;
+
 import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.MRConfig;
-import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Merger;
+import cn.ict.cacuts.mapreduce.WriteIntoDataBus;
 
 public class DealMapOutUtil<KEY, VALUE> {
 
 	private final static Log LOG = LogFactory.getLog(DealMapOutUtil.class);
 	////int numberOfReduce = MRConfig.getReduceTaskNum();
 	private final int numberOfReduce ;
-	
+	private final DataState dataState ;
 	////public int size = 1024 * 1024;
-	public final long size = 1024 * 1024 * 100; // set the memory used by map task
-	
+	public final long size = 1024 * 1024 * 100; // set the memory used by map task	
 	private ArrayList inputPairs = new ArrayList();
 	private ArrayList backupInputPairs = new ArrayList();
 	private final ArrayList[] lists;
@@ -34,6 +35,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	public  String[] mapOutFileIndex = null;//suppose there are no more than 100 interfile
 	private final int[] innerFilePartionIndex ;
 	KVPair element;
+	
 	private static long capacity = 0; // current capacity
 	boolean inputFull = false;
 	boolean writeInputPairs = true;
@@ -41,7 +43,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	boolean finishedWriteInputPairs = false;
 	boolean finishedWriteBackupInputPairs = false;
 	int partionedNum;
-	int tmpFileNum = 0;
+	int tmpDataNum = 0;
 	
 
 	String indexString = "";
@@ -53,14 +55,16 @@ public class DealMapOutUtil<KEY, VALUE> {
 	//+ "tmpMapOut_";
 	private final String tempMapOutFilesPathPrefix;
 
-	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix) {
+	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix, DataState state) {
 		setOutputPath(outputPath);
+		this.dataState = state;
 		this.tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 		this.numberOfReduce = outputPath.length;
 		lists = new ArrayList[this.numberOfReduce];
 		innerFilePartionIndex = new int[this.numberOfReduce];
 	}
-
+	
+	
 	private static byte[] getBytes(Object obj) {
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
 		ObjectOutputStream out;
@@ -138,7 +142,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 
 
 	public void dealReceivedUtil(ArrayList inputPairs,int[] innerFilePartionIndex) {
-		tmpFileNum++;
+		tmpDataNum++;
 		dealFileIndexContext(innerFilePartionIndex);
 		sortAndSaveDatas(inputPairs);
 	}
@@ -153,7 +157,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 
 
 	public void sortAndSaveDatas(ArrayList inputPairs) {
-		String dataName = tempMapOutFilesPathPrefix + tmpFileNum;
+		String dataName = tempMapOutFilesPathPrefix + tmpDataNum;
 		SaveDatas(sortDatas(inputPairs), dataName);
 	}
 
@@ -164,9 +168,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 	}
 
 	public void SaveDatas(Object[] sorted, String fileName) {
-		WriteIntoFile tt = new WriteIntoFile();
-		tt.setFileName(fileName);
-		tt.writeIntoFile(sorted);
+		WriteIntoDataBus tt = new WriteIntoDataBus(fileName);
+		tt.executeWrite(sorted);
 	}
 	/**
 	 * the last phase of map process is to merge.
@@ -188,9 +191,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 		Merger merge = new Merger();
 		Path[] inputPath;
 		Path[] outputPath;
-		if (tmpFileNum > 0) {
-			inputPath = new Path[tmpFileNum];
-			for (int i = 0; i < tmpFileNum; i++) {
+		if (tmpDataNum > 0) {
+			inputPath = new Path[tmpDataNum];
+			for (int i = 0; i < tmpDataNum; i++) {
 				inputPath[i] = new Path(tempMapOutFilesPathPrefix + (i+1));
 			}
 			if (null != fileName) {
@@ -201,7 +204,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				}
 				if (null != mapOutFileIndex)
 					try {
-						merge.merge(inputPath, mapOutFileIndex, outputPath, false);
+						merge.merge(inputPath, mapOutFileIndex, outputPath, true,this.dataState);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -215,7 +218,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 		}
 		else {
 			LOG.error("MapPhase: Merge process occurs a error: \n" 
-					+ "There are " + this.tmpFileNum + "intermediate files.");
+					+ "There are " + this.tmpDataNum + "intermediate files.");
 			System.exit(-1);
 		}
 		
@@ -281,7 +284,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 		output[0] = new Path("/tmp/testoutput0");
 		output[1] = new Path("/tmp/testoutput1");
 		try {
-			merger.merge(input, index, output, false);
+			merger.merge(input, index, output, false, DataState.LOCAL_FILE);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

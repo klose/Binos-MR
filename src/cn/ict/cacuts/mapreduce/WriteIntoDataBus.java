@@ -1,4 +1,4 @@
-package cn.ict.cacuts.mapreduce.mapcontext;
+package cn.ict.cacuts.mapreduce;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -28,7 +28,7 @@ public class WriteIntoDataBus {
 	}
 	
 	//dataName has its own data transmit type.
-	public void confirmDataType() {
+	private void confirmDataType() {
 		
 		if (dataName.matches(JobConfiguration.getMsgHeader() + ".*")) {
 			dataState = DataState.MESSAGE_POOL;
@@ -53,6 +53,52 @@ public class WriteIntoDataBus {
 		else if (this.dataState == DataState.MESSAGE_POOL) {
 			writeIntoMsgPool(pairs, this.dataName);
 		}
+	}
+	public void executeWrite(Object[] values) {
+		if (this.dataState == DataState.LOCAL_FILE) {
+			writeIntoFile(values, this.dataName);
+		}
+		else if (this.dataState == DataState.MESSAGE_POOL) {
+			writeIntoMsgPool(values, this.dataName);
+		}
+	}
+	
+	private void writeIntoFile(Object[] values, String dataName) {
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream(bout);
+			FileOutputStream fout = new FileOutputStream(dataName, true);
+			for (int i = 0; i < values.length; i++) {
+				oos.writeObject(values[i]);
+			}
+			oos.flush();			
+			fout.write(bout.toByteArray());	
+			fout.flush();
+			bout.close();
+			oos.close();
+			fout.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private void writeIntoMsgPool(Object[] values, String dataName) {
+		MessageClientChannel mcc = new MessageClientChannel();
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(); 
+		ObjectOutputStream oos;		
+		try {
+			oos = new ObjectOutputStream(bout);
+
+			for (int i = 0; i < values.length; i++) {
+				oos.writeObject(values[i]);
+			}
+			oos.flush();
+			mcc.putValue(dataName, bout.toByteArray());
+			bout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 	}
 	private void writeIntoMsgPool(List pairs, String dataName) {
 		MessageClientChannel mcc = new MessageClientChannel();

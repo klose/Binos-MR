@@ -1,4 +1,4 @@
-package cn.ict.cacuts.mapreduce.mapcontext;
+package cn.ict.cacuts.mapreduce.map;
 
 import java.util.ArrayList;
 import java.util.Arrays;

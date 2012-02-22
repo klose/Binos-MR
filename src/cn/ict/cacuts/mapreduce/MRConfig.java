@@ -10,7 +10,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import cn.ict.cacuts.mapreduce.mapcontext.KVList;
+import cn.ict.cacuts.mapreduce.map.KVList;
 import cn.ict.cacuts.mapreduce.reduce.FinalKVPair;
 
 

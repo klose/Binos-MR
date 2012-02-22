@@ -1,5 +1,5 @@
 
-package cn.ict.cacuts.mapreduce.mapcontext;
+package cn.ict.cacuts.mapreduce.map;
 
 import java.io.Serializable;
 

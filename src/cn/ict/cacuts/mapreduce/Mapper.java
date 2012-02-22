@@ -1,5 +1,7 @@
 package cn.ict.cacuts.mapreduce;
 import java.io.IOException;
+
+import cn.ict.cacuts.mapreduce.map.MapContext;
 /**
  * Mapper : the base workflow of mapper operation.
  * @author jiangbing

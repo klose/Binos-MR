@@ -3,8 +3,8 @@ package temporary;
 import com.transformer.compiler.JobProperties;
 
 import cn.ict.cacuts.mapreduce.MRConfig;
-import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Mapper;
+import cn.ict.cacuts.mapreduce.map.MapContext;
 import cn.ict.cacuts.mapreduce.operation.MapOperation;
 
 

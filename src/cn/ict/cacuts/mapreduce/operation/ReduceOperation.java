@@ -9,9 +9,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
 
 import cn.ict.cacuts.mapreduce.MRConfig;
-import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Mapper;
 import cn.ict.cacuts.mapreduce.Reducer;
+import cn.ict.cacuts.mapreduce.map.MapContext;
 import cn.ict.cacuts.mapreduce.reduce.ReduceContext;
 import cn.ict.cacuts.test.WordCountTest;
 

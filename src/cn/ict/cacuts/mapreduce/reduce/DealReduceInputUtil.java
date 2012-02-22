@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-
 import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.Merger;
-import cn.ict.cacuts.mapreduce.mapcontext.WriteIntoFile;
 
 
 

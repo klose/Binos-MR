@@ -9,8 +9,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
 
 import cn.ict.cacuts.mapreduce.MRConfig;
-import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Mapper;
+import cn.ict.cacuts.mapreduce.map.MapContext;
 import cn.ict.cacuts.test.WordCountTest;
 
 import com.transformer.compiler.JobProperties;
@@ -33,11 +33,9 @@ public class MapOperation implements Operation{
 		try {
 			context = new MapContext(inputPath[0], outputPath, properties.getProperty("tmpDir"));
 			
-			//Class<? extends Mapper>  mapClass = MRConfig.getMapClass();
-			
 			Class<? extends Mapper>  mapClass = (Class<? extends Mapper>) Class.forName(properties.getProperty("mapper.class"));
 			
-			System.out.println("&&&&&&&&&&&&&&&&&&&" + mapClass.getName());
+			//System.out.println("&&&&&&&&&&&&&&&&&&&" + mapClass.getName());
 			Constructor<Mapper> meth = (Constructor<Mapper>) mapClass.getConstructor(new Class[0]);
 			meth.setAccessible(true);
 			meth.newInstance().run(context);

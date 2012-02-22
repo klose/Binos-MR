@@ -16,9 +16,9 @@ import org.apache.hadoop.fs.Path;
 
 import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.HdfsFileLineReader;
-import cn.ict.cacuts.mapreduce.MapContext;
-import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
-import cn.ict.cacuts.mapreduce.mapcontext.KVList;
+import cn.ict.cacuts.mapreduce.map.DealMapOutUtil;
+import cn.ict.cacuts.mapreduce.map.KVList;
+import cn.ict.cacuts.mapreduce.map.MapContext;
 
 public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 

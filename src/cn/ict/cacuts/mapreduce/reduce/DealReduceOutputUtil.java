@@ -1,17 +1,14 @@
 package cn.ict.cacuts.mapreduce.reduce;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import cn.ict.cacuts.mapreduce.MRConfig;
-import cn.ict.cacuts.mapreduce.MapContext;
-import cn.ict.cacuts.mapreduce.mapcontext.KVList;
-import cn.ict.cacuts.mapreduce.mapcontext.WriteIntoFile;
+import cn.ict.cacuts.mapreduce.WriteIntoDataBus;
+
 
 public class DealReduceOutputUtil<KEY, VALUE> {
 
@@ -96,62 +93,15 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 				SaveDatas(inputPairs);
 				writeInputPairs = false;
 				writeFinished = true;
-//				if (allWaiting) {
-//					synchronized (waitingAction) {
-//						allWaiting = false;
-//						waitingAction.notify();
-//					}
-//				}
 			}
 		}
 	}
-	/*
-	public void receive(KEY key, VALUE value) {
-		LOG.info("receive key=" + key + " value=" + value);
-		if (!finishedReceive) {
-			LOG.info("test1");
-			if (writeInputPairs) {
-				LOG.info("test2");
-				element = new FinalKVPair(key, value);
-				inputPairs.add(element);
-				if (inputPairs.size() == size) {
-					LOG.info("test3");
-					System.out.println("inputPairs.size() == size "
-							+ inputPairs.size());
-					writeInputPairs = false;
-					finishedWriteInputPairs = false;
-					SaveDatas(inputPairs);
-					inputPairs.clear();
-					finishedWriteInputPairs = true;
-				}
-			} else {
-				LOG.info("test4");
-				element = new FinalKVPair(key, value);
-				backupInputPairs.add(element);
-				if (backupInputPairs.size() == size) {
-					LOG.info("test5");
-					System.out.println("backupInputPairs.size() == size "
-							+ backupInputPairs.size());
-					finishedWriteBackupInputPairs = false;
-					if (finishedWriteInputPairs) {
-						LOG.info("test6");
-						writeInputPairs = true;
-					}
-					LOG.info("test7");
-					SaveDatas(backupInputPairs);
-					backupInputPairs.clear();
-					finishedWriteBackupInputPairs = true;
-				}
-			}
-		}
-	}*/
-	
 
+	
 	public void SaveDatas(List pairs) {
 		System.out.println("Binos-test: save reduce output length:" + pairs.size());
-		WriteIntoFile tt = new WriteIntoFile();
-		tt.setFileName(fileName);
-		tt.writeIntoFile(pairs);
+		WriteIntoDataBus tt = new WriteIntoDataBus(fileName);
+		tt.executeWrite(pairs);
 	}
 
 	public void FinishedReceive() {
@@ -160,12 +110,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 			if(!writeInputPairs)
 				writeAction.notify();
 		}
-//		if (inputPairs.size() != 0) {
-//			SaveDatas(inputPairs);
-//		}
-//		if (backupInputPairs.size() != 0) {
-//			SaveDatas(backupInputPairs);
-//		}
+
 		System.out.println("***********************over********************");
 	}
 

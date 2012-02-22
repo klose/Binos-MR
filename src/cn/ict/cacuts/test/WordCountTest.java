@@ -3,9 +3,9 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 import org.apache.hadoop.io.Text;
 import cn.ict.cacuts.mapreduce.MRConfig;
-import cn.ict.cacuts.mapreduce.MapContext;
 import cn.ict.cacuts.mapreduce.Mapper;
 import cn.ict.cacuts.mapreduce.Reducer;
+import cn.ict.cacuts.mapreduce.map.MapContext;
 import cn.ict.cacuts.mapreduce.reduce.ReduceContext;
 import cn.ict.cacuts.userinterface.MRJob;
 

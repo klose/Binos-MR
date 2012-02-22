@@ -8,6 +8,9 @@ public class testOutput<KEY, VALUE> {
 		if (a.matches("MSG://.*")) {
 			System.out.println("right");
 		}
+		String workDir = "/a/bc/1111";
+		String taskid = workDir.substring(workDir.lastIndexOf("/") +1); 
+		System.out.println(taskid);
 	}
 	
 }
