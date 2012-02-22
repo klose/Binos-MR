@@ -153,9 +153,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 
 
 	public void sortAndSaveDatas(ArrayList inputPairs) {
-		String fileName;
-		fileName = tempMapOutFilesPathPrefix + tmpFileNum;
-		SaveDatas(sortDatas(inputPairs), fileName);
+		String dataName = tempMapOutFilesPathPrefix + tmpFileNum;
+		SaveDatas(sortDatas(inputPairs), dataName);
 	}
 
 	public Object[] sortDatas(ArrayList inputPairs) {

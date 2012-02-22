@@ -49,6 +49,7 @@ public class WordCountTest {
 		job.setOutputFileName(outputFileName);
 		job.setMapperClass(TokenizerMapper.class);
 		job.setReducerClass(IntSumReducer.class);
+		
 		job.setNumReduceTasks(4);
 		job.submit();
 	}

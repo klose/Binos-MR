@@ -11,6 +11,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 
+import com.transformer.compiler.JobConfiguration;
+
 import cn.ict.binos.transmit.BinosDataClient;
 import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.mapcontext.DealMapOutUtil;
@@ -24,7 +26,7 @@ public class MapContext<KEY, VALUE> {
 	private DealMapOutUtil outPut;
 	private FileSplitIndex splitIndex = new FileSplitIndex();
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
-	private final String tempMapOutFilesPathPrefix; // =  "/opt/jiangbing/CactusTest/"
+	private String tempMapOutFilesPathPrefix; // =  "/opt/jiangbing/CactusTest/"
 	private String[] outputPath;
 	static {
 		try {
@@ -40,7 +42,7 @@ public class MapContext<KEY, VALUE> {
 		
 		this.outputPath  = outputPath;
 		//setOutputPath(outputPath);
-		this.tempMapOutFilesPathPrefix = workingDir + "/" + "tmpMapOut_"; 
+		this.setTempMapOutFilesPathPrefix(workingDir);
 		this.outPut = new DealMapOutUtil(this.outputPath, this.tempMapOutFilesPathPrefix);
 		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
 		//FSDataInputStream in = fs.open(new Path(inputPath));
@@ -48,6 +50,18 @@ public class MapContext<KEY, VALUE> {
 		lineReader.initialize(splitIndex);
 		
 	}
+	
+	//set the path as to  different transmit type.
+	public void setTempMapOutFilesPathPrefix(String workDir) {
+		if (workDir.matches(JobConfiguration.getMsgHeader() + ".*")) {
+			this.tempMapOutFilesPathPrefix = workDir + "tmpMapOut";
+		}
+		else {
+			//support local file path
+			this.tempMapOutFilesPathPrefix = workDir + "/tmpMapOut";
+		}
+	}
+
 	public boolean hasNextLine() throws IOException {
 		return lineReader.nextKeyValue();
 	}
