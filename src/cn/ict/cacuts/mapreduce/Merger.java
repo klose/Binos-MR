@@ -1,5 +1,4 @@
 package cn.ict.cacuts.mapreduce;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,7 +10,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.WeakHashMap;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -223,7 +221,7 @@ public class Merger extends PriorityQueue{
 					list = new KVList(pair);
 				}
 				else {
-					//isNewObject = false;
+					
 					list.addVal(pair.getValue());
 				}
 				originKey = key;
@@ -248,6 +246,10 @@ public class Merger extends PriorityQueue{
 			}
 		}
 	}
+	
+	
+	
+	
 	/**
 	 * Merge a array of files into a large sequential file
 	 * @param input: the array of file 
@@ -256,7 +258,16 @@ public class Merger extends PriorityQueue{
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	public <K extends Object, V extends Object> void merge(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
+	
+	public  <K extends Object, V extends Object> void merge(Path[] input, Path output, boolean isDelete, DataState state) throws FileNotFoundException, IOException {
+		if (state == DataState.LOCAL_FILE) {
+			mergeOnLocalFile(input, output, isDelete);
+		}
+		else if (state == DataState.MESSAGE_POOL){
+			mergeOnMsgPool(input,output,isDelete);
+		}
+	}
+	private <K extends Object, V extends Object> void mergeOnLocalFile(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
 		int length = input.length;
 		ObjectInputStream[] ois = new ObjectInputStream[length];
 		FileInputStream[] fis = new FileInputStream[length];
@@ -372,18 +383,140 @@ public class Merger extends PriorityQueue{
 			}
 		}
 	}
+	
+	private <K extends Object, V extends Object>
+		void mergeOnMsgPool(Path[] input, Path output, boolean isDelete) throws IOException {
+		int length = input.length;
+		ByteArrayInputStream[] bais = new ByteArrayInputStream[length];
+		ObjectInputStream[] ois = new ObjectInputStream[length];
+		MessageClientChannel mcc = new MessageClientChannel();
+		boolean[] isSkipPath = new boolean[length];
+		int initialSize = length;
+		for (int i = 0; i < length; i++) {
+			String path = input[i].toString();
+			byte[] data = mcc.getValue(path);
+			bais[i] = new ByteArrayInputStream(data);
+			ois[i] = new ObjectInputStream(bais[i]);	
+
+			//System.out.println(ois[i].available());
+			/*eliminate the file without data.*/
+			if (data.length >0) {
+				isSkipPath[i] = false;
+			}
+			else {
+				isSkipPath[i] = true;
+				initialSize --;
+			}
+		}
+		
+		/*handle special situation: each file has no data.*/
+		if (initialSize <= 0) {
+			return;
+		}
+		
+		/*initialize the heap size*/
+		initialize(initialSize);
+		
+		/*searchPathIndex is used to store the KVList in the Priority Queue and correlated index of input stream. 
+		 */
+		Map<KVList, Integer> searchPathIndex = new WeakHashMap<KVList,Integer>(initialSize);
+		
+		/*initialize the heap with first record from every file.*/
+		for (int i = 0; i < length && !isSkipPath[i]; i++) {
+			try {
+				KVList tmp = (KVList)(ois[i].readObject());
+				insert((KVList)tmp);
+				searchPathIndex.put(tmp, i);
+				if (ois[i].available() == 0) {
+					isSkipPath[i] = true;
+					initialSize --;
+				}
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(
+				baos);
+		System.out.println(output.toString());
+		K originKey = null;
+		KVList curList = null;
+		while (true) {
+			if (initialSize == 0) {
+				break;
+			}
+			KVList tmp = (KVList)pop();
+			if (curList == null) {
+				curList = tmp;
+				originKey = (K) curList.getKey();
+			}
+			else {
+				if (originKey.equals(tmp.getKey())) {
+					curList.appendVec(tmp.getValue());
+				}
+				else {
+					oos.writeObject(curList);
+					curList = tmp;
+					originKey = (K)tmp.getKey();
+				}
+			}
+			int i = searchPathIndex.get(tmp);
+			searchPathIndex.remove(tmp);
+			if (ois[i].available() <= 0) {
+				if (!isSkipPath[i]) {
+					initialSize --;
+					isSkipPath[i] = true;
+				}
+			}
+			else {
+				try {
+					tmp = (KVList)(ois[i].readObject());
+					searchPathIndex.put(tmp, i);
+					insert(tmp);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		/*ensure that the last curList is writen to file*/
+		if (curList != null)
+			oos.writeObject(curList);
+		
+		KVList remainingRecTmp = null; 
+		while ((remainingRecTmp = (KVList) pop()) != null) {
+			oos.writeObject(remainingRecTmp);
+		}
+		searchPathIndex.clear();
+		clear();
+		oos.flush();
+		if (isDelete) {
+			// take priority to make room for insert new data.
+			for (int i = 0; i < length; i++) {
+				mcc.FreeData(input[i].toString());
+			}
+		}
+		mcc.putValue(output.toString(), baos.toByteArray());
+		baos.close();
+		oos.close();
+		for (ObjectInputStream oisTmp: ois) {
+			oisTmp.close();
+		}
+	}
+	
 	public <K extends Object, V extends Object> 
-		void merge(String[] input, String output, boolean isDelete) throws FileNotFoundException, IOException {
+		void merge(String[] input, String output, boolean isDelete, DataState state) throws FileNotFoundException, IOException {
 		Path[] inputPath = new Path[input.length];
 		for (int i = 0; i < input.length; i++) {
 			inputPath[i] = new Path(input[i]);
 		}
 		Path  outputPath = new Path(output);
-		merge(inputPath, outputPath, isDelete); 
+		merge(inputPath, outputPath, isDelete, state); 
 	}
 	
 	public <K extends Object, V extends Object> 
-		void merge(String[] input, String[] index, String[] output, boolean isDelete) throws IOException {
+		void merge(String[] input, String[] index, String[] output, boolean isDelete, DataState state) throws IOException {
 	Path[] inputPath = new Path[input.length];
 	for (int i = 0; i < input.length; i++) {
 		inputPath[i] = new Path(input[i]);
@@ -392,8 +525,9 @@ public class Merger extends PriorityQueue{
 	for (int i = 0; i < output.length; i++) {
 		outputPath[i] = new Path(output[i]);
 	}
-	merge(inputPath, index, outputPath, isDelete, DataState.LOCAL_FILE); 
+	merge(inputPath, index, outputPath, isDelete, state); 
 }
+	
 	/**
 	 * Merge the intermediate file that map() generate.The function will generate the array of output path whose 
 	 * length equals the number of reduce tasks.  

@@ -24,8 +24,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 
 
 	private final static Log LOG = LogFactory.getLog(ReduceContext.class);
-	private static Configuration conf = new Configuration();	
-	private static FileSystem fs;
+	
 	private DealReduceInputUtil receive ;
 	private DealReduceOutputUtil outPut ;
 

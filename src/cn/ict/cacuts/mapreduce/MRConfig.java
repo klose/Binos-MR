@@ -26,6 +26,8 @@ public class  MRConfig {
 	private  int mapTaskNum = 1;
 	private  int reduceTaskMem = 100*1024*1024;
 	private  int reduceTaskNum = 1;
+	private  static int fetchThreadNum = 3; 
+	
 	private  static long splitFileSize = 64*1024*1024; //use a hdfs block size as default value.
 	private  Class mapContextKeyClass = String.class;
 	private  Class mapContextValueClass = Integer.class;
@@ -94,6 +96,13 @@ public class  MRConfig {
 	public  void setReduceTaskNum(int reduceTaskNum) {
 		this.reduceTaskNum = reduceTaskNum;
 	}
+	public static int getFetchThreadNum() {
+		return fetchThreadNum;
+	}
+	public static void setFetchThreadNum(int threadNum) {
+		fetchThreadNum = threadNum;
+	}
+
 	public  long getSplitFileSize() {
 		return splitFileSize;
 	}

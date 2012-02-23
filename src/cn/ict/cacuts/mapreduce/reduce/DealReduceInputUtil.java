@@ -1,5 +1,6 @@
 package cn.ict.cacuts.mapreduce.reduce;
 
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,84 +8,94 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+
+import com.transformer.compiler.DataState;
+import com.transformer.compiler.JobConfiguration;
+
 import cn.ict.binos.transmit.BinosURL;
+import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Merger;
 
 
 
 public class DealReduceInputUtil<KEY, VALUE> {
 
-	public String[] reduceInputFilePath;
+	public String[] reduceDataInputPath;
 	public BinosURL[] binosURLInput;
-	
-	//public String reduceOutPutFileName;
+	private DataState state;
+	//public String reduceOutPutDataName;
 //	public Map<KEY, Vector<VALUE>> keyValue;
 	private boolean finishedReceive = false;
-	// read remote files to save into local disk
-	String tmpLocalFilePath;
-	String[] readedRemoteReadFiles;
-	String mergedTmpFileName;
+	// read remote Datas to save into local disk
+	String tmpLocalDataPath;
+	String[] readedRemoteDatas;
+	String mergedTmpDataName;
 
-	public DealReduceInputUtil(){}
-	public DealReduceInputUtil(String[] reduceInputFilePath,String tmpLocalFilePath, String mergedTmpFileName) {
-		this.reduceInputFilePath = reduceInputFilePath;
-		this.tmpLocalFilePath = tmpLocalFilePath;
-		this.mergedTmpFileName = mergedTmpFileName;
-	
+	public DealReduceInputUtil(String[] reduceDataInputPath,String tmpLocalDataPath, String mergedTmpDataName) {
+		this.reduceDataInputPath = reduceDataInputPath;
+		this.tmpLocalDataPath = tmpLocalDataPath;
+		this.mergedTmpDataName = mergedTmpDataName;
+		if (!reduceDataInputPath[0].matches(JobConfiguration.getMsgHeader()+ ".*")) {
+			this.state = DataState.REMOTE_FILE;
+		}
+		else {
+			this.state = DataState.MESSAGE_POOL;
+		}
 	}
 	
 	public void prepared(){
-		readFiles();
+		readDatas();
 		merge();
 	}
 	
-
-
-	public void readFiles() {
-		ReadRemoteFile readRemoteFile = null;
-		try {
-			readRemoteFile = new ReadRemoteFile(reduceInputFilePath,
-					tmpLocalFilePath);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void readDatas() {
+		if (this.state == DataState.REMOTE_FILE) {
+			ReadRemoteData readRemoteData = null;
+			readRemoteData = new ReadRemoteData(reduceDataInputPath,
+						tmpLocalDataPath, MRConfig.getFetchThreadNum());
+			readRemoteData.launchFetchData();
+			this.readedRemoteDatas = readRemoteData.getReadedRemotePath();
+			this.state = DataState.LOCAL_FILE;//the remote data fetched locally.
 		}
-		readRemoteFile.launchFetchFiles();
-		this.readedRemoteReadFiles = readRemoteFile.getReduceRemoteReadFiles();
+		
 	}
 
 	public void merge() {
 		Merger merge = new Merger();
-		try {
+		
 			
-			if (null == readedRemoteReadFiles) {
-				System.out.println("null == readedRemoteReadFiles");
+			if (null == this.readedRemoteDatas) {
+				System.out.println("null == readedRemoteDatas");
 			}
-			for (String tmp: readedRemoteReadFiles) {
-				System.out.println("readedRemoteReadFiles:"+tmp);
+			for (String tmp: readedRemoteDatas) {
+				System.out.println("readedRemoteDatas:"+tmp);
 			}
-			merge.merge(readedRemoteReadFiles, mergedTmpFileName, false) ;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			try {
+				merge.merge(readedRemoteDatas, mergedTmpDataName, false, this.state) ;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 
 	}
 
-	public void setInputFilePath(String[] reduceInputPath) {
-		this.reduceInputFilePath = reduceInputPath;
+	public void setInputDataPath(String[] reduceInputPath) {
+		this.reduceDataInputPath = reduceInputPath;
 	}
 
-	public String[] getInputFilePath() {
-		return this.reduceInputFilePath;
+	public String[] getInputDataPath() {
+		return this.reduceDataInputPath;
 	}
 
-	public String getTmpLocalFilePath() {
-		return tmpLocalFilePath;
+	public String getTmpLocalDataPath() {
+		return tmpLocalDataPath;
 	}
 	
-	public void setTmpLocalFilePath(String tmpLocalFilePath) {
-		this.tmpLocalFilePath = tmpLocalFilePath;
+	public void setTmpLocalDataPath(String tmpLocalDataPath) {
+		this.tmpLocalDataPath = tmpLocalDataPath;
 	}
 	public void FinishedReceive() {
 		this.finishedReceive = true;
@@ -100,12 +111,12 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		String[] inputPath = {
 				System.getProperty("user.home") + "/CactusTest/map_1_out_0",
 				System.getProperty("user.home") + "/CactusTest/map_1_out_1" };
-		String reduceOutPutFileName = System.getProperty("user.home")
+		String reduceOutPutDataName = System.getProperty("user.home")
 				+ "/CactusTest/" + "reduce_out";
-		String mergeFilePath = System.getProperty("user.home") +
+		String mergeDataPath = System.getProperty("user.home") +
 				 "/CactusTest/merger_final";
 		DealReduceInputUtil tt = new DealReduceInputUtil(inputPath,
-				reduceOutPutFileName, mergeFilePath);
+				reduceOutPutDataName, mergeDataPath);
 		tt.prepared();
 	}
 
