@@ -78,6 +78,7 @@ public class WriteIntoDataBus {
 			bout.close();
 			oos.close();
 			fout.close();
+			System.out.println("kkkk :writeIntoFile" + dataName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -95,6 +96,7 @@ public class WriteIntoDataBus {
 			oos.flush();
 			mcc.putValue(dataName, bout.toByteArray());
 			bout.close();
+			System.out.println("kkkk :writeIntoMsgPool" + dataName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,6 +115,7 @@ public class WriteIntoDataBus {
 			oos.flush();
 			mcc.putValue(dataName, bout.toByteArray());
 			bout.close();
+			System.out.println("kkkk :writeIntoMsgPool" + dataName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -120,6 +123,7 @@ public class WriteIntoDataBus {
 			
 	}
 	private void writeIntoFile(List pairs, String dataName) {
+		
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();   
 		ObjectOutputStream oos;
 		try {
@@ -136,6 +140,7 @@ public class WriteIntoDataBus {
 			bout.close();
 			oos.close();
 			fout.close();
+			System.out.println("kkkk :writeIntoFile" + dataName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

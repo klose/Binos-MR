@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.transformer.compiler.DataState;
+
 import cn.ict.cacuts.mapreduce.WriteIntoDataBus;
 
 
@@ -15,17 +17,12 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	private final static Log LOG = LogFactory
 			.getLog(DealReduceOutputUtil.class);
 	// //public int size = 1024 * 1024;
+	private DataState state;
 	public int size =  1024;
 	CopyOnWriteArrayList inputPairs = new CopyOnWriteArrayList();
 	ArrayList backupInputPairs = new ArrayList();
 	String fileName;
 	FinalKVPair element;
-	
-	/*boolean inputFull = false;
-	boolean writeInputPairs = true;
-	boolean finishedReceive = false;
-	boolean finishedWriteInputPairs = false;
-	boean finishedWriteBackupInputPairs = false;*/
 	private volatile boolean writeFinished = false;
 	private volatile boolean writeInputPairs = false;
 	//private volatile boolean allWaiting = false;
@@ -37,8 +34,9 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	}
 
 
-	public DealReduceOutputUtil(String[] outputPath) {
+	public DealReduceOutputUtil(String[] outputPath, DataState state) {
 		setOutputPath(outputPath);
+		this.state = state;
 		new writePairsThread().start();
 	}
 	public void receive(KEY key, VALUE value)  {	
@@ -119,7 +117,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		this.fileName = outputPath[0];
 		LOG.info("store the output path at:" + this.fileName);
 		if (outputPath == null) {
-			LOG.error("You should set map output path.");
+			LOG.error("You should set reduce output path.");
 		}
 	}
 

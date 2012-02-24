@@ -39,12 +39,12 @@ public class MapContext<KEY, VALUE> {
 			LOG.error("Cannot open HDFS.");
 		}
 	}
-	public MapContext(String inputPath, String[] outputPath, String workingDir) throws Exception {
+	public MapContext(String inputPath, String[] outputPath, String workingDir, String taskId) throws Exception {
 		//this.spiltIndexPath = inputPath;
 		
 		this.outputPath  = outputPath;
 		//setOutputPath(outputPath);
-		this.setTempMapOutFilesPathPrefix(workingDir);
+		this.setTempMapOutFilesPathPrefix(workingDir, taskId);
 		this.outPut = new DealMapOutUtil(this.outputPath, this.tempMapOutPathPrefix, this.dataState);
 		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
 		//FSDataInputStream in = fs.open(new Path(inputPath));
@@ -54,12 +54,10 @@ public class MapContext<KEY, VALUE> {
 	}
 	
 	//set the path as to  different transmit type.
-	public void setTempMapOutFilesPathPrefix(String workDir) {
+	public void setTempMapOutFilesPathPrefix(String workDir, String taskid) {
 		
-		if (this.outputPath[0].startsWith("MESSAGE")) {
-			String taskid = workDir.substring(workDir.lastIndexOf("/") +1); 
-			this.tempMapOutPathPrefix = JobConfiguration.getMsgHeader() + JobConfiguration.getCreateTime() + "-" +
-					taskid + "tmpMapOut";
+		if (this.outputPath[0].startsWith("MESSAGE")) { 
+			this.tempMapOutPathPrefix = JobConfiguration.getMsgHeader() + taskid+ "tmpMapOut";
 			this.dataState = DataState.MESSAGE_POOL;
 		}
 		else {

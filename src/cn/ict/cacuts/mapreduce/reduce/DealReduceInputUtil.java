@@ -3,15 +3,7 @@ package cn.ict.cacuts.mapreduce.reduce;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
-
 import com.transformer.compiler.DataState;
-import com.transformer.compiler.JobConfiguration;
-
 import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Merger;
@@ -25,22 +17,17 @@ public class DealReduceInputUtil<KEY, VALUE> {
 	private DataState state;
 	//public String reduceOutPutDataName;
 //	public Map<KEY, Vector<VALUE>> keyValue;
-	private boolean finishedReceive = false;
+//	private boolean finishedReceive = false;
 	// read remote Datas to save into local disk
 	String tmpLocalDataPath;
 	String[] readedRemoteDatas;
 	String mergedTmpDataName;
 
-	public DealReduceInputUtil(String[] reduceDataInputPath,String tmpLocalDataPath, String mergedTmpDataName) {
+	public DealReduceInputUtil(String[] reduceDataInputPath,String tmpLocalDataPath, String mergedTmpDataName, DataState state) {
 		this.reduceDataInputPath = reduceDataInputPath;
 		this.tmpLocalDataPath = tmpLocalDataPath;
 		this.mergedTmpDataName = mergedTmpDataName;
-		if (!reduceDataInputPath[0].matches(JobConfiguration.getMsgHeader()+ ".*")) {
-			this.state = DataState.REMOTE_FILE;
-		}
-		else {
-			this.state = DataState.MESSAGE_POOL;
-		}
+		this.state = state;
 	}
 	
 	public void prepared(){
@@ -48,7 +35,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		merge();
 	}
 	
-	public void readDatas() {
+	private void readDatas() {
 		if (this.state == DataState.REMOTE_FILE) {
 			ReadRemoteData readRemoteData = null;
 			readRemoteData = new ReadRemoteData(reduceDataInputPath,
@@ -57,13 +44,17 @@ public class DealReduceInputUtil<KEY, VALUE> {
 			this.readedRemoteDatas = readRemoteData.getReadedRemotePath();
 			this.state = DataState.LOCAL_FILE;//the remote data fetched locally.
 		}
-		
+		else if (this.state == DataState.MESSAGE_POOL) {
+			this.readedRemoteDatas  = new String[reduceDataInputPath.length];
+			for (int i = 0; i < reduceDataInputPath.length; i++) {
+				this.readedRemoteDatas[i] = new String(
+						BinosURL.getOpsUrl(reduceDataInputPath[i]));
+			}
+		}
 	}
 
-	public void merge() {
-		Merger merge = new Merger();
-		
-			
+	private void merge() {
+		Merger merge = new Merger();	
 			if (null == this.readedRemoteDatas) {
 				System.out.println("null == readedRemoteDatas");
 			}
@@ -97,11 +88,11 @@ public class DealReduceInputUtil<KEY, VALUE> {
 	public void setTmpLocalDataPath(String tmpLocalDataPath) {
 		this.tmpLocalDataPath = tmpLocalDataPath;
 	}
-	public void FinishedReceive() {
-		this.finishedReceive = true;
-		// ////////////////////////////////////////need to
-		// deal////////////////////////
-	}
+//	public void FinishedReceive() {
+//		this.finishedReceive = true;
+//		// ////////////////////////////////////////need to
+//		// deal////////////////////////
+//	}
 
 	/**
 	 * @param args
@@ -116,7 +107,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 		String mergeDataPath = System.getProperty("user.home") +
 				 "/CactusTest/merger_final";
 		DealReduceInputUtil tt = new DealReduceInputUtil(inputPath,
-				reduceOutPutDataName, mergeDataPath);
+				reduceOutPutDataName, mergeDataPath, DataState.REMOTE_FILE);
 		tt.prepared();
 	}
 

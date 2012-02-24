@@ -42,7 +42,7 @@ public class ReduceOperation implements Operation{
 		System.out.println();
 		ReduceContext context;
 		try {
-			context = new ReduceContext(inputPath, properties.getProperty("tmpDir"), "/merge_final", outputPath);
+			context = new ReduceContext(inputPath, outputPath, properties.getProperty("tmpDir"), properties.getProperty("taskID"));
 			
 			Class<? extends Reducer>  reduceClass = (Class<? extends Reducer>) Class.forName(properties.getProperty("reducer.class"));
 			//Class<? extends Reducer>  reduceClass = MRConfig.getReduceClass();
