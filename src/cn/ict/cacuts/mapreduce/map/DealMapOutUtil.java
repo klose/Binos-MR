@@ -170,6 +170,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	public void SaveDatas(Object[] sorted, String fileName) {
 		WriteIntoDataBus tt = new WriteIntoDataBus(fileName);
 		tt.executeWrite(sorted);
+		tt.executeClose();
 	}
 	/**
 	 * the last phase of map process is to merge.

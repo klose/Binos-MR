@@ -1,5 +1,4 @@
 package cn.ict.cacuts.mapreduce.reduce;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -10,8 +9,6 @@ import org.apache.commons.logging.LogFactory;
 import com.transformer.compiler.DataState;
 
 import cn.ict.cacuts.mapreduce.WriteIntoDataBus;
-
-
 public class DealReduceOutputUtil<KEY, VALUE> {
 
 	private final static Log LOG = LogFactory
@@ -23,6 +20,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	ArrayList backupInputPairs = new ArrayList();
 	String fileName;
 	FinalKVPair element;
+	WriteIntoDataBus writeTool;
 	private volatile boolean writeFinished = false;
 	private volatile boolean writeInputPairs = false;
 	//private volatile boolean allWaiting = false;
@@ -37,16 +35,25 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	public DealReduceOutputUtil(String[] outputPath, DataState state) {
 		setOutputPath(outputPath);
 		this.state = state;
+		this.writeTool = new WriteIntoDataBus(fileName);
 		new writePairsThread().start();
 	}
 	public void receive(KEY key, VALUE value)  {	
-		LOG.info("receive key=" + key + " value=" + value);
+		//LOG.info("receive key=" + key + " value=" + value);
 		element = new FinalKVPair(key, value);
 		if (!writeInputPairs) {
 			inputPairs.add(element);
+			if (inputPairs.size() >= size) {
+				//notify the thread to write the inputPairs to File	
+				synchronized(writeAction) {
+					writeInputPairs = true;
+					writeAction.notify();
+				}
+			}	
 		}
 		else {
 			backupInputPairs.add(element);
+//			System.out.println("***************backupInputPairs.add(element);");
 //			if (backupInputPairs.size() == size) {
 //				allWaiting = true;
 //				synchronized(waitingAction) {
@@ -61,19 +68,13 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 //				}
 //			}
 			if (writeFinished) {
+//				System.out.println("***************writeFinished");
 				inputPairs.clear();
 				inputPairs.addAll(backupInputPairs);
 				backupInputPairs.clear();				
 				writeFinished = false;
 			}
 		}
-		if (inputPairs.size() >= size) {
-			//notify the thread to write the inputPairs to File	
-			synchronized(writeAction) {
-				writeInputPairs = true;
-				writeAction.notify();
-			}
-		}	
 	}
 	class writePairsThread extends Thread {
 		public void run() {
@@ -81,35 +82,42 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 				synchronized (writeAction) {
 					while (!writeInputPairs) {
 						try {
+//							System.out.println("$$$$$$$$$$$$$$ writeAction.wait()");
 							writeAction.wait();
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
+//					System.out.println("***************writeInputPairs =true");
+					SaveDatas(inputPairs);
+					writeInputPairs = false;
+					writeFinished = true;
+					
 				}
-				SaveDatas(inputPairs);
-				writeInputPairs = false;
-				writeFinished = true;
+				
 			}
 		}
 	}
 
 	
 	public void SaveDatas(List pairs) {
-		System.out.println("Binos-test: save reduce output length:" + pairs.size());
-		WriteIntoDataBus tt = new WriteIntoDataBus(fileName);
-		tt.executeWrite(pairs);
+//		System.out.println("Binos-test: save reduce output length:" + pairs.size());		
+		writeTool.executeWrite(pairs);
 	}
 
 	public void FinishedReceive() {
-		isAllHandle = true;
 		synchronized(writeAction) {
-			if(!writeInputPairs)
+//			System.out.println("$$$$$$$$$$$$$$ enter into FinishedReceive");
+			if(!writeInputPairs) {
+//				System.out.println("$$$$$$$$$$$$$$ writeInputPairs !");
+				writeInputPairs = true;
 				writeAction.notify();
+			}
 		}
-
-		System.out.println("***********************over********************");
+		isAllHandle = true;
+		writeTool.executeClose();
+//		System.out.println("***********************over********************");
 	}
 
 

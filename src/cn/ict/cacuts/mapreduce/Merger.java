@@ -389,7 +389,7 @@ public class Merger extends PriorityQueue{
 		boolean[] isSkipPath = new boolean[length];
 		int initialSize = length;
 		for (int i = 0; i < length; i++) {
-			String path = input[i].toString();
+			String path = input[i].toString();			
 			byte[] data = mcc.getValue(path);
 			bais[i] = new ByteArrayInputStream(data);
 			ois[i] = new ObjectInputStream(bais[i]);	
@@ -423,7 +423,7 @@ public class Merger extends PriorityQueue{
 				KVList tmp = (KVList)(ois[i].readObject());
 				insert((KVList)tmp);
 				searchPathIndex.put(tmp, i);
-				if (ois[i].available() == 0) {
+				if (bais[i].available() == 0) {
 					isSkipPath[i] = true;
 					initialSize --;
 				}
@@ -435,14 +435,17 @@ public class Merger extends PriorityQueue{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(
 				baos);
-		System.out.println(output.toString());
 		K originKey = null;
 		KVList curList = null;
+		int test_i = 0;
 		while (true) {
+			
 			if (initialSize == 0) {
 				break;
 			}
+			
 			KVList tmp = (KVList)pop();
+			
 			if (curList == null) {
 				curList = tmp;
 				originKey = (K) curList.getKey();
@@ -452,14 +455,16 @@ public class Merger extends PriorityQueue{
 					curList.appendVec(tmp.getValue());
 				}
 				else {
+					
 					oos.writeObject(curList);
 					curList = tmp;
 					originKey = (K)tmp.getKey();
 				}
 			}
 			int i = searchPathIndex.get(tmp);
+			
 			searchPathIndex.remove(tmp);
-			if (ois[i].available() <= 0) {
+			if (bais[i].available() <= 0) {
 				if (!isSkipPath[i]) {
 					initialSize --;
 					isSkipPath[i] = true;
@@ -485,14 +490,14 @@ public class Merger extends PriorityQueue{
 			oos.writeObject(remainingRecTmp);
 		}
 		searchPathIndex.clear();
-		clear();
-		oos.flush();
+		clear();		
 		if (isDelete) {
 			// take priority to make room for insert new data.
 			for (int i = 0; i < length; i++) {
 				mcc.FreeData(input[i].toString());
 			}
 		}
+		oos.flush();
 		mcc.putValue(output.toString(), baos.toByteArray());
 		baos.close();
 		oos.close();
