@@ -15,7 +15,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 			.getLog(DealReduceOutputUtil.class);
 	// //public int size = 1024 * 1024;
 	private DataState state;
-	public int size =  1024;
+	public int size =  1024 * 1024 * 100;
 	CopyOnWriteArrayList inputPairs = new CopyOnWriteArrayList();
 	ArrayList backupInputPairs = new ArrayList();
 	String fileName;

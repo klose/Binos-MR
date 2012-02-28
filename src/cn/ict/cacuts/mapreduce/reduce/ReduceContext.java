@@ -40,7 +40,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 	private Iterable<VALUEIN> vlist = null;
 	String[] reduceRemoteReadPaths;
 	String tmpLocalFilePath;
-	private String mergeTmpPath;
+	private static String mergeTmpPath = "reduce-merge-final";
 	private String[] outputPath;
 	private ObjectInputStream in;// this is used to read file
 	
@@ -166,8 +166,19 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 	}
 	public void flush() {
 		outPut.FinishedReceive();
+		cleanTmpData();
 	}
 	
+	private void cleanTmpData() {
+		if (this.state == DataState.REMOTE_FILE) {
+			File file  =  new File(this.mergeTmpPath);
+			file.delete();
+		}
+		else if (this.state == DataState.MESSAGE_POOL) {
+			MessageClientChannel mcc = new MessageClientChannel();
+			mcc.FreeData(this.mergeTmpPath);
+		}
+	}
 	public void controlReadWhichFile(){
 		
 	}

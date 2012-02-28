@@ -62,7 +62,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 				System.out.println("readedRemoteDatas:"+tmp);
 			}
 			try {
-				merge.merge(readedRemoteDatas, mergedTmpDataName, false, this.state) ;
+				merge.merge(readedRemoteDatas, mergedTmpDataName, true, this.state) ;
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
