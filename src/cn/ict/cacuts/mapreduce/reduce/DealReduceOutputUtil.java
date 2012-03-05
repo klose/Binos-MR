@@ -39,7 +39,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		new writePairsThread().start();
 	}
 	public void receive(KEY key, VALUE value)  {	
-		//LOG.info("receive key=" + key + " value=" + value);
+		LOG.info("receive key=" + key + " value=" + value);
 		element = new FinalKVPair(key, value);
 		if (!writeInputPairs) {
 			inputPairs.add(element);

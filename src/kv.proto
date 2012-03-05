@@ -1,0 +1,54 @@
+package cn.ict.cacuts.mapreduce;
+
+option java_package = "cn.ict.cacuts.mapreduce";
+option java_outer_classname = "KeyValue";
+
+//<Key:String, Value:Int>
+message KVPairInt {
+	required string key = 1;
+	optional int32 value = 2;
+}
+//add partition info
+message KVPairIntPar{
+	required string key = 1;
+	optional int32 value = 2;
+	required int32 partition = 3;
+}
+message KVPairIntData {
+	repeated KVPairInt kvset = 1;
+}
+message KVPairIntParData {
+	repeated KVPairIntPar kvset = 1;
+}
+message KVPairIntList {
+	required string key = 1;
+	repeated int32 vlist = 2;
+}
+message KVPairIntListData {
+	repeated KVPairIntList kvset = 1;
+}
+
+
+//<Key:String, Value:String>
+message KVPairString {
+	required string key = 1;
+	optional string value = 2;
+}
+message KVPairStringPar{
+	required string key = 1;
+	optional string value = 2;
+	required int32 partition = 3;
+}
+message KVPairStringData {
+	repeated KVPairString kvset = 1;
+}
+message KVPairStringParData {
+	repeated KVPairStringPar kvset = 1;
+}
+message KVPairStringList {
+	required string key = 1;
+	repeated string vlist = 2;
+}
+message KVPairStringListData {
+	repeated KVPairStringList kvset = 1;
+}	 

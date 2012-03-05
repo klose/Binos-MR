@@ -43,13 +43,13 @@ public class WordCountTest {
 	public static void main(String[] args) throws Exception {
 		MRConfig conf = new MRConfig("wordcount");
 		String inputFileName[] = {"input"};
-		String outputFileName[] = {"output1"};
+		String outputFileName[] = {"output1","output2","output3","output4"};
 		MRJob job = new MRJob(conf, "wordcount");
 		job.setInputFileName(inputFileName);
 		job.setOutputFileName(outputFileName);
 		job.setMapperClass(TokenizerMapper.class);
 		job.setReducerClass(IntSumReducer.class);
-		job.setNumReduceTasks(1);
+		job.setNumReduceTasks(4);
 		job.submit();
 	}
 }
