@@ -28,7 +28,7 @@ public class  MRConfig {
 	private  int reduceTaskNum = 1;
 	private  static int fetchThreadNum = 3; 
 	
-	private  static long splitFileSize = 64*1024*1024; //use a hdfs block size as default value.
+	private  long splitFileSize = 36*1024*1024; //use a hdfs block size as default value.
 	private  Class mapContextKeyClass = String.class;
 	private  Class mapContextValueClass = Integer.class;
 	private   Class<? extends Mapper> mapClass;
@@ -45,7 +45,7 @@ public class  MRConfig {
 		conf = new Configuration();
 		try {
 			fs = FileSystem.get(conf);
-			splitFileSize = fs.getDefaultBlockSize();
+//			splitFileSize = fs.getDefaultBlockSize();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,8 +106,8 @@ public class  MRConfig {
 	public  long getSplitFileSize() {
 		return splitFileSize;
 	}
-	public  void setSplitFileSize(long splitFileSize) {
-		this.splitFileSize = splitFileSize;
+	public  void setSplitFileSize(long size) {
+		this.splitFileSize = size;
 	}
 	public  long getDefaultHDFSBlockSize() {
 		return fs.getDefaultBlockSize();
@@ -186,6 +186,7 @@ public class  MRConfig {
 		configMap.put("reducer.class", getReduceClass().getName());
 		configMap.put("map.task.num", String.valueOf(this.mapTaskNum));
 		configMap.put("reduce.task.num", String.valueOf(this.getReduceTaskNum()));	
+		configMap.put("mapper.file.spilt.size", String.valueOf(this.getSplitFileSize()));
 		return configMap;
 	}
 }

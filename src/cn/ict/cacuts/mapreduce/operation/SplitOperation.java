@@ -49,6 +49,7 @@ public class SplitOperation implements Operation{
 		}
 		try {
 			MRConfig conf = new MRConfig("split");
+			conf.setSplitFileSize(Integer.parseInt(properties.getProperty("mapper.file.spilt.size")));
 			final DataSplit split = new DataSplit(new Path(inputPath[0]));
 			List<FileSplitIndex> list = split.getSplits(conf);
 			if (list.size() != outputPath.length) {

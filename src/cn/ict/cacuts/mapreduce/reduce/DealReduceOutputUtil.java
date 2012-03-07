@@ -15,7 +15,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 
 	private final static Log LOG = LogFactory
 			.getLog(DealReduceOutputUtil.class);
-	public final static int size = 1000 * 100;
+	public final static int size = 1000 * 1000;
 	private int capacity = 0;
 	private CopyOnWriteArrayList<KVPairInt> inputPairs = new CopyOnWriteArrayList<KVPairInt>();
 	private final DataState state;
@@ -37,6 +37,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		this.writeThread.start();
 	}
 	public void receive(KEY key, VALUE value) {
+		//LOG.info(key + ":" +value);
 		element = KVPairInt.newBuilder().setKey(key.toString()).setValue(Integer.parseInt(value.toString())).build();
 		capacity += element.getSerializedSize();
 		if (!writeInputPairs.get() && capacity >= size) {

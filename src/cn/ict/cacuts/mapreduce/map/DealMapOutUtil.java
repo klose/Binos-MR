@@ -53,6 +53,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 	int tmpDataNum = 0;	
 	String indexString = "";
 	
+	int whileNum = 0;
+	
 	HashPartitioner hashPartitioner = new HashPartitioner();
 	//private volatile boolean writeFinished = false;
 	private AtomicBoolean writeFinished = new AtomicBoolean(false);
@@ -106,6 +108,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 //	}
 	public void receive(KEY key, VALUE value) {
 		
+//		if (key.toString().equals("while")) {
+//			++whileNum;
+//		}
 		//LOG.info("receive key=" + key + " value=" + value);
 		partionedNum = hashPartitioner.getPartition(key, numberOfReduce);
 		innerFileIndex[partionedNum]++;
@@ -218,6 +223,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 			dealReceivedUtil();
 		}
 		dealFileIndex();
+		
+		
+//		System.out.println("Map output Merge before: whileNum:" + whileNum);
 		
 		/*Merge the small file into the number of file.*/
 		

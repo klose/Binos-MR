@@ -25,14 +25,15 @@ public class ReadRemoteData {
 	//private volatile boolean isReadOver = false;// identify the end of the process of reading files
 //	private Object lock = new Object();
 	private Object waitOverLock = new Object();
+	private Object lock  = new Object();
 	private final String[] reduceInputDataPath;//Binos URL
 	private final String[] readedRemotePath; // the file locally
 	private final String tmpLocalDirPath; // the directory of default path
 	private final int threadNum; //the number of thread which fetches the data from the source.
-	private AtomicInteger localityAccount = new AtomicInteger();
-	private AtomicInteger readAccount  = new AtomicInteger();
+	private AtomicInteger localityAccount = new AtomicInteger(0);
+	private AtomicInteger readAccount  = new AtomicInteger(0);
 	private AtomicBoolean isReadOver = new AtomicBoolean(false);
-	private AtomicInteger controlThreadNum = new AtomicInteger();//record the number that  
+	private AtomicInteger controlThreadNum = new AtomicInteger(0);//record the number of threads 
 	BinosURL[] binosURLInput; 
 
 	//read files from remote and save into the local disk as it read
@@ -63,12 +64,12 @@ public class ReadRemoteData {
 		@Override
 		public void run() {
 			while (!isReadOver.get()) {
-				//synchronized (lock) {
+				synchronized (lock) {
 					index = readAccount.get();
 					if (readAccount.addAndGet(1) >= reduceInputDataPath.length) {						
 						isReadOver.set(true);
 					}
-				//}
+				}
 				fetchFile(reduceInputDataPath[index]);
 				if(isReadOver.get()) {
 					synchronized(waitOverLock) {

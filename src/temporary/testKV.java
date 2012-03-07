@@ -28,6 +28,8 @@ public class testKV {
 				addVlist(1000).addVlist(2000).build();
 		KVPairIntList data2 = KVPairIntList.newBuilder().setKey("abcd").
 				addVlist(1000).addVlist(2000).build();
+	
+		System.out.println(data2.hashCode());
 		KVPairIntList.Builder builder = KVPairIntList.newBuilder();
 		builder.setKey(data1.getKey()).addAllVlist(data1.getVlistList()).addAllVlist(data2.getVlistList());
 		System.out.println(builder.isInitialized());

@@ -208,7 +208,11 @@ public class Merger extends PriorityQueue{
 					pair = (KVPairIntPar) pop();
 					String key = pair.getKey();
 					if (!key.equals(originKey)) {
+						
 						list = builder.build();	
+//						if (list.getKey().equals("while")) {
+//							System.out.println("while occur:" + list.getVlistCount() + "times");
+//						}
 						writer.writeKVPairIntList(list);
 						builder = KVPairIntList.newBuilder();
 						builder.setKey(key).addVlist(pair.getValue());
@@ -289,14 +293,18 @@ public class Merger extends PriorityQueue{
 		
 		/*searchPathIndex is used to store the KVList in the Priority Queue and correlated index of input stream. 
 		 */
-		Map<KVPairIntList, Integer> searchPathIndex = new WeakHashMap<KVPairIntList,Integer>(initialSize);
 		
+		
+		//Map<KVPairIntList, Integer> searchPathIndex = new WeakHashMap<KVPairIntList,Integer>(initialSize);
+		//Map<Integer, Integer> searchPathIndex = new WeakHashMap<Integer,Integer>(initialSize);
 		/*initialize the heap with first record from every file.*/
 		for (int i = 0; i < length && !isSkipPath[i]; i++) {
 				KVPairIntList tmp = reader[i].readKVPairIntList();
+				System.out.println("index=" + i +  "hashcode:" + tmp.hashCode());
 				if(tmp != null) {
-					insert(tmp);
-					searchPathIndex.put(tmp, i);
+					
+					insert(new KVPairIntListObject(tmp,i));
+					//searchPathIndex.put(tmp.hashCode(), i);
 				}
 				else {
 					isSkipPath[i] = true;
@@ -312,7 +320,12 @@ public class Merger extends PriorityQueue{
 			if (initialSize == 0) {
 				break;
 			}
-			KVPairIntList tmp = (KVPairIntList)pop();
+			KVPairIntListObject tmpObject = (KVPairIntListObject)pop();
+			KVPairIntList tmp = tmpObject.getKVPairIntList();
+			//System.out.println("while: pop()"+ tmp.toString());
+			if (tmp == null) {
+				break;
+			}
 			if(null != originKey) {
 				if (originKey.equals(tmp.getKey())) {
 					builder.addAllVlist(tmp.getVlistList());
@@ -330,12 +343,10 @@ public class Merger extends PriorityQueue{
 				builder.setKey(originKey).addAllVlist(tmp.getVlistList());
 			}
 				
-			int i = searchPathIndex.get(tmp);
-			searchPathIndex.remove(tmp);
+			int i = tmpObject.getFileIndex();
 			tmp = reader[i].readKVPairIntList();
 			if (null != tmp) {
-					searchPathIndex.put(tmp, i);
-					insert(tmp);	
+					insert(new KVPairIntListObject(tmp,i));	
 			}
 			else {
 				if (!isSkipPath[i]) {
@@ -344,11 +355,9 @@ public class Merger extends PriorityQueue{
 				}
 			}
 		}
-		
 		/*ensure that the last curList is writen to file*/
 		if (builder.isInitialized())
 		     writer.writeKVPairIntList(builder.build());
-		searchPathIndex.clear();
 		clear();
 		writer.close();
 		for (int i = 0; i < length; i++) {
@@ -604,6 +613,27 @@ public class Merger extends PriorityQueue{
 			}
 		}
 	}
+	/**
+	 * In order to avoid confusing hashtable, that one KVPairIntList Object equals another one.
+	 * Add the information of file index. 
+	 * @author jiangbing
+	 *
+	 */
+	class KVPairIntListObject {
+		final KVPairIntList list;
+		final int fileIndex;
+		KVPairIntListObject(KVPairIntList list, int fileIndex) {
+			this.list = list;
+			this.fileIndex = fileIndex;
+		}
+		KVPairIntList getKVPairIntList() {
+			return this.list;
+		}
+		int getFileIndex() {
+			return this.fileIndex;
+		}
+	}
+	
 	@Override
 	protected boolean lessThan(Object a, Object b) {
 		// TODO Auto-generated method stub
@@ -664,6 +694,19 @@ public class Merger extends PriorityQueue{
 		else if (a.getClass() == KVPairIntList.class) {
 			KVPairIntList a1 = (KVPairIntList)a;
 			KVPairIntList b1 = (KVPairIntList)b;
+			int compare;
+			if (a1.getKey() instanceof String) {
+				compare = (a1.getKey().toString()).compareTo
+					(b1.getKey().toString());
+				if (compare < 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+		else if (a.getClass() == KVPairIntListObject.class) {
+			KVPairIntList a1 = (KVPairIntList)((KVPairIntListObject) a).getKVPairIntList();
+			KVPairIntList b1 = (KVPairIntList)((KVPairIntListObject) b).getKVPairIntList();
 			int compare;
 			if (a1.getKey() instanceof String) {
 				compare = (a1.getKey().toString()).compareTo
