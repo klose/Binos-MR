@@ -15,6 +15,9 @@ import org.apache.hadoop.fs.Path;
 import com.transformer.compiler.DataState;
 
 import cn.ict.binos.transmit.MessageClientChannel;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData;
 import cn.ict.cacuts.mapreduce.map.KVList;
 import cn.ict.cacuts.mapreduce.map.KVPair;
 
@@ -143,10 +146,7 @@ public class Merger extends PriorityQueue{
 	private <K extends Object, V extends Object>  
 		void mergeOnLocalFile(Path[] input, String[] index, Path[] output, boolean isDelete) throws FileNotFoundException, IOException {
 		int length = input.length;
-		ObjectInputStream[] ois = new ObjectInputStream[length];
-		
-		
-		File[] inputFile = new File[length];
+		ReadFromDataBus [] reader = new ReadFromDataBus[length];
 		int [][] readCount = new int[input.length][output.length];
 		
 		/*store KVPairs from each input */
@@ -158,9 +158,8 @@ public class Merger extends PriorityQueue{
 		/*get the record number of each part in every input path.
 		 * and initialize the value of correlative variables*/
 		for (int i = 0; i < length; i++) {
-			inputFile[i] = new File(input[i].toUri().getPath());
-			ois[i] = new ObjectInputStream( 
-					new FileInputStream(inputFile[i]));
+			reader[i] = new ReadFromDataBus(input[i].toUri().getPath());
+			
 			String[] tmp = index[i].split(",");
 			for (int j = 0; j < output.length; j++) {
 				readCount[i][j] = Integer.parseInt(tmp[j]);
@@ -192,54 +191,45 @@ public class Merger extends PriorityQueue{
 					continue;
 				}
 				for (int j = 0; j < readCount[i][k]; j++)
-					try {
-						insert((KVPair)(ois[i].readObject()));
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					insert((reader[i].readKVPairIntPar()));
+			}
+			KVPairIntPar pair = (KVPairIntPar) pop();
+			String originKey = pair.getKey();
+			KVPairIntList.Builder builder = KVPairIntList.newBuilder();
+			KVPairIntList list;
+			builder.setKey(originKey).addVlist(pair.getValue());
+			WriteIntoDataBus writer = new WriteIntoDataBus(output[k].toUri().getPath());
+			if (allocateNum == 1) {
+				list = builder.build();
+				writer.writeKVPairIntList(list);
+			}
+			else {
+				for (int i = 1; i < allocateNum; i++) {
+					pair = (KVPairIntPar) pop();
+					String key = pair.getKey();
+					if (!key.equals(originKey)) {
+						list = builder.build();	
+						writer.writeKVPairIntList(list);
+						builder = KVPairIntList.newBuilder();
+						builder.setKey(key).addVlist(pair.getValue());
+						originKey = key;
 					}
-			}
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();   
-			ObjectOutputStream oos = new ObjectOutputStream(bout);
-			FileOutputStream fout = new FileOutputStream(output[k].toUri().getPath());
-			//boolean isNewObject = true;
-			K originKey = null;
-			KVList list = null;
-			for (int i = 0; i < allocateNum; i++) {
-				KVPair<K, V> pair = (KVPair<K, V>) pop();
-				K key = pair.getKey();
-				if (!key.equals(originKey)) {
-					//isNewObject = true;
-					if (list != null) {
-						oos.writeObject(list);
-						list = null;
+					else {
+						builder.addVlist(pair.getValue());
 					}
-					list = new KVList(pair);
 				}
-				else {
-					
-					list.addVal(pair.getValue());
-				}
-				originKey = key;
+				writer.writeKVPairIntList(builder.build());
 			}
-			if (list != null) {
-				oos.writeObject(list);
-				list = null;
-			}
-			oos.flush();
-			fout.write(bout.toByteArray());
-			
-			fout.close();
-			oos.close();
-			bout.close();
+			writer.close();
 		}
-		for (ObjectInputStream oisTmp: ois) {
-			oisTmp.close();
-		}
+		clear();
 		if (isDelete) {
 			for (int i = 0; i < length; i++) {
-				inputFile[i].delete();
+				new File(input[i].toUri().getPath()).delete();
 			}
+		}
+		for (int i = 0; i < length; i++) {
+			reader[i].close();
 		}
 	}
 	
@@ -263,20 +253,22 @@ public class Merger extends PriorityQueue{
 			mergeOnMsgPool(input,output,isDelete);
 		}
 	}
-	private <K extends Object, V extends Object> void mergeOnLocalFile(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
+	private void mergeOnLocalFile(Path[] input, Path output, boolean isDelete) throws FileNotFoundException, IOException {
 		int length = input.length;
-		ObjectInputStream[] ois = new ObjectInputStream[length];
-		FileInputStream[] fis = new FileInputStream[length];
+		ReadFromDataBus[] reader = new ReadFromDataBus[length];
+		
+//		ObjectInputStream[] ois = new ObjectInputStream[length];
+//		FileInputStream[] fis = new FileInputStream[length];
 		File[] inputFile = new File[length];
 		boolean[] isSkipPath = new boolean[length];
 		int initialSize = length;
 		for (int i = 0; i < length; i++) {
 			String path = input[i].toUri().getPath();
 			inputFile[i] = new File(path);
-			fis[i] = new FileInputStream(path);
-			ois[i] = new ObjectInputStream(fis[i]);	
+//			fis[i] = new FileInputStream(path);
+//			ois[i] = new ObjectInputStream(fis[i]);
+			reader[i] = new ReadFromDataBus(path);
 			
-			//System.out.println(ois[i].available());
 			/*eliminate the file without data.*/
 			if (inputFile[i].length() >0) {
 				isSkipPath[i] = false;
@@ -297,81 +289,70 @@ public class Merger extends PriorityQueue{
 		
 		/*searchPathIndex is used to store the KVList in the Priority Queue and correlated index of input stream. 
 		 */
-		Map<KVList, Integer> searchPathIndex = new WeakHashMap<KVList,Integer>(initialSize);
+		Map<KVPairIntList, Integer> searchPathIndex = new WeakHashMap<KVPairIntList,Integer>(initialSize);
 		
 		/*initialize the heap with first record from every file.*/
 		for (int i = 0; i < length && !isSkipPath[i]; i++) {
-			try {
-				KVList tmp = (KVList)(ois[i].readObject());
-				insert((KVList)tmp);
-				searchPathIndex.put(tmp, i);
-				if (fis[i].available() == 0) {
+				KVPairIntList tmp = reader[i].readKVPairIntList();
+				if(tmp != null) {
+					insert(tmp);
+					searchPathIndex.put(tmp, i);
+				}
+				else {
 					isSkipPath[i] = true;
 					initialSize --;
 				}
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
-		ObjectOutputStream oos = new ObjectOutputStream(
-				new FileOutputStream(output.toUri().getPath()));
+		WriteIntoDataBus writer = new WriteIntoDataBus(output.toUri().getPath());
 		System.out.println(output.toUri().getPath());
-		K originKey = null;
-		KVList curList = null;
+		String originKey = null;
+		//KVPairIntList curList = null;
+		KVPairIntList.Builder builder = null;
 		while (true) {
 			if (initialSize == 0) {
 				break;
 			}
-			KVList tmp = (KVList)pop();
-			if (curList == null) {
-				curList = tmp;
-				originKey = (K) curList.getKey();
-			}
-			else {
+			KVPairIntList tmp = (KVPairIntList)pop();
+			if(null != originKey) {
 				if (originKey.equals(tmp.getKey())) {
-					curList.appendVec(tmp.getValue());
+					builder.addAllVlist(tmp.getVlistList());
 				}
 				else {
-					oos.writeObject(curList);
-					curList = tmp;
-					originKey = (K)tmp.getKey();
+					writer.writeKVPairIntList(builder.build());
+					builder = KVPairIntList.newBuilder();
+					originKey = tmp.getKey();
+					builder.setKey(originKey).addAllVlist(tmp.getVlistList());
 				}
 			}
+			else {
+				originKey =  tmp.getKey();
+				builder = KVPairIntList.newBuilder();
+				builder.setKey(originKey).addAllVlist(tmp.getVlistList());
+			}
+				
 			int i = searchPathIndex.get(tmp);
 			searchPathIndex.remove(tmp);
-			if (fis[i].available() <= 0) {
+			tmp = reader[i].readKVPairIntList();
+			if (null != tmp) {
+					searchPathIndex.put(tmp, i);
+					insert(tmp);	
+			}
+			else {
 				if (!isSkipPath[i]) {
 					initialSize --;
 					isSkipPath[i] = true;
 				}
 			}
-			else {
-				try {
-					tmp = (KVList)(ois[i].readObject());
-					searchPathIndex.put(tmp, i);
-					insert(tmp);
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 		}
 		
 		/*ensure that the last curList is writen to file*/
-		if (curList != null)
-			oos.writeObject(curList);
-		
-		KVList remainingRecTmp = null; 
-		while ((remainingRecTmp = (KVList) pop()) != null) {
-			oos.writeObject(remainingRecTmp);
-		}
+		if (builder.isInitialized())
+		     writer.writeKVPairIntList(builder.build());
 		searchPathIndex.clear();
 		clear();
-		oos.flush();
-		oos.close();
-		for (ObjectInputStream oisTmp: ois) {
-			oisTmp.close();
+		writer.close();
+		for (int i = 0; i < length; i++) {
+			reader[i].close();
 		}
 		if (isDelete) {
 			for (int i = 0; i < length; i++) {
@@ -628,7 +609,7 @@ public class Merger extends PriorityQueue{
 		// TODO Auto-generated method stub
 		//KVPair a1 = (KVPair)a;
 		//KVPair b1 = (KVPair)b;
-	
+		
 		if (a.getClass() == KVList.class) {
 			KVList a1 = (KVList)a;
 			KVList b1 = (KVList)b;
@@ -648,7 +629,7 @@ public class Merger extends PriorityQueue{
 			return false;
 		}
 		
-		if (a.getClass() == KVPair.class) {
+		else if (a.getClass() == KVPair.class) {
 			KVPair a1 = (KVPair)a;
 			KVPair b1 = (KVPair)b;
 			int compare;
@@ -661,6 +642,33 @@ public class Merger extends PriorityQueue{
 			}
 			else if (a1.getKey() instanceof Integer){
 				if ((Integer)a1.getKey() < (Integer)b1.getKey()) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		else if (a.getClass() == KVPairIntPar.class) {
+			KVPairIntPar a1 = (KVPairIntPar)a;
+			KVPairIntPar b1 = (KVPairIntPar)b;
+			int compare;
+			if (a1.getKey() instanceof String) {
+				compare = (a1.getKey().toString()).compareTo
+					(b1.getKey().toString());
+				if (compare < 0) {
+					return true;
+				}
+			}
+			return false;
+		}
+		else if (a.getClass() == KVPairIntList.class) {
+			KVPairIntList a1 = (KVPairIntList)a;
+			KVPairIntList b1 = (KVPairIntList)b;
+			int compare;
+			if (a1.getKey() instanceof String) {
+				compare = (a1.getKey().toString()).compareTo
+					(b1.getKey().toString());
+				if (compare < 0) {
 					return true;
 				}
 			}

@@ -71,7 +71,7 @@ public class DealReduceInputUtil<KEY, VALUE> {
 				e.printStackTrace();
 			}	 
 	}
-
+	
 	public void setInputDataPath(String[] reduceInputPath) {
 		this.reduceDataInputPath = reduceInputPath;
 	}
@@ -86,6 +86,10 @@ public class DealReduceInputUtil<KEY, VALUE> {
 	
 	public void setTmpLocalDataPath(String tmpLocalDataPath) {
 		this.tmpLocalDataPath = tmpLocalDataPath;
+	}
+	
+	public void setReadedRemoteDatas(String[] readedRemoteDatas) {
+		this.readedRemoteDatas = readedRemoteDatas;
 	}
 //	public void FinishedReceive() {
 //		this.finishedReceive = true;
@@ -103,11 +107,12 @@ public class DealReduceInputUtil<KEY, VALUE> {
 				System.getProperty("user.home") + "/CactusTest/map_1_out_1" };
 		String reduceOutPutDataName = System.getProperty("user.home")
 				+ "/CactusTest/" + "reduce_out";
-		String mergeDataPath = System.getProperty("user.home") +
-				 "/CactusTest/merger_final";
+		String mergeDataPath = "/tmp/output-merge";
 		DealReduceInputUtil tt = new DealReduceInputUtil(inputPath,
-				reduceOutPutDataName, mergeDataPath, DataState.REMOTE_FILE);
-		tt.prepared();
+				reduceOutPutDataName, mergeDataPath, DataState.LOCAL_FILE);
+		String[] testPath = {"/tmp/output1", "/tmp/output2", "/tmp/output3"};
+		tt.setReadedRemoteDatas(testPath);
+		tt.merge();
 	}
 
 }

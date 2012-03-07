@@ -39,6 +39,7 @@ public class MapContext<KEY, VALUE> {
 			LOG.error("Cannot open HDFS.");
 		}
 	}
+
 	public MapContext(String inputPath, String[] outputPath, String workingDir, String taskId) throws Exception {
 		//this.spiltIndexPath = inputPath;
 		
@@ -95,7 +96,6 @@ public class MapContext<KEY, VALUE> {
 	public String getTempMapOutFilesPathPrefix() {
 		return tempMapOutPathPrefix;
 	}
-	
 	
 
 }

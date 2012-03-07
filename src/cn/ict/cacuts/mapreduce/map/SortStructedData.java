@@ -3,6 +3,10 @@ package cn.ict.cacuts.mapreduce.map;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairInt;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
+
+
 public class SortStructedData {
 	public static java.util.Comparator getComparator() {
 		return new java.util.Comparator() {
@@ -14,17 +18,20 @@ public class SortStructedData {
 					return compare((Integer) o1, (Integer) o2);
 				} else if (o1 instanceof Long) {
 					return compare((Long) o1, (Long) o2);
-				}
+				} 
 
 				else if (o1 instanceof KVPair) {
 					return compare((KVPair) o1, (KVPair) o2);
-				} else {
+				} else if (o1 instanceof KVPairIntPar) {
+					return compare((KVPairIntPar) o1, (KVPairIntPar)o2);
+				}
+				else {
 					System.err
 							.println("have not find the coresonsed comparator");
 					return 1;
 				}
 			}
-
+			
 			public int compare(String o1, String o2) {
 				String s1 = (String) o1;
 				String s2 = (String) o2;
@@ -66,7 +73,15 @@ public class SortStructedData {
 						: (o1.booleanValue() == true ? 1 : -1));
 
 			}
-
+			public int compare(KVPairIntPar o1, KVPairIntPar o2) {
+				int partionNum1 = o1.getPartition();
+				int partionNum2 = o2.getPartition();
+				String key1 = o1.getKey();
+				String key2 = o2.getKey();
+				return (compare(partionNum1, partionNum2) == 0 ? (compare(key1,
+						key2) == 0 ? 0 : compare(key1, key2)) : compare(
+						partionNum1, partionNum2));
+			}
 			/**
 			 * DECLARE : here the key type is not "KEY" but "Object "
 			 * */

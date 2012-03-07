@@ -22,6 +22,8 @@ import com.transformer.compiler.TransmitType;
 import cn.ict.binos.transmit.MessageClientChannel;
 import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.HdfsFileLineReader;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
+import cn.ict.cacuts.mapreduce.ReadFromDataBus;
 import cn.ict.cacuts.mapreduce.map.DealMapOutUtil;
 import cn.ict.cacuts.mapreduce.map.KVList;
 import cn.ict.cacuts.mapreduce.map.MapContext;
@@ -36,14 +38,13 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 	private DataState state;
 	//private FileSplitIndex splitIndex = new FileSplitIndex();
 	//private HdfsFileLineReader lineReader = new HdfsFileLineReader();   /////line reader should not be hdfs reader
-	private KEYIN key = null;
-	private Iterable<VALUEIN> vlist = null;
+	private String key = null;
+	private Iterable<Integer> vlist = null;
 	String[] reduceRemoteReadPaths;
 	String tmpLocalFilePath;
 	private static String mergeTmpPath = "reduce-merge-final";
 	private String[] outputPath;
-	private ObjectInputStream in;// this is used to read file
-	
+	private ReadFromDataBus reader;
 	public ReduceContext() {
 		
 	}
@@ -89,48 +90,27 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 			if (!file.exists()) {
 				throw new FileNotFoundException(this.mergeTmpPath);
 			}
-			else {
-				in = new ObjectInputStream(new FileInputStream(file));
-			}
 		}
-		else if (this.state == DataState.MESSAGE_POOL) {
-			MessageClientChannel mcc = new MessageClientChannel();
-			in = new ObjectInputStream(new ByteArrayInputStream(
-					mcc.getValue(this.mergeTmpPath)));
-		}
+		reader = new ReadFromDataBus(this.mergeTmpPath);
+		
 	}
 
 	public boolean nextKey()  {
 		//TODO need initialize lineReader///////////////////////////////////////////////
-		KVList<KEYIN,VALUEIN> curList = null;
-		
-		try {
-			if ((curList = (KVList<KEYIN, VALUEIN>) in.readObject()) != null) {
-				key = curList.getKey();
-				vlist = (Iterable<VALUEIN>) curList;
-				return true;
-			}
-		} catch (IOException e) {
-			// read the file end.
-			return false;
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			in.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		KVPairIntList curList = null;	
+		if ((curList = (KVPairIntList) reader.readKVPairIntList()) != null) {
+			key = curList.getKey();
+			vlist =  curList.getVlistList();
+			return true;
 		}
 		return false;
 	}
 
-	public KEYIN getCurrentKey() {
+	public String getCurrentKey() {
 		return this.key;
 	}
 	
-	 public Iterable<VALUEIN> getValues() {
+	 public Iterable<Integer> getValues() {
 		 return this.vlist;
 	 }
 
