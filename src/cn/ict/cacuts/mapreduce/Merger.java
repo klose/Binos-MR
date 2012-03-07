@@ -137,7 +137,8 @@ public class Merger extends PriorityQueue{
 			for (int i = 0; i < length; i++) {
 				mcc.FreeData(input[i].toString());
 			}
-		}	
+		}
+		clear();
 		
 	}
 	private <K extends Object, V extends Object>  
@@ -241,6 +242,7 @@ public class Merger extends PriorityQueue{
 				inputFile[i].delete();
 			}
 		}
+		clear();
 	}
 	
 	
@@ -625,10 +627,6 @@ public class Merger extends PriorityQueue{
 	}
 	@Override
 	protected boolean lessThan(Object a, Object b) {
-		// TODO Auto-generated method stub
-		//KVPair a1 = (KVPair)a;
-		//KVPair b1 = (KVPair)b;
-	
 		if (a.getClass() == KVList.class) {
 			KVList a1 = (KVList)a;
 			KVList b1 = (KVList)b;

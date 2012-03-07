@@ -2,6 +2,7 @@ package cn.ict.cacuts.mapreduce.reduce;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,14 +16,14 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 			.getLog(DealReduceOutputUtil.class);
 	// //public int size = 1024 * 1024;
 	private DataState state;
-	public int size =  1024 * 1024 * 100;
+	public int size =  1024 * 1024;
 	CopyOnWriteArrayList inputPairs = new CopyOnWriteArrayList();
 	ArrayList backupInputPairs = new ArrayList();
 	String fileName;
 	FinalKVPair element;
 	WriteIntoDataBus writeTool;
-	private volatile boolean writeFinished = false;
-	private volatile boolean writeInputPairs = false;
+	private  AtomicBoolean writeFinished = new AtomicBoolean(false);
+	private  AtomicBoolean writeInputPairs = new AtomicBoolean(false);
 	//private volatile boolean allWaiting = false;
 	private volatile boolean isAllHandle = false;
 	private Object writeAction = new Object();
@@ -41,12 +42,12 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	public void receive(KEY key, VALUE value)  {	
 		LOG.info("receive key=" + key + " value=" + value);
 		element = new FinalKVPair(key, value);
-		if (!writeInputPairs) {
+		if (!writeInputPairs.get()) {
 			inputPairs.add(element);
 			if (inputPairs.size() >= size) {
 				//notify the thread to write the inputPairs to File	
 				synchronized(writeAction) {
-					writeInputPairs = true;
+					writeInputPairs.set(true);
 					writeAction.notify();
 				}
 			}	
@@ -67,12 +68,11 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 //					}
 //				}
 //			}
-			if (writeFinished) {
-//				System.out.println("***************writeFinished");
-				inputPairs.clear();
+			if (writeFinished.get()) {
+//				System.out.println("***************writeFinished");	
 				inputPairs.addAll(backupInputPairs);
 				backupInputPairs.clear();				
-				writeFinished = false;
+				writeFinished.set(false);
 			}
 		}
 	}
@@ -80,7 +80,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		public void run() {
 			while (!isAllHandle) {
 				synchronized (writeAction) {
-					while (!writeInputPairs) {
+					while (!writeInputPairs.get()) {
 						try {
 //							System.out.println("$$$$$$$$$$$$$$ writeAction.wait()");
 							writeAction.wait();
@@ -90,13 +90,20 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 						}
 					}
 //					System.out.println("***************writeInputPairs =true");
-					SaveDatas(inputPairs);
-					writeInputPairs = false;
-					writeFinished = true;
+					if (inputPairs.size() > 0) {
+						SaveDatas(inputPairs);
+						inputPairs.clear();
+						System.out.println("kkkkkkkk");
+					} else if (backupInputPairs.size() > 0) {
+						SaveDatas(backupInputPairs);
+						System.out.println("vvvvvvvvv");
+					}
+					writeInputPairs.set(false);
+					writeFinished.set(true);
 					
 				}
-				
 			}
+			writeTool.executeClose();
 		}
 	}
 
@@ -107,17 +114,20 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	}
 
 	public void FinishedReceive() {
-		synchronized(writeAction) {
-//			System.out.println("$$$$$$$$$$$$$$ enter into FinishedReceive");
-			if(!writeInputPairs) {
-//				System.out.println("$$$$$$$$$$$$$$ writeInputPairs !");
-				writeInputPairs = true;
+		while (writeInputPairs.get()) {
+			// wait for last write to over.
+		}
+		synchronized (writeAction) {
+			// System.out.println("$$$$$$$$$$$$$$ enter into FinishedReceive");
+			if (!writeInputPairs.get()) {
+				writeInputPairs.set(true);
+				isAllHandle = true;
 				writeAction.notify();
 			}
 		}
-		isAllHandle = true;
-		writeTool.executeClose();
-//		System.out.println("***********************over********************");
+		inputPairs.clear();
+		backupInputPairs.clear();
+
 	}
 
 
