@@ -35,9 +35,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	private final int numberOfReduce ;
 	private final DataState dataState ;
 	////public int size = 1024 * 1024;
-	public final long size = 1024 *1024 * 10; // set the memory used by map task	
-//	private ArrayList inputPairs = new ArrayList();
-//	private ArrayList backupInputPairs = new ArrayList();
+	public final long size = 1024 *1024 * 100; // set the memory used by map task	
 	
 	private KVPairIntParData.Builder inputPairs = KVPairIntParData.newBuilder();
 	private KVPairIntParData.Builder backupInputPairs = KVPairIntParData.newBuilder();
@@ -80,24 +78,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 		this.writeThread.start();
 	}
 	
-	
-	private static byte[] getBytes(Object obj) {
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		ObjectOutputStream out;
-		byte[] bytes = null;
-		try {
-			out = new ObjectOutputStream(bout);
-			out.writeObject(obj);
-			out.flush();
-			bytes = bout.toByteArray();
-			bout.close();
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return bytes;
-	}
+
 //	public void receive(KEY key, VALUE value) {
 //		partionedNum = hashPartitioner.getPartition(key, numberOfReduce);
 //		innerFileIndex[partionedNum]++;

@@ -1,6 +1,6 @@
 package cn.ict.cacuts.mapreduce.reduce;
 import java.util.ArrayList;
-import java.util.List;
+
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -15,27 +15,19 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 
 	private final static Log LOG = LogFactory
 			.getLog(DealReduceOutputUtil.class);
-	// //public int size = 1024 * 1024;
-	private DataState state;
-	public final static int size = 1000 * 48;
+	public final static int size = 1000 * 100;
 	private int capacity = 0;
 	private CopyOnWriteArrayList<KVPairInt> inputPairs = new CopyOnWriteArrayList<KVPairInt>();
-	private ArrayList<KVPairInt> backupInputPairs = new ArrayList<KVPairInt>();
+	private final DataState state;
 	String fileName;
 	KVPairInt element;
 	WriteIntoDataBus writeTool;
-
-	private AtomicBoolean writeFinished = new AtomicBoolean(false);
+	
 	private AtomicBoolean writeInputPairs = new AtomicBoolean(false);
-	//private volatile boolean allWaiting = false;
+	private KVPairInt[] objects = null;
 	private volatile boolean isAllHandle = false;
 	private Object writeAction = new Object();
 	private Thread writeThread;
-	//private Object waitingAction = new Object();
-
-	public DealReduceOutputUtil() {
-	}
-
 
 	public DealReduceOutputUtil(String[] outputPath, DataState state) {
 		setOutputPath(outputPath);
@@ -44,8 +36,23 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		this.writeThread = new writePairsThread();
 		this.writeThread.start();
 	}
-	public void receive(KEY key, VALUE value)  {	
-		LOG.info("receive key=" + key + " value=" + value);
+	public void receive(KEY key, VALUE value) {
+		element = KVPairInt.newBuilder().setKey(key.toString()).setValue(Integer.parseInt(value.toString())).build();
+		capacity += element.getSerializedSize();
+		if (!writeInputPairs.get() && capacity >= size) {
+			synchronized(writeAction) {
+				System.out.println("notify");
+				writeInputPairs.set(true);
+				capacity = 0;
+				objects = inputPairs.toArray(new KVPairInt[0]);
+				inputPairs.clear();
+				writeAction.notify();
+			}
+		}
+		inputPairs.add(element);
+	}
+	/*public void receive(KEY key, VALUE value)  {	
+		//LOG.info("receive key=" + key + " value=" + value);
 		element = KVPairInt.newBuilder().setKey(key.toString()).setValue(Integer.parseInt(value.toString())).build();
 		capacity += element.getSerializedSize();
 		if (!writeInputPairs.get()) {
@@ -55,6 +62,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 				synchronized(writeAction) {
 					writeInputPairs.set(true);
 					capacity = 0;
+				
 					writeAction.notify();
 				}
 			}	
@@ -70,7 +78,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 				writeFinished.set(false);
 			}
 		}
-	}
+	}*/
 	class writePairsThread extends Thread {
 		public void run() {
 			while (!isAllHandle) {
@@ -83,17 +91,9 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 							e.printStackTrace();
 						}
 					}
-					if (inputPairs.size() > 0) {
-						SaveDatas((KVPairInt[]) inputPairs.toArray(new KVPairInt[0]));
-						System.out.println("kkkkkkkk");
-					}
-					else if (backupInputPairs.size() > 0){
-						SaveDatas((KVPairInt[]) backupInputPairs.toArray(new KVPairInt[0]));
-						System.out.println("vvvvvvvvv");
-					}
-//					System.out.println("***************writeInputPairs =true");
-					writeInputPairs.set(false);
-					writeFinished.set(true);
+					if (objects != null) 
+						SaveDatas(objects);
+					writeInputPairs.set(false);	
 				}
 				
 			}
@@ -114,13 +114,20 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		synchronized(writeAction) {
 //			System.out.println("$$$$$$$$$$$$$$ enter into FinishedReceive");
 			if(!writeInputPairs.get()) {
+				if (inputPairs.size() > 0) {
+					objects = inputPairs.toArray(new KVPairInt[0]);
+					inputPairs.clear();
+				}
+				else {
+					objects = null;
+				}
 				writeInputPairs.set(true);
 				isAllHandle = true;
 				writeAction.notify();
 			}
 		}
-		inputPairs.clear();
-		backupInputPairs.clear();
+//		inputPairs.clear();
+//		backupInputPairs.clear();
 	
 //		System.out.println("***********************over********************");
 	}
