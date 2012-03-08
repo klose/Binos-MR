@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/hadoop-annotations-0.23.0.jar"/>
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/hadoop-common-0.23.0.jar" sourcepath="/HadoopCommon"/>
 	<classpathentry kind="lib" path="/home/jiangbing/eclipse_java/java_workspace/Master-Slave/lib/hadoop-hdfs-0.23.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/DataBus"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

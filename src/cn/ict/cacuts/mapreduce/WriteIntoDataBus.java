@@ -12,6 +12,7 @@ import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData;
 
+import com.longyi.databus.clientapi.ChannelOutputStream;
 import com.transformer.compiler.DataState;
 import com.transformer.compiler.JobConfiguration;
 /*if the file or path exists, it means that appends.*/
@@ -19,14 +20,15 @@ public class WriteIntoDataBus {
 
 	public final String dataName;
 	public DataState dataState;
-	private ByteArrayOutputStream bout;
+	private ByteArrayOutputStream baos;
 	private ObjectOutputStream oos;
 	private FileOutputStream fout;
 	private MessageClientChannel mcc;
+	private ChannelOutputStream cos = null;
 	public WriteIntoDataBus(String dataName) {
 		this.dataName = dataName;
 		confirmDataType();
-		//bout = new ByteArrayOutputStream(); 
+		baos = new ByteArrayOutputStream(); 
 		try {
 			//oos = new ObjectOutputStream(bout);
 			if (dataState == DataState.MESSAGE_POOL) {
@@ -60,25 +62,64 @@ public class WriteIntoDataBus {
 	 * write data into data bus.
 	 * @param pairs
 	 */
-	public void executeWrite(List pairs) {
+	/*public void executeWrite(List pairs) {
 		if (this.dataState == DataState.LOCAL_FILE) {
 			writeIntoFile(pairs, this.dataName);
 		}
 		else if (this.dataState == DataState.MESSAGE_POOL) {
 			writeIntoMsgPool(pairs, this.dataName);
 		}
-	}
+	}*/
 	public void executeWrite(KVPairIntPar[] values) {
 		if (this.dataState == DataState.LOCAL_FILE) {
-			writeIntoFile(values);
+			writeKVPairIntParArray(values);
 		}
 		else if (this.dataState == DataState.MESSAGE_POOL) {
-			writeIntoMsgPool(values, this.dataName);
+			putKVPairIntParArray(values);
 		}
+	}
+	public void appendKVPairIntList(KVPairIntList value) {
+		if (cos == null) {
+			cos = new ChannelOutputStream(this.dataName);
+		}
+		try {
+			value.writeTo(baos);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cos.write(baos.toByteArray());
+		baos.reset();
+	}
+	public void appendKVPairIntPar(KVPairIntPar value) {
+		if (cos == null) {
+			cos = new ChannelOutputStream(this.dataName);
+		}
+		try {
+			value.writeTo(baos);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		cos.write(baos.toByteArray());
+		baos.reset();
 	}
 	public void writeKVPairIntList(KVPairIntList value) {
 		try {
 			value.writeDelimitedTo(fout);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	private void putKVPairIntArray(KVPairInt[] values) {
+		
+		try {
+			for (KVPairInt tmp: values) {
+					tmp.writeDelimitedTo(baos);
+			}
+			mcc.putValue(this.dataName, baos.toByteArray());
+			baos.reset();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,28 +135,33 @@ public class WriteIntoDataBus {
 			e.printStackTrace();
 		}
 	}
-	private void writeIntoFile(KVPairIntPar[] values) {
+	
+	
+	private void putKVPairIntParArray(KVPairIntPar[] values) {
+		for (KVPairIntPar tmp : values) {
+			appendKVPairIntPar(tmp);
+
+		}
+	}
+	private void writeKVPairIntParArray(KVPairIntPar[] values) {
 		try {						
 			for (KVPairIntPar tmp: values) {
 				tmp.writeDelimitedTo(fout);
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	private void writeIntoMsgPool(Object[] values, String dataName) {
-		
-		ByteArrayOutputStream bout = new ByteArrayOutputStream(); 
+	private void writeIntoMsgPool(Object[] values, String dataName) {	
 		ObjectOutputStream oos;		
 		try {
-			oos = new ObjectOutputStream(bout);
+			oos = new ObjectOutputStream(baos);
 			for (int i = 0; i < values.length; i++) {
 				oos.writeObject(values[i]);
 			}
 			oos.flush();
-			mcc.putValue(dataName, bout.toByteArray());
-			bout.close();
+			mcc.putValue(dataName, baos.toByteArray());
+			baos.reset();
 			System.out.println("kkkk :writeIntoMsgPool" + dataName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -128,8 +174,7 @@ public class WriteIntoDataBus {
 				oos.writeObject(pairs.get(i));
 			}
 			oos.flush();
-			mcc.putValue(dataName, bout.toByteArray());
-			bout.close();
+			mcc.putValue(dataName, baos.toByteArray());
 			System.out.println("kkkk :writeIntoMsgPool" + dataName);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -150,16 +195,24 @@ public class WriteIntoDataBus {
 	public void close() {
 		if (this.dataState == DataState.LOCAL_FILE) {
 			try {
-				//fout.write(bout.toByteArray());
 				fout.flush();
-				//bout.close();
-				//oos.close();
 				fout.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("kkkk :writeIntoFile" + dataName);
+		}
+		else if (this.dataState == DataState.MESSAGE_POOL ){
+			if (this.cos != null) {
+				this.cos.close();
+			}
+		}
+		try {
+			baos.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -174,7 +227,7 @@ public class WriteIntoDataBus {
 		pairs.add("key2 , 2");
 		String path =  "/tmp/2012001-test";
 		WriteIntoDataBus tt = new WriteIntoDataBus(path);
-		tt.executeWrite(pairs);
+		//tt.executeWrite(pairs);
 		tt.close();
 //		WriteIntoDataBus tt1 = new WriteIntoDataBus(path);
 //		tt1.executeWrite(pairs);

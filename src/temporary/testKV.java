@@ -1,10 +1,13 @@
 package temporary;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +27,31 @@ public class testKV {
 //		pair.t
 		
 		KVPairIntData data;
-		KVPairIntList data1 = KVPairIntList.newBuilder().setKey("abcd").
+		KVPairIntList data1 = KVPairIntList.newBuilder().setKey("abc").
 				addVlist(1000).addVlist(2000).build();
 		KVPairIntList data2 = KVPairIntList.newBuilder().setKey("abcd").
 				addVlist(1000).addVlist(2000).build();
-	
-		System.out.println(data2.hashCode());
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		FileOutputStream fos = new FileOutputStream("/tmp/test-byte");
+		data1.writeDelimitedTo(baos);
+		data2.writeDelimitedTo(baos);
+		byte[] d = baos.toByteArray();
+		baos.writeTo(fos);
+		fos.close();
+		FileInputStream fis = new FileInputStream("/tmp/test-byte");
+		KVPairIntList reader = KVPairIntList.parseDelimitedFrom(fis);
+		System.out.println(reader.toString());
+		fis.close();
+		
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		KVPairIntList.Builder reader1 = KVPairIntList.newBuilder();
+		reader1.mergeDelimitedFrom(bais);
+		System.out.println(reader1.build().toString());
+		reader1 = KVPairIntList.newBuilder();
+		reader1.mergeDelimitedFrom(bais);
+		System.out.println(reader1.build().toString());
+		
+		/*System.out.println(data2.hashCode());
 		KVPairIntList.Builder builder = KVPairIntList.newBuilder();
 		builder.setKey(data1.getKey()).addAllVlist(data1.getVlistList()).addAllVlist(data2.getVlistList());
 		System.out.println(builder.isInitialized());
@@ -39,7 +61,7 @@ public class testKV {
 			System.out.println("ok");
 		System.out.println(builder.toString());
 		System.out.println(builder.getVlistCount());
-		//System.out.println(builder.isInitialized());
+		//System.out.println(builder.isInitialized());*/
 		
 	}
 		/*

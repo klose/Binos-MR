@@ -98,7 +98,13 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 	public boolean nextKey()  {
 		//TODO need initialize lineReader///////////////////////////////////////////////
 		KVPairIntList curList = null;	
-		if ((curList = (KVPairIntList) reader.readKVPairIntList()) != null) {
+		if (this.state == DataState.MESSAGE_POOL) {
+			curList = reader.getOneKVPairIntList();
+		}
+		else if (this.state == DataState.LOCAL_FILE) {
+			curList = (KVPairIntList) reader.readKVPairIntList();
+		}
+		if (curList != null) {
 			key = curList.getKey();
 			vlist =  curList.getVlistList();
 			return true;
@@ -156,7 +162,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 		}
 		else if (this.state == DataState.MESSAGE_POOL) {
 			MessageClientChannel mcc = new MessageClientChannel();
-			mcc.FreeData(this.mergeTmpPath);
+			mcc.FreeAllData(this.mergeTmpPath);
 		}
 	}
 	public void controlReadWhichFile(){

@@ -15,9 +15,6 @@ public class DealReduceInputUtil<KEY, VALUE> {
 	public String[] reduceDataInputPath;
 	public BinosURL[] binosURLInput;
 	private DataState state;
-	//public String reduceOutPutDataName;
-	//public Map<KEY, Vector<VALUE>> keyValue;
-	//private boolean finishedReceive = false;
 	//read remote Datas to save into local disk
 	String tmpLocalDataPath;
 	String[] readedRemoteDatas;
