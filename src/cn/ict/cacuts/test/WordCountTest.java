@@ -42,12 +42,10 @@ public class WordCountTest {
 
 	public static void main(String[] args) throws Exception {
 		MRConfig conf = new MRConfig("wordcount");
-		//conf.setSplitFileSize(16*1024*1024);
 		String inputFileName[] = {"input"};
 		String outputFileName[] = {"output1","output2","output3","output4"};
 		//String outputFileName[] = {"output1"};
 		MRJob job = new MRJob(conf, "wordcount");
-		
 		job.setInputFileName(inputFileName);
 		job.setOutputFileName(outputFileName);
 		job.setMapperClass(TokenizerMapper.class);
