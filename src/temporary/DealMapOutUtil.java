@@ -1,4 +1,4 @@
-package cn.ict.cacuts.mapreduce.map;
+package temporary;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 import org.apache.commons.logging.Log;
@@ -26,9 +25,9 @@ import cn.ict.cacuts.mapreduce.KeyValue.KVPairInt;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData;
-import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.Builder;
+import cn.ict.cacuts.mapreduce.map.HashPartitioner;
+import cn.ict.cacuts.mapreduce.map.SortStructedData;
 import cn.ict.cacuts.mapreduce.reduce.FinalKVPair;
-import cn.ict.cacuts.mapreduce.KeyValue;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Merger;
 import cn.ict.cacuts.mapreduce.WriteIntoDataBus;
@@ -43,7 +42,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	public final long size = 1024 *1024 * 10; // set the memory used by map task	
 	
 	private KVPairIntParData.Builder inputPairs = KVPairIntParData.newBuilder();
-
+	private KVPairIntParData.Builder backupInputPairs = KVPairIntParData.newBuilder();
 	private final ArrayList[] lists;
 	private String[] fileName;
 	public  String[] mapOutFileIndex = null;//suppose there are no more than 100 interfile
@@ -57,66 +56,129 @@ public class DealMapOutUtil<KEY, VALUE> {
 	boolean inputFull = false;
 	//boolean writeInputPairs = true;
 	int partionedNum;
+	int tmpDataNum = 0;	
 	String indexString = "";
+	
 	int whileNum = 0;
 	long allstart;
 	HashPartitioner hashPartitioner = new HashPartitioner();
-	private AtomicInteger tmpDataNum = new AtomicInteger(0);
 	//private volatile boolean writeFinished = false;
+	private AtomicBoolean writeFinished = new AtomicBoolean(false);
+	//private volatile boolean writeInputPairs = false;
+	private AtomicBoolean writeInputPairs = new AtomicBoolean(false);
+	//private volatile boolean allWaiting = false;
 	private volatile boolean isAllHandle = false;
-	private List <Thread> allThreads = new ArrayList<Thread>(); 
-	private final String tempMapOutFilesPathPrefix;
 	
+	private Object writeAction = new Object();
+	private Thread writeThread;
+	
+	private final String tempMapOutFilesPathPrefix;
+
 	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix, DataState state) {
 		setOutputPath(outputPath);
 		this.dataState = state;
 		this.tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 		this.numberOfReduce = outputPath.length;
 		lists = new ArrayList[this.numberOfReduce];
+//		innerFileIndex = new AtomicIntegerArray(this.numberOfReduce);
 		writeFileIndex = new AtomicIntegerArray(this.numberOfReduce);
+//		innerFileIndex = new int[this.numberOfReduce];
+		//writeFileIndex = new int[this.numberOfReduce];
+		
 		for (int i = 0; i < this.numberOfReduce; i++) {
+//			innerFileIndex[i] = 0;
 			writeFileIndex.set(i, 0);
 		}
+		this.writeThread = new writePairsThread();
+		this.writeThread.start();
 		allstart = System.currentTimeMillis();
 	}
+	
 
+//	public void receive(KEY key, VALUE value) {
+//		partionedNum = hashPartitioner.getPartition(key, numberOfReduce);
+//		innerFileIndex[partionedNum]++;
+//		element = KVPairIntPar.newBuilder().setKey(key.toString()).
+//				setValue(Integer.parseInt(value.toString())).setPartition(partionedNum).build();	
+//		inputPairs.addKvset(element);
+//	//	capacity += element.getSerializedSize();
+//		capacity += 1;
+//		if (capacity >= size) {
+//			capacity = 0;
+//			
+//			System.arraycopy(innerFileIndex, 0, writeFileIndex, 0, numberOfReduce);
+//			dealReceivedUtil(inputPairs);
+//			for (int i = 0; i < numberOfReduce; i++) {
+//				innerFileIndex[i] = 0;
+//			}
+//			inputPairs.clearKvset();
+//		}
+//	}
+//	public void FinishedReceive() {
+//		if (inputPairs.getKvsetCount() > 0) {
+//			System.arraycopy(innerFileIndex, 0, writeFileIndex, 0, numberOfReduce);
+//			dealReceivedUtil(inputPairs);
+//		}
+//	}
 	public void receive(KEY key, VALUE value) {
 		
 		//LOG.info("receive key=" + key + " value=" + value);
 		partionedNum = hashPartitioner.getPartition(key, numberOfReduce);
 		writeFileIndex.addAndGet(partionedNum, 1);
+		//innerFileIndex[partionedNum]++;
 		element = KVPairIntPar.newBuilder().setKey(key.toString()).
 				setValue(Integer.parseInt(value.toString())).setPartition(partionedNum).build();
 		capacity += element.getSerializedSize();
-		inputPairs.addKvset(element);
-		if (capacity >= size) {
-			// notify the thread to write the inputPairs to File
-			launchSortAndWrite(inputPairs.clone());
-			capacity = 0;
-			inputPairs.clear();
-			dealFileIndexContext();
-			for (int i = 0; i < numberOfReduce; i++) {
-				writeFileIndex.set(i, 0);
+		if (!writeInputPairs.get()) {
+			inputPairs.addKvset(element);
+			if (capacity >= size) {
+				//notify the thread to write the inputPairs to File	
+				System.out.println("$$$$$$$$$$$$$$ writeAction.signal()");
+				synchronized(writeAction) {
+					writeInputPairs.set(true);
+					capacity = 0;
+					sortedArray = sortDatas(inputPairs.clone());
+					dealFileIndexContext();
+					for (int i = 0; i < numberOfReduce; i++) {
+						writeFileIndex.set(i, 0);
+					}
+					writeAction.notify();
+				}
+			}	
+		}
+		else {						
+			backupInputPairs.addKvset(element);
+			if (writeFinished.get()) {
+				inputPairs.addAllKvset(backupInputPairs.getKvsetList());
+				backupInputPairs.clear();
 			}
-		}	
-	}
-	private void launchSortAndWrite(KVPairIntParData.Builder value) {
-		Thread tmp = new SortWriteThread(value);
-		allThreads.add(tmp);
-		tmp.start();
-	}
-	class SortWriteThread extends Thread {
-		KVPairIntParData.Builder value;
-		public SortWriteThread(KVPairIntParData.Builder value) {
-			this.value = value;
 		}
-		public void run() {	
-			dealReceivedUtil(this.value);
-		}
-	
 	}
-	public void dealReceivedUtil(KVPairIntParData.Builder value) {
-		saveDatas(sortDatas(value));
+	class writePairsThread extends Thread {
+		public void run() {
+			while (!isAllHandle) {
+				synchronized (writeAction) {
+					while (!writeInputPairs.get()) {
+						try {
+							writeAction.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				System.out.println("$$$$$$$$$$$$$$ writeAction");
+				dealReceivedUtil();
+				inputPairs.clearKvset();					
+				writeFinished.set(true);
+				writeInputPairs.set(false);
+				
+			}
+		}
+	}
+	public void dealReceivedUtil() {
+		tmpDataNum++;
+		saveDatas();
 	}
 
 	private void dealFileIndexContext() {
@@ -127,9 +189,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 	}
 
 
-	private KVPairIntPar[] sortDatas(KVPairIntParData.Builder value) {
+	private KVPairIntPar[] sortDatas(KVPairIntParData.Builder values) {
 		long start = System.currentTimeMillis();
-		KVPairIntPar[] ss = value.getKvsetList().toArray(new KVPairIntPar[0]);	
+		KVPairIntPar[] ss = values.getKvsetList().toArray(new KVPairIntPar[0]);	
 		System.out.println("inputPairs.toArray: + size=" + ss.length + " "+ (System.currentTimeMillis() - start) + "ms");
 		Arrays.sort(ss, 
 				SortStructedData.getComparator());
@@ -137,8 +199,8 @@ public class DealMapOutUtil<KEY, VALUE> {
 		return ss;
 	}
 
-	private void saveDatas(KVPairIntPar[] sortedArray) {
-		String dataName = tempMapOutFilesPathPrefix + tmpDataNum.incrementAndGet();
+	private void saveDatas() {
+		String dataName = tempMapOutFilesPathPrefix + tmpDataNum;
 		long start = System.currentTimeMillis();
 		WriteIntoDataBus writer = new WriteIntoDataBus(dataName);
 		writer.executeWrite(sortedArray);
@@ -156,23 +218,23 @@ public class DealMapOutUtil<KEY, VALUE> {
 	}
 	public void FinishedReceive() {
 		
-		if (tmpDataNum.get() == 0 && inputPairs.getKvsetCount() > 0) {
+		while (writeInputPairs.get()) {
+			//if the process of writing is running, wait the last write to over.
+		}
+		this.writeThread.stop();
+		if (tmpDataNum == 0 && inputPairs.getKvsetCount() > 0) {
 			LOG.info("mapper process only one intermediate file");
 			//System.arraycopy(innerFileIndex, 0, writeFileIndex, 0, numberOfReduce);
-			dealReceivedUtil(inputPairs);
+			sortedArray = sortDatas(inputPairs);
+			dealFileIndexContext();
+			dealReceivedUtil();
 		}
-		for (Thread tmp: allThreads) {
-			try {
-				if (tmp.isAlive()) {
-					tmp.join();
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (backupInputPairs.getKvsetCount() > 0) {
+			sortedArray = sortDatas(backupInputPairs);
+			dealFileIndexContext();
+			dealReceivedUtil();
 		}
 		LOG.info("before merge: Mapper process uses" + (System.currentTimeMillis() - allstart) + "ms");
-		
 		dealFileIndex();
 		
 		
@@ -182,9 +244,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 		Merger merge = new Merger();
 		Path[] inputPath;
 		Path[] outputPath;
-		if (tmpDataNum.get() > 0) {
-			inputPath = new Path[tmpDataNum.get()];
-			for (int i = 0; i < tmpDataNum.get(); i++) {
+		if (tmpDataNum > 0) {
+			inputPath = new Path[tmpDataNum];
+			for (int i = 0; i < tmpDataNum; i++) {
 				inputPath[i] = new Path(tempMapOutFilesPathPrefix + (i+1));
 			}
 			if (null != fileName) {
@@ -192,6 +254,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				for (int i = 0; i < fileName.length; i++) {
 					outputPath[i] = new Path( BinosURL.getPath(
 							new BinosURL(new Text(fileName[i]) )));
+//					outputPath[i] = new Path(fileName[i]);
 				}
 				if (null != mapOutFileIndex)
 					try {

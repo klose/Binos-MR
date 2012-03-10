@@ -16,40 +16,59 @@ import java.util.List;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairInt;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairString;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData;
 import cn.ict.cacuts.mapreduce.map.SortStructedData;
 
 public class testKV {
 	public static void test() throws IOException {
-		KVPairInt pair = KVPairInt.newBuilder().setKey("abcd").setValue(1000).build();
-		KVPairInt pair1 = KVPairInt.newBuilder().setKey("ab").setValue(1200).build();
-//		pair.t
-		
-		KVPairIntData data;
-		KVPairIntList data1 = KVPairIntList.newBuilder().setKey("abc").
-				addVlist(1000).addVlist(2000).build();
-		KVPairIntList data2 = KVPairIntList.newBuilder().setKey("abcd").
-				addVlist(1000).addVlist(2000).build();
+		KVPairIntPar pair = KVPairIntPar.newBuilder().setKey("abcd").setValue(1000).setPartition(0).build();
+		KVPairIntPar pair1 = KVPairIntPar.newBuilder().setKey("ab").setValue(1200).setPartition(1).build();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		FileOutputStream fos = new FileOutputStream("/tmp/test-byte");
-		data1.writeDelimitedTo(baos);
-		data2.writeDelimitedTo(baos);
-		byte[] d = baos.toByteArray();
+		for (int i = 0; i < 1000; i++) {
+			pair.writeDelimitedTo(baos);
+		}
+		baos.writeTo(fos);
+		int index1 = baos.toByteArray().length;
+		baos.reset();
+		for (int i = 0; i < 1000; i++) {
+			pair1.writeDelimitedTo(baos);
+		}
 		baos.writeTo(fos);
 		fos.close();
 		FileInputStream fis = new FileInputStream("/tmp/test-byte");
-		KVPairIntList reader = KVPairIntList.parseDelimitedFrom(fis);
-		System.out.println(reader.toString());
-		fis.close();
-		
-		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-		KVPairIntList.Builder reader1 = KVPairIntList.newBuilder();
-		reader1.mergeDelimitedFrom(bais);
-		System.out.println(reader1.build().toString());
-		reader1 = KVPairIntList.newBuilder();
-		reader1.mergeDelimitedFrom(bais);
-		System.out.println(reader1.build().toString());
+		KVPairIntPar tmp = KVPairIntPar.parseDelimitedFrom(fis);
+		while (tmp != null) {
+			System.out.println(tmp.toString());
+			tmp = KVPairIntPar.parseDelimitedFrom(fis);
+			
+		}
+//		KVPairIntData data;
+//		KVPairIntList data1 = KVPairIntList.newBuilder().setKey("abc").
+//				addVlist(1000).addVlist(2000).build();
+//		KVPairIntList data2 = KVPairIntList.newBuilder().setKey("abcd").
+//				addVlist(1000).addVlist(2000).build();
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		FileOutputStream fos = new FileOutputStream("/tmp/test-byte");
+//		data1.writeDelimitedTo(baos);
+//		data2.writeDelimitedTo(baos);
+//		byte[] d = baos.toByteArray();
+//		baos.writeTo(fos);
+//		fos.close();
+//		FileInputStream fis = new FileInputStream("/tmp/test-byte");
+//		KVPairIntList reader = KVPairIntList.parseDelimitedFrom(fis);
+//		System.out.println(reader.toString());
+//		fis.close();
+//		
+//		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+//		KVPairIntList.Builder reader1 = KVPairIntList.newBuilder();
+//		reader1.mergeDelimitedFrom(bais);
+//		System.out.println(reader1.build().toString());
+//		reader1 = KVPairIntList.newBuilder();
+//		reader1.mergeDelimitedFrom(bais);
+//		System.out.println(reader1.build().toString());
 		
 		/*System.out.println(data2.hashCode());
 		KVPairIntList.Builder builder = KVPairIntList.newBuilder();

@@ -15,6 +15,8 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
+import temporary.DealMapOutUtil;
+
 import com.transformer.compiler.DataState;
 import com.transformer.compiler.JobConfiguration;
 import com.transformer.compiler.TransmitType;
@@ -24,7 +26,6 @@ import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.HdfsFileLineReader;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
 import cn.ict.cacuts.mapreduce.ReadFromDataBus;
-import cn.ict.cacuts.mapreduce.map.DealMapOutUtil;
 import cn.ict.cacuts.mapreduce.map.KVList;
 import cn.ict.cacuts.mapreduce.map.MapContext;
 

@@ -78,31 +78,30 @@ public class WriteIntoDataBus {
 			putKVPairIntParArray(values);
 		}
 	}
+//	public void appendKVPairIntList(KVPairIntList value) {
+//		if (cos == null) {
+//			cos = new ChannelOutputStream(this.dataName);
+//		}
+//		try {
+//			value.writeTo(baos);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		cos.write(baos.toByteArray());
+//		baos.reset();
+//	}
 	public void appendKVPairIntList(KVPairIntList value) {
 		if (cos == null) {
 			cos = new ChannelOutputStream(this.dataName);
 		}
-		try {
-			value.writeTo(baos);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		cos.write(baos.toByteArray());
-		baos.reset();
+		cos.write(value.toByteArray());
 	}
-	public void appendKVPairIntPar(KVPairIntPar value) {
+	public void appendKVPairIntPar(KVPairIntPar value){
 		if (cos == null) {
 			cos = new ChannelOutputStream(this.dataName);
 		}
-		try {
-			value.writeTo(baos);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		cos.write(baos.toByteArray());
-		baos.reset();
+		cos.write(value.toByteArray());
 	}
 	public void writeKVPairIntList(KVPairIntList value) {
 		try {
@@ -128,8 +127,10 @@ public class WriteIntoDataBus {
 	public void writeKVPairIntArray(KVPairInt[] value) {
 		try {
 			for (KVPairInt tmp: value) {
-				tmp.writeDelimitedTo(fout);
+				tmp.writeDelimitedTo(baos);
 			}
+			baos.writeTo(fout);
+			baos.reset();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,14 +141,15 @@ public class WriteIntoDataBus {
 	private void putKVPairIntParArray(KVPairIntPar[] values) {
 		for (KVPairIntPar tmp : values) {
 			appendKVPairIntPar(tmp);
-
 		}
 	}
 	private void writeKVPairIntParArray(KVPairIntPar[] values) {
 		try {						
 			for (KVPairIntPar tmp: values) {
-				tmp.writeDelimitedTo(fout);
+				tmp.writeDelimitedTo(baos);
 			}
+			baos.writeTo(fout);
+			baos.reset();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

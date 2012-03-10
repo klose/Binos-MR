@@ -10,6 +10,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
 
 import com.transformer.compiler.DataState;
@@ -20,6 +23,7 @@ import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData;
 import cn.ict.cacuts.mapreduce.map.KVList;
 import cn.ict.cacuts.mapreduce.map.KVPair;
+import cn.ict.cacuts.mapreduce.map.MapContext;
 
 /**
  * Merge small files into large file. 
@@ -29,7 +33,7 @@ import cn.ict.cacuts.mapreduce.map.KVPair;
 public class Merger extends PriorityQueue{
 
 	
-
+	private final static Log LOG = LogFactory.getLog(Merger.class);
 	/**
 	 * Merge the intermediate file that map() generate.The function will generate the array of output path whose 
 	 * length equals the number of reduce tasks.  
@@ -170,6 +174,7 @@ public class Merger extends PriorityQueue{
 		
 		int allocateNum = 0;
 		for (int k = 0 ; k < output.length; k++) {
+			long start = System.currentTimeMillis();
 			skipPathNum = 0;
 			allocateNum = 0;
 			for (int i = 0; i < length; i++) {
@@ -190,6 +195,10 @@ public class Merger extends PriorityQueue{
 				for (int j = 0; j < readCount[i][k]; j++)
 					insert((reader[i].readKVPairIntPar()));
 			}
+			
+			LOG.info("insert data use:" + (System.currentTimeMillis() - start) + "ms");
+			start = System.currentTimeMillis();
+			
 			KVPairIntPar pair = (KVPairIntPar) pop();
 			String originKey = pair.getKey();
 			KVPairIntList.Builder builder = KVPairIntList.newBuilder();
@@ -205,7 +214,6 @@ public class Merger extends PriorityQueue{
 					pair = (KVPairIntPar) pop();
 					String key = pair.getKey();
 					if (!key.equals(originKey)) {
-						
 						list = builder.build();	
 						writer.writeKVPairIntList(list);
 						builder = KVPairIntList.newBuilder();
@@ -219,8 +227,11 @@ public class Merger extends PriorityQueue{
 				writer.writeKVPairIntList(builder.build());
 			}
 			writer.close();
+			clear();
+			
+			LOG.info("combine and write data use:" + (System.currentTimeMillis() - start) + "ms");
 		}
-		clear();
+		
 		if (isDelete) {
 			for (int i = 0; i < length; i++) {
 				new File(input[i].toUri().getPath()).delete();
