@@ -1,5 +1,6 @@
 package cn.ict.cacuts.mapreduce.reduce;
 import java.util.ArrayList;
+import java.util.List;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,9 +16,9 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 
 	private final static Log LOG = LogFactory
 			.getLog(DealReduceOutputUtil.class);
-	public final static int size = 1000 * 1000;
+	public final static int size = 1024 * 1024;
 	private int capacity = 0;
-	private CopyOnWriteArrayList<KVPairInt> inputPairs = new CopyOnWriteArrayList<KVPairInt>();
+	private List<KVPairInt> inputPairs = new CopyOnWriteArrayList<KVPairInt>();
 	private final DataState state;
 	String fileName;
 	KVPairInt element;
@@ -25,32 +26,33 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 	
 	private AtomicBoolean writeInputPairs = new AtomicBoolean(false);
 	private KVPairInt[] objects = null;
-	private volatile boolean isAllHandle = false;
+	private AtomicBoolean isAllHandle = new AtomicBoolean(false);
 	private Object writeAction = new Object();
+	//private List<Thread> allThreads = new CopyOnWriteArrayList<Thread>();
 	private Thread writeThread;
 
 	public DealReduceOutputUtil(String[] outputPath, DataState state) {
 		setOutputPath(outputPath);
 		this.state = state;
 		this.writeTool = new WriteIntoDataBus(fileName);
-		this.writeThread = new writePairsThread();
+		this.writeThread = new WritePairsThread();
 		this.writeThread.start();
 	}
 	public void receive(KEY key, VALUE value) {
 		//LOG.info(key + ":" +value);
 		element = KVPairInt.newBuilder().setKey(key.toString()).setValue(Integer.parseInt(value.toString())).build();
 		capacity += element.getSerializedSize();
-		if (!writeInputPairs.get() && capacity >= size) {
+		inputPairs.add(element);
+		if (!writeInputPairs.get() && capacity >= size) {	
 			synchronized(writeAction) {
 				System.out.println("notify");
 				writeInputPairs.set(true);
-				capacity = 0;
-				objects = inputPairs.toArray(new KVPairInt[0]);
+				capacity = 0; 
+				objects = (KVPairInt[]) inputPairs.toArray();
 				inputPairs.clear();
 				writeAction.notify();
 			}
 		}
-		inputPairs.add(element);
 	}
 	/*public void receive(KEY key, VALUE value)  {	
 		//LOG.info("receive key=" + key + " value=" + value);
@@ -80,9 +82,11 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 			}
 		}
 	}*/
-	class writePairsThread extends Thread {
+	class WritePairsThread extends Thread {
+		
+		
 		public void run() {
-			while (!isAllHandle) {
+			while (!isAllHandle.get()) {
 				synchronized (writeAction) {
 					while (!writeInputPairs.get()) {
 						try {
@@ -95,8 +99,7 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 					if (objects != null) 
 						SaveDatas(objects);
 					writeInputPairs.set(false);	
-				}
-				
+				}	
 			}
 			writeTool.close();
 		}
@@ -112,23 +115,24 @@ public class DealReduceOutputUtil<KEY, VALUE> {
 		while(writeInputPairs.get()) {
 			//wait for last write to over.
 		}
-		synchronized(writeAction) {
-//			System.out.println("$$$$$$$$$$$$$$ enter into FinishedReceive");
-			if(!writeInputPairs.get()) {
-				if (inputPairs.size() > 0) {
-					objects = inputPairs.toArray(new KVPairInt[0]);
-					inputPairs.clear();
-				}
-				else {
-					objects = null;
-				}
-				writeInputPairs.set(true);
-				isAllHandle = true;
-				writeAction.notify();
-			}
+		this.writeThread.stop();
+		if (inputPairs.size() > 0) {
+			SaveDatas(inputPairs.toArray(new KVPairInt[0]));
 		}
-//		inputPairs.clear();
-//		backupInputPairs.clear();
+		writeTool.close();
+//		synchronized(writeAction) {
+//			if(!writeInputPairs.get()) {
+//				if (inputPairs.size() > 0) {
+//					objects = (KVPairInt[]) inputPairs.toArray();
+//				}
+//				else {
+//					objects = null;
+//				}
+//				writeInputPairs.set(true);
+//				isAllHandle.set(true);
+//				writeAction.notify();
+//			}
+//		}
 	
 //		System.out.println("***********************over********************");
 	}

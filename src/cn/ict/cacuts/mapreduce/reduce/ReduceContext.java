@@ -74,8 +74,11 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 		
 		receive = new DealReduceInputUtil(reduceRemoteReadPaths, tmpLocalFilePath, mergeTmpPath, state);
 		receive.prepared();
+		if (this.state == DataState.REMOTE_FILE) 
+			this.state = DataState.LOCAL_FILE;
 		try {
 			initStream();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,6 +96,7 @@ public class ReduceContext <KEYIN, VALUEIN, KEYOUT, VALUEOUT>{
 			}
 		}
 		reader = new ReadFromDataBus(this.mergeTmpPath);
+		LOG.info("mergeTmpPath:" + this.mergeTmpPath + " length:" + new File(this.mergeTmpPath).length());
 		
 	}
 

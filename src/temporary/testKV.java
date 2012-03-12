@@ -26,25 +26,39 @@ public class testKV {
 		KVPairIntPar pair = KVPairIntPar.newBuilder().setKey("abcd").setValue(1000).setPartition(0).build();
 		KVPairIntPar pair1 = KVPairIntPar.newBuilder().setKey("ab").setValue(1200).setPartition(1).build();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		long start = System.currentTimeMillis();
 		FileOutputStream fos = new FileOutputStream("/tmp/test-byte");
-		for (int i = 0; i < 1000; i++) {
+		System.out.println("use " + (System.currentTimeMillis() - start) + "ms");
+		for (int i = 0; i < 10000000; i++) {
 			pair.writeDelimitedTo(baos);
 		}
 		baos.writeTo(fos);
 		int index1 = baos.toByteArray().length;
+		if (pair.getSerializedSize() * 10000000 != index1 ) {
+			System.out.println("wrong!");
+		}
 		baos.reset();
 		for (int i = 0; i < 1000; i++) {
 			pair1.writeDelimitedTo(baos);
 		}
 		baos.writeTo(fos);
 		fos.close();
+		
+		start = System.currentTimeMillis();
 		FileInputStream fis = new FileInputStream("/tmp/test-byte");
+		
+		fis.skip(index1);
+		
 		KVPairIntPar tmp = KVPairIntPar.parseDelimitedFrom(fis);
+		System.out.println("use " + (System.currentTimeMillis() - start) + "ms");
 		while (tmp != null) {
-			System.out.println(tmp.toString());
+			//System.out.println(tmp.toString());
 			tmp = KVPairIntPar.parseDelimitedFrom(fis);
-			
 		}
+		fis.close();
+		
+		
+	
 //		KVPairIntData data;
 //		KVPairIntList data1 = KVPairIntList.newBuilder().setKey("abc").
 //				addVlist(1000).addVlist(2000).build();

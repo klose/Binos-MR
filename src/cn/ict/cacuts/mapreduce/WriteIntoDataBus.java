@@ -70,6 +70,21 @@ public class WriteIntoDataBus {
 			writeIntoMsgPool(pairs, this.dataName);
 		}
 	}*/
+	/**
+	 * record the section of array. Not contains the endIndex element in the array.
+	 * @param values
+	 * @param beginIndex : the start index of the section in the array
+	 * @param endIndex : the end index of the section in the array.
+	 */
+	public void executeWrite(KVPairIntPar[] values, int beginIndex, int endIndex) {
+		if (this.dataState == DataState.LOCAL_FILE) {
+			writeKVPairIntParArray(values, beginIndex, endIndex);
+		}
+		else if (this.dataState == DataState.MESSAGE_POOL) {
+			putKVPairIntParArray(values, beginIndex, endIndex);
+		}
+	}
+	
 	public void executeWrite(KVPairIntPar[] values) {
 		if (this.dataState == DataState.LOCAL_FILE) {
 			writeKVPairIntParArray(values);
@@ -78,19 +93,6 @@ public class WriteIntoDataBus {
 			putKVPairIntParArray(values);
 		}
 	}
-//	public void appendKVPairIntList(KVPairIntList value) {
-//		if (cos == null) {
-//			cos = new ChannelOutputStream(this.dataName);
-//		}
-//		try {
-//			value.writeTo(baos);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		cos.write(baos.toByteArray());
-//		baos.reset();
-//	}
 	public void appendKVPairIntList(KVPairIntList value) {
 		if (cos == null) {
 			cos = new ChannelOutputStream(this.dataName);
@@ -105,6 +107,7 @@ public class WriteIntoDataBus {
 	}
 	public void writeKVPairIntList(KVPairIntList value) {
 		try {
+			//System.out.println(value.toString());
 			value.writeDelimitedTo(fout);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -137,16 +140,31 @@ public class WriteIntoDataBus {
 		}
 	}
 	
-	
 	private void putKVPairIntParArray(KVPairIntPar[] values) {
 		for (KVPairIntPar tmp : values) {
 			appendKVPairIntPar(tmp);
+		}
+	}
+	private void putKVPairIntParArray(KVPairIntPar[] values, int begin, int end) {
+		for (int i = begin; i < end; i++) {
+			appendKVPairIntPar(values[i]);
 		}
 	}
 	private void writeKVPairIntParArray(KVPairIntPar[] values) {
 		try {						
 			for (KVPairIntPar tmp: values) {
 				tmp.writeDelimitedTo(baos);
+			}
+			baos.writeTo(fout);
+			baos.reset();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private void writeKVPairIntParArray(KVPairIntPar[] values, int begin, int end) {
+		try {
+			for (int i = begin; i < end; i++) {
+				values[i].writeDelimitedTo(baos);
 			}
 			baos.writeTo(fout);
 			baos.reset();

@@ -32,6 +32,8 @@ public class MapContext<KEY, VALUE> {
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
 	private String tempMapOutPathPrefix; // =  "/opt/jiangbing/CactusTest/"
 	private String[] outputPath;
+	
+	private int zwuCount = 0;
 	static {
 		try {
 			fs = FileSystem.get(conf);
@@ -81,7 +83,6 @@ public class MapContext<KEY, VALUE> {
 	public void output(KEY key, VALUE value) {
 		//System.out.println("key : " + key);
 		//System.out.println("value : " + value);
-		
 		outPut.receive(key, value);
 	}
 	
@@ -95,6 +96,7 @@ public class MapContext<KEY, VALUE> {
 	public void flush() {
 		// TODO Auto-generated method stub
 		outPut.FinishedReceive();
+		System.out.println("zwuCount=" + zwuCount);
 	}
 	public String getTempMapOutFilesPathPrefix() {
 		return tempMapOutPathPrefix;

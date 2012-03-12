@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -50,21 +51,26 @@ public class DealMapOutUtil<KEY, VALUE> {
 //	private final int[] innerFileIndex;
 	//private final int[] writeFileIndex;
 //	private AtomicIntegerArray innerFileIndex;
-	private AtomicIntegerArray writeFileIndex;
-	KVPairIntPar element;
+	
+	//private final AtomicIntegerArray writeFileIndex;
+	//private final AtomicIntegerArray currentBytesIndex;
+	private final AtomicIntegerArray currentObjectsIndex;
+	//private final String[] writeBytesIndex; //each record represents as ***,***,***, meaning that the files separate.
+	//private final String[] writeObjectsIndex;// each record represents as ***,***,***, meaning that the objects separate.
+
+	private KVPairIntPar element;
 	private volatile KVPairIntPar[] sortedArray;
 	private static long capacity = 0; // current capacity
 	boolean inputFull = false;
 	//boolean writeInputPairs = true;
-	int partionedNum;
-	String indexString = "";
-	int whileNum = 0;
+	private int partitionedNum;
+	//String indexString = "";
 	long allstart;
 	HashPartitioner hashPartitioner = new HashPartitioner();
 	private AtomicInteger tmpDataNum = new AtomicInteger(0);
 	//private volatile boolean writeFinished = false;
 	private volatile boolean isAllHandle = false;
-	private List <Thread> allThreads = new ArrayList<Thread>(); 
+	private List <Thread> allThreads = new CopyOnWriteArrayList<Thread>(); 
 	private final String tempMapOutFilesPathPrefix;
 	
 	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix, DataState state) {
@@ -72,10 +78,16 @@ public class DealMapOutUtil<KEY, VALUE> {
 		this.dataState = state;
 		this.tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 		this.numberOfReduce = outputPath.length;
-		lists = new ArrayList[this.numberOfReduce];
-		writeFileIndex = new AtomicIntegerArray(this.numberOfReduce);
+		this.lists = new ArrayList[this.numberOfReduce];
+		//this.writeFileIndex = new AtomicIntegerArray(this.numberOfReduce);
+		//this.currentBytesIndex = new AtomicIntegerArray(this.numberOfReduce);
+		this.currentObjectsIndex = new AtomicIntegerArray(this.numberOfReduce);
+		//this.writeBytesIndex = new String[this.numberOfReduce];
+		//this.writeObjectsIndex = new String[this.numberOfReduce];
 		for (int i = 0; i < this.numberOfReduce; i++) {
-			writeFileIndex.set(i, 0);
+			currentObjectsIndex.set(i, 0);
+			//writeBytesIndex[i] = "0,";
+			//writeObjectsIndex[i] = "";
 		}
 		allstart = System.currentTimeMillis();
 	}
@@ -83,48 +95,59 @@ public class DealMapOutUtil<KEY, VALUE> {
 	public void receive(KEY key, VALUE value) {
 		
 		//LOG.info("receive key=" + key + " value=" + value);
-		partionedNum = hashPartitioner.getPartition(key, numberOfReduce);
-		writeFileIndex.addAndGet(partionedNum, 1);
+		partitionedNum = hashPartitioner.getPartition(key, numberOfReduce);
+		currentObjectsIndex.addAndGet(partitionedNum, 1);
 		element = KVPairIntPar.newBuilder().setKey(key.toString()).
-				setValue(Integer.parseInt(value.toString())).setPartition(partionedNum).build();
+				setValue(Integer.parseInt(value.toString())).setPartition(partitionedNum).build();
+		int elementSize = element.getSerializedSize();
+		//currentBytesIndex.addAndGet(partitionedNum, elementSize);
 		capacity += element.getSerializedSize();
 		inputPairs.addKvset(element);
 		if (capacity >= size) {
 			// notify the thread to write the inputPairs to File
-			launchSortAndWrite(inputPairs.clone());
+			launchSortAndWrite(inputPairs.clone(), tmpDataNum.incrementAndGet(), currentObjectsIndex);
 			capacity = 0;
 			inputPairs.clear();
-			dealFileIndexContext();
+			//dealFileIndexContext();
 			for (int i = 0; i < numberOfReduce; i++) {
-				writeFileIndex.set(i, 0);
+				currentObjectsIndex.set(i, 0);
 			}
 		}	
 	}
-	private void launchSortAndWrite(KVPairIntParData.Builder value) {
-		Thread tmp = new SortWriteThread(value);
+	private void launchSortAndWrite(KVPairIntParData.Builder value, int num, AtomicIntegerArray index) {
+		/*copy the number of objects in each section.*/
+		int [] tmpIndex = new int[this.numberOfReduce];
+		for (int i = 0; i < this.numberOfReduce; i++) {
+			tmpIndex[i] = index.get(i);
+		}
+		Thread tmp = new SortWriteThread(value, num, tmpIndex);
 		allThreads.add(tmp);
 		tmp.start();
 	}
 	class SortWriteThread extends Thread {
 		KVPairIntParData.Builder value;
-		public SortWriteThread(KVPairIntParData.Builder value) {
+		int tmpNum;
+		int[] tmpIndex;
+		public SortWriteThread(KVPairIntParData.Builder value, int num, int[] tmpIndex) {
 			this.value = value;
+			this.tmpNum = num;
+			this.tmpIndex = tmpIndex;
 		}
 		public void run() {	
-			dealReceivedUtil(this.value);
+			dealReceivedUtil(this.value, this.tmpNum, this.tmpIndex);
 		}
 	
 	}
-	public void dealReceivedUtil(KVPairIntParData.Builder value) {
-		saveDatas(sortDatas(value));
+	public void dealReceivedUtil(KVPairIntParData.Builder value, int tmpFileNum, int[] tmpIndex) {
+		saveDatas(sortDatas(value), tmpFileNum, tmpIndex);
 	}
 
-	private void dealFileIndexContext() {
-		for (int i = 0; i < writeFileIndex.length(); i++) {
-			indexString += writeFileIndex.get(i) + ",";			
-		}
-		indexString +=";";
-	}
+//	private void dealFileIndexContext() {
+//		for (int i = 0; i < this.numberOfReduce; i++) {
+//			writeBytesIndex[i] += currentBytesIndex.get(i) + ",";
+//			writeObjectsIndex[i] += currentObjectsIndex.get(i) + ",";			
+//		}
+//	}
 
 
 	private KVPairIntPar[] sortDatas(KVPairIntParData.Builder value) {
@@ -137,84 +160,122 @@ public class DealMapOutUtil<KEY, VALUE> {
 		return ss;
 	}
 
-	private void saveDatas(KVPairIntPar[] sortedArray) {
-		String dataName = tempMapOutFilesPathPrefix + tmpDataNum.incrementAndGet();
+	private void saveDatas(KVPairIntPar[] sortedArray, int tmpNum, int[] tmpIndex) {
+		String dataName = tempMapOutFilesPathPrefix + tmpNum;
 		long start = System.currentTimeMillis();
-		WriteIntoDataBus writer = new WriteIntoDataBus(dataName);
-		writer.executeWrite(sortedArray);
-		writer.close();
+		int startIndex = 0;
+		for (int i = 0 ; i < this.numberOfReduce; i++) {
+			WriteIntoDataBus writer = new WriteIntoDataBus(dataName+"-" + i);
+			writer.executeWrite(sortedArray, startIndex, startIndex + tmpIndex[i]);
+			writer.close();
+			startIndex += tmpIndex[i];
+		}
 		LOG.info("write:" + (System.currentTimeMillis() - start) + "ms");
 	}
 	
-	private void dealFileIndex(){
-		System.out.println("dealFileIndex:" + indexString);
-		indexString = indexString.substring(0, indexString.length() - 1);
-		mapOutFileIndex = indexString.split(";");
-		for(int i = 0 ; i < mapOutFileIndex.length ; i ++){
-			mapOutFileIndex[i] = mapOutFileIndex[i].substring(0, mapOutFileIndex[i].length() - 1);
-		}	
+	class MergeThread extends Thread{
+		private Path[] inputPath;
+		private Path outputPath;
+		private final int count; // the number of intermediate files
+		private final int id;
+		private final String outPath;
+		MergeThread(int count, int id, String path) {
+			this.count = count;
+			this.id = id;
+			this.outPath = path;
+		}
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			/*Merge the small file into the number of file.*/
+			long start = System.currentTimeMillis();
+			Merger merge = new Merger();
+			if (this.count > 0) {
+				this.inputPath = new Path[this.count];
+				for (int i = 0; i < this.count; i++) {
+					inputPath[i] = new Path(tempMapOutFilesPathPrefix + (i+1) + "-" + this.id);
+					LOG.info(inputPath[i].toString());
+				}
+				if (null != outPath) {
+					this.outputPath = new Path( BinosURL.getPath(
+							new BinosURL(new Text(this.outPath))));
+					LOG.info(this.outputPath.toString());
+					LOG.info(dataState);
+					try {
+						merge.merge(this.inputPath,  this.outputPath, true, dataState, KVPairIntPar.class);
+						LOG.info("merge:" + (System.currentTimeMillis() - start) + "ms");
+					} catch (IOException e) {
+							// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				else {
+					LOG.error("MapPhase: Merge process occurs a error: \n" 
+							+ "There are no files configured!");
+					System.exit(-1);
+				}
+			}
+			else {
+				LOG.error("MapPhase: Merge process occurs a error: \n" 
+						+ "There are " + this.count + "intermediate files.");
+				System.exit(-1);
+			}
+			System.out.println("***********************over********************");
+		}
+		
 	}
+//	private void dealFileIndex(){
+//		System.out.println("dealFileIndex:" + indexString);
+//		indexString = indexString.substring(0, indexString.length() - 1);
+//		mapOutFileIndex = indexString.split(";");
+//		for(int i = 0 ; i < mapOutFileIndex.length ; i ++){
+//			mapOutFileIndex[i] = mapOutFileIndex[i].substring(0, mapOutFileIndex[i].length() - 1);
+//		}	
+//	}
 	public void FinishedReceive() {
 		
-		if (tmpDataNum.get() == 0 && inputPairs.getKvsetCount() > 0) {
+		if (inputPairs.getKvsetCount() > 0) {
 			LOG.info("mapper process only one intermediate file");
-			//System.arraycopy(innerFileIndex, 0, writeFileIndex, 0, numberOfReduce);
-			dealReceivedUtil(inputPairs);
+			int [] tmpIndex = new int[this.numberOfReduce];
+			for (int i = 0; i < this.numberOfReduce; i++) {
+				tmpIndex[i] = currentObjectsIndex.get(i);
+			}
+			dealReceivedUtil(inputPairs, tmpDataNum.incrementAndGet(), tmpIndex);
 		}
 		for (Thread tmp: allThreads) {
 			try {
 				if (tmp.isAlive()) {
 					tmp.join();
 				}
+				allThreads.remove(tmp);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		LOG.info("before merge: Mapper process uses" + (System.currentTimeMillis() - allstart) + "ms");
-		
-		dealFileIndex();
-		
-		
-		
+		LOG.info("before merge: Mapper process uses" + (System.currentTimeMillis() - allstart) + "ms");		
 		/*Merge the small file into the number of file.*/
 		long start = System.currentTimeMillis();
-		Merger merge = new Merger();
-		Path[] inputPath;
-		Path[] outputPath;
-		if (tmpDataNum.get() > 0) {
-			inputPath = new Path[tmpDataNum.get()];
-			for (int i = 0; i < tmpDataNum.get(); i++) {
-				inputPath[i] = new Path(tempMapOutFilesPathPrefix + (i+1));
-			}
-			if (null != fileName) {
-				outputPath = new Path[fileName.length];
-				for (int i = 0; i < fileName.length; i++) {
-					outputPath[i] = new Path( BinosURL.getPath(
-							new BinosURL(new Text(fileName[i]) )));
-				}
-				if (null != mapOutFileIndex)
-					try {
-						merge.merge(inputPath, mapOutFileIndex, outputPath, true,this.dataState);
-						LOG.info("merge:" + (System.currentTimeMillis() - start) + "ms");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
-			}
-			else {
-				LOG.error("MapPhase: Merge process occurs a error: \n" 
-						+ "There are no files configured!");
-				System.exit(-1);
-			}
-		}
-		else {
-			LOG.error("MapPhase: Merge process occurs a error: \n" 
-					+ "There are " + this.tmpDataNum + "intermediate files.");
-			System.exit(-1);
+		for (int i = 0; i < this.numberOfReduce; i++) {
+			MergeThread thread = new MergeThread(tmpDataNum.get(), i, fileName[i]);
+			thread.start();
+			allThreads.add(thread);
 		}
 		
+		for (Thread tmp: allThreads) {
+			try {
+				if (tmp.isAlive()) {
+					tmp.join();
+				}
+				allThreads.remove(tmp);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		LOG.info("all merge use:" + (System.currentTimeMillis() - start) + "ms");
+		LOG.info("Mapper process use " + (System.currentTimeMillis() - allstart) + "ms totally.");
 		System.out.println("***********************over********************");
 	}
 	

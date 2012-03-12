@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import com.transformer.compiler.DataState;
 import cn.ict.binos.transmit.BinosURL;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Merger;
 
@@ -59,7 +60,8 @@ public class DealReduceInputUtil<KEY, VALUE> {
 				System.out.println("readedRemoteDatas:"+tmp);
 			}
 			try {
-				merge.merge(readedRemoteDatas, mergedTmpDataName, true, this.state) ;
+				System.out.println("mergeTmpDataName" + mergedTmpDataName);
+				merge.merge(readedRemoteDatas, mergedTmpDataName, true, this.state, KVPairIntList.class) ;
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

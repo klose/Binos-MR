@@ -29,10 +29,9 @@ import com.transformer.compiler.JobConfiguration;
  */
 public class DataSplit {
 	public static final Log LOG = LogFactory.getLog(DataSplit.class.getName());
-	private static final double SPLIT_SLOP = 1.0;   // 10% slop
+	private static final double SPLIT_SLOP = 1.1;   // 10% slop
 	public static Configuration conf;
 	public static FileSystem fs;
-	
 	public Path path;
 	static {
 		//check the hdfs runs well.

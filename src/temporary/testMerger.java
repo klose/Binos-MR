@@ -65,7 +65,7 @@ public class testMerger {
 			inputPath1[i] = new Path(prefixPath1 + i);
 		}
 		Path output1 = new Path("testCase/testMerger/tmpMapOut_output_final");
-		merger.merge(inputPath1, output1, false, DataState.LOCAL_FILE);
+		merger.merge(inputPath1, output1, false, DataState.LOCAL_FILE, Object.class);
 		FileInputStream fis = new FileInputStream(output1.toUri().getPath());
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		Object tmp = null;
