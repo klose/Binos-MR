@@ -2,6 +2,7 @@ package cn.ict.cacuts.userinterface;
 
 import org.apache.hadoop.fs.Path;
 
+import cn.ict.cacuts.mapreduce.Combiner;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Mapper;
 import cn.ict.cacuts.mapreduce.Reducer;
@@ -67,19 +68,7 @@ public class MRJob extends MRJobContext {
 		conf.setMapClass(cls);
 	}
 
-	/**
-	 * Set the combiner class for the job.
-	 * 
-	 * @param cls
-	 *            the combiner to use
-	 * @throws IllegalStateException
-	 *             if the job is submitted
-	 */
-	public void setCombinerClass(Class<? extends Reducer> cls)
-			throws IllegalStateException {
-		ensureState(JobState.DEFINE);
-		conf.setReduceClass(cls);
-	}
+	
 
 	/**
 	 * Set the {@link Reducer} for the job.
@@ -93,9 +82,12 @@ public class MRJob extends MRJobContext {
 			throws IllegalStateException {
 		ensureState(JobState.DEFINE);
 		conf.setReduceClass(cls);
-		;
 	}
-
+	public void setCombinerClass(Class<? extends Combiner> cls) 
+			throws IllegalStateException{
+		ensureState(JobState.DEFINE);
+		conf.setCombineClass(cls);
+	}
 	public void setMapOutputKeyValueTypeClass(Class<?> theClass)
 			throws IllegalStateException {
 		ensureState(JobState.DEFINE);
@@ -112,6 +104,7 @@ public class MRJob extends MRJobContext {
 		ensureState(JobState.DEFINE);
 		conf.setJobName(name);
 	}
+	
 
 	// ///////////////////////////////////////////////////////////////////////////
 	// public String getTrackingURL() {

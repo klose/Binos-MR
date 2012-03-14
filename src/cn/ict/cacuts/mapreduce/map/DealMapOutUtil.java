@@ -23,6 +23,7 @@ import org.apache.http.entity.SerializableEntity;
 import com.transformer.compiler.DataState;
 
 import cn.ict.binos.transmit.BinosURL;
+import cn.ict.cacuts.mapreduce.Combiner;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairInt;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
@@ -64,7 +65,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	boolean inputFull = false;
 	//boolean writeInputPairs = true;
 	private int partitionedNum;
-	//String indexString = "";
+	private Class<? extends Combiner> combineClass;
 	long allstart;
 	HashPartitioner hashPartitioner = new HashPartitioner();
 	private AtomicInteger tmpDataNum = new AtomicInteger(0);
@@ -74,24 +75,32 @@ public class DealMapOutUtil<KEY, VALUE> {
 	private final String tempMapOutFilesPathPrefix;
 	
 	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix, DataState state) {
+		this(outputPath, tempMapOutFilesPathPrefix,state, null);
+	}
+	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix, 
+			DataState state, String combineClassName) {
 		setOutputPath(outputPath);
 		this.dataState = state;
 		this.tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 		this.numberOfReduce = outputPath.length;
 		this.lists = new ArrayList[this.numberOfReduce];
-		//this.writeFileIndex = new AtomicIntegerArray(this.numberOfReduce);
-		//this.currentBytesIndex = new AtomicIntegerArray(this.numberOfReduce);
 		this.currentObjectsIndex = new AtomicIntegerArray(this.numberOfReduce);
-		//this.writeBytesIndex = new String[this.numberOfReduce];
-		//this.writeObjectsIndex = new String[this.numberOfReduce];
 		for (int i = 0; i < this.numberOfReduce; i++) {
 			currentObjectsIndex.set(i, 0);
-			//writeBytesIndex[i] = "0,";
-			//writeObjectsIndex[i] = "";
+		}
+		if (combineClassName != null) {
+			try {
+				this.combineClass = (Class<? extends Combiner>) Class.forName(combineClassName);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		else {
+			this.combineClass = null;
 		}
 		allstart = System.currentTimeMillis();
 	}
-
 	public void receive(KEY key, VALUE value) {
 		
 		//LOG.info("receive key=" + key + " value=" + value);
@@ -189,7 +198,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 			// TODO Auto-generated method stub
 			/*Merge the small file into the number of file.*/
 			long start = System.currentTimeMillis();
-			Merger merge = new Merger();
+			Merger merge = new Merger(combineClass);
 			if (this.count > 0) {
 				this.inputPath = new Path[this.count];
 				for (int i = 0; i < this.count; i++) {
@@ -204,6 +213,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 					try {
 						merge.merge(this.inputPath,  this.outputPath, true, dataState, KVPairIntPar.class);
 						LOG.info("merge:" + (System.currentTimeMillis() - start) + "ms");
+						LOG.info("combine in merge: " + merge.combineUsedTime + "ms");
 					} catch (IOException e) {
 							// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -254,7 +264,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 				e.printStackTrace();
 			}
 		}
-		LOG.info("before merge: Mapper process uses" + (System.currentTimeMillis() - allstart) + "ms");		
+		//LOG.info("before merge: Mapper process uses" + (System.currentTimeMillis() - allstart) + "ms");		
 		/*Merge the small file into the number of file.*/
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < this.numberOfReduce; i++) {

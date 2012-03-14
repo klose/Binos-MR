@@ -1,7 +1,11 @@
 package cn.ict.cacuts.test;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 import org.apache.hadoop.io.Text;
+
+import cn.ict.cacuts.mapreduce.Combiner;
 import cn.ict.cacuts.mapreduce.MRConfig;
 import cn.ict.cacuts.mapreduce.Mapper;
 import cn.ict.cacuts.mapreduce.Reducer;
@@ -23,7 +27,23 @@ public class WordCountTest {
 		      }
 		}
 	}
+	public static class IntSumCombiner extends
+			Combiner<Integer> {
 
+		@Override
+		public List<Integer> combine(String key, List<Integer> values) {
+			// TODO Auto-generated method stub
+			int sum = 0;
+			List <Integer> list = new ArrayList<Integer>();
+			Iterator<Integer> iter = values.iterator();
+			while (iter.hasNext()) {
+				sum += iter.next().intValue();
+			}
+			list.add(sum);
+			return list;
+		}
+		
+	}
 	public static class IntSumReducer extends
 			Reducer<String, Integer, String, Integer> {
 		@Override
@@ -43,14 +63,15 @@ public class WordCountTest {
 	public static void main(String[] args) throws Exception {
 		MRConfig conf = new MRConfig("wordcount");
 		String inputFileName[] = {"input"};
-		String outputFileName[] = {"output1"};
+		String outputFileName[] = {"output1", "output2", "output3", "output4"};
 		//String outputFileName[] = {"output1"};
 		MRJob job = new MRJob(conf, "wordcount");
 		job.setInputFileName(inputFileName);
 		job.setOutputFileName(outputFileName);
 		job.setMapperClass(TokenizerMapper.class);
 		job.setReducerClass(IntSumReducer.class);
-		job.setNumReduceTasks(1);
+		job.setCombinerClass(IntSumCombiner.class);
+		job.setNumReduceTasks(4);
 		job.submit();
 	}
 }

@@ -4,6 +4,10 @@ option java_package = "cn.ict.cacuts.mapreduce";
 option java_outer_classname = "KeyValue";
 
 //<Key:String, Value:Int>
+message KV {
+	required string key = 1;
+	required string value = 2;
+}
 message KVPairInt {
 	required string key = 1;
 	optional int32 value = 2;

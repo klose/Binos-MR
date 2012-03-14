@@ -18,6 +18,7 @@ import com.transformer.compiler.JobConfiguration;
 
 import cn.ict.binos.transmit.BinosDataClient;
 import cn.ict.binos.transmit.BinosURL;
+import cn.ict.cacuts.mapreduce.Combiner;
 import cn.ict.cacuts.mapreduce.FileSplitIndex;
 import cn.ict.cacuts.mapreduce.HdfsFileLineReader;
 
@@ -32,8 +33,9 @@ public class MapContext<KEY, VALUE> {
 	private HdfsFileLineReader lineReader = new HdfsFileLineReader();
 	private String tempMapOutPathPrefix; // =  "/opt/jiangbing/CactusTest/"
 	private String[] outputPath;
+	//private Class<? extends Combiner> combinerClass = null;
+	private String combinerName = null;
 	
-	private int zwuCount = 0;
 	static {
 		try {
 			fs = FileSystem.get(conf);
@@ -45,19 +47,34 @@ public class MapContext<KEY, VALUE> {
 	}
 
 	public MapContext(String inputPath, String[] outputPath, String workingDir, String taskId) throws Exception {
-		//this.spiltIndexPath = inputPath;
-		
-		this.outputPath  = outputPath;
-		//setOutputPath(outputPath);
+		this(inputPath, outputPath, workingDir, taskId, null);
+	}
+
+	public MapContext(String inputPath, String[] outputPath, String workingDir,
+			String taskId, String combinerName) throws Exception {
+		this.combinerName = combinerName;
+		this.outputPath = outputPath;
 		this.setTempMapOutFilesPathPrefix(workingDir, taskId);
-		this.outPut = new DealMapOutUtil(this.outputPath, this.tempMapOutPathPrefix, this.dataState);
-		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
-		//FSDataInputStream in = fs.open(new Path(inputPath));
+		this.outPut = new DealMapOutUtil(this.outputPath,
+				this.tempMapOutPathPrefix, this.dataState, this.combinerName);
+		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(
+				inputPath)));
 		splitIndex.readFields(ins);
 		lineReader.initialize(splitIndex);
-		
 	}
 	
+//	public MapContext(String inputPath, String[] outputPath, String workingDir, 
+//				String taskId, Class<? extends Combiner> combinerClass) throws Exception {
+//		this.combinerClass = combinerClass;
+//		this.outputPath  = outputPath;
+//		this.setTempMapOutFilesPathPrefix(workingDir, taskId);
+//		this.outPut = new DealMapOutUtil(this.outputPath, this.tempMapOutPathPrefix, this.dataState);
+//		InputStream ins = BinosDataClient.getInputStream(new BinosURL(new Text(inputPath)));
+//		//FSDataInputStream in = fs.open(new Path(inputPath));
+//		splitIndex.readFields(ins);
+//		lineReader.initialize(splitIndex);
+//	}
+//	
 	//set the path as to  different transmit type.
 	public void setTempMapOutFilesPathPrefix(String workDir, String taskid) {
 		
@@ -96,7 +113,6 @@ public class MapContext<KEY, VALUE> {
 	public void flush() {
 		// TODO Auto-generated method stub
 		outPut.FinishedReceive();
-		System.out.println("zwuCount=" + zwuCount);
 	}
 	public String getTempMapOutFilesPathPrefix() {
 		return tempMapOutPathPrefix;

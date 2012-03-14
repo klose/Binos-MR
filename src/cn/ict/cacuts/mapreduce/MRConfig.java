@@ -33,6 +33,7 @@ public class  MRConfig {
 	private  Class mapContextValueClass = Integer.class;
 	private   Class<? extends Mapper> mapClass;
 	private   Class<? extends Reducer> reduceClass;
+	private   Class <? extends Combiner> combineClass ;
 	private   Class<? > finalOutputKeyValueTypeClass = FinalKVPair.class;
 	private   Class mapOutputKeyValueTypeClass = KVList.class;
 	private   Path workingDirectory;
@@ -143,6 +144,12 @@ public class  MRConfig {
 	public  void setReduceClass(Class<? extends Reducer> reduceClass) {
 		this.reduceClass = reduceClass;
 	}
+	public  Class<? extends Combiner> getCombineClass() {
+		return this.combineClass;
+	}
+	public  void setCombineClass(Class<? extends Combiner> combineClass) {
+		this.combineClass = combineClass;
+	}
 	public  Path getWorkingDirectory() {
 		return workingDirectory;
 	}
@@ -182,11 +189,13 @@ public class  MRConfig {
 	 */
 	public Map<String, String> parseMRConfig() {
 		Map<String, String> configMap = new HashMap<String, String>();
-		configMap.put("mapper.class", getMapClass().getName());
-		configMap.put("reducer.class", getReduceClass().getName());
-		configMap.put("map.task.num", String.valueOf(this.mapTaskNum));
-		configMap.put("reduce.task.num", String.valueOf(this.getReduceTaskNum()));	
-		configMap.put("mapper.file.spilt.size", String.valueOf(this.getSplitFileSize()));
+		configMap.put(MRConfigDefine.MAPPER_CLASS, getMapClass().getName());
+		configMap.put(MRConfigDefine.REDUCER_CLASS, getReduceClass().getName());
+		configMap.put(MRConfigDefine.COMBINER_CLASS, getCombineClass().getName());
+		configMap.put(MRConfigDefine.MAPPER_NUM, String.valueOf(this.mapTaskNum));
+		configMap.put(MRConfigDefine.REDUCER_NUM, String.valueOf(this.getReduceTaskNum()));	
+		configMap.put(MRConfigDefine.MAPPER_FILE_SPLIT_SIZE, String.valueOf(this.getSplitFileSize()));
 		return configMap;
 	}
+	
 }

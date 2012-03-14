@@ -8,7 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.Path;
 
+import cn.ict.cacuts.mapreduce.Combiner;
 import cn.ict.cacuts.mapreduce.MRConfig;
+import cn.ict.cacuts.mapreduce.MRConfigDefine;
 import cn.ict.cacuts.mapreduce.Mapper;
 import cn.ict.cacuts.mapreduce.map.MapContext;
 import cn.ict.cacuts.test.WordCountTest;
@@ -22,7 +24,7 @@ public class MapOperation implements Operation{
 	public void operate(JobProperties properties, String[] inputPath, String[] outputPath) {
 		// TODO Auto-generated method stub
 		
-		if (Integer.parseInt(properties.getProperty("reduce.task.num")) != outputPath.length) {
+		if (Integer.parseInt(properties.getProperty(MRConfigDefine.REDUCER_NUM)) != outputPath.length) {
 			LOG.error("The number of reduce task conflicted with the number of output.");
 		}
 		if (inputPath.length != 1) {
@@ -30,12 +32,15 @@ public class MapOperation implements Operation{
 		}
 
 		MapContext context;
+
 		try {
-			context = new MapContext(inputPath[0], outputPath, properties.getProperty("tmpDir"), properties.getProperty("taskID"));
+			String combineClassName = properties.getProperty(MRConfigDefine.COMBINER_CLASS);
+			System.out.println("combine class name:" + combineClassName);
+			context = new MapContext(inputPath[0], outputPath, properties.getProperty("tmpDir"), properties.getProperty("taskID"),combineClassName);
 			
-			Class<? extends Mapper>  mapClass = (Class<? extends Mapper>) Class.forName(properties.getProperty("mapper.class"));
-			
-			//System.out.println("&&&&&&&&&&&&&&&&&&&" + mapClass.getName());
+			Class<? extends Mapper>  mapClass = 
+					(Class<? extends Mapper>) Class.forName(properties.getProperty(MRConfigDefine.MAPPER_CLASS));
+	
 			Constructor<Mapper> meth = (Constructor<Mapper>) mapClass.getConstructor(new Class[0]);
 			meth.setAccessible(true);
 			meth.newInstance().run(context);

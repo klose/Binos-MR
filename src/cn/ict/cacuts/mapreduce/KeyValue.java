@@ -8,6 +8,337 @@ public final class KeyValue {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public static final class KV extends
+      com.google.protobuf.GeneratedMessage {
+    // Use KV.newBuilder() to construct.
+    private KV() {
+      initFields();
+    }
+    private KV(boolean noInit) {}
+    
+    private static final KV defaultInstance;
+    public static KV getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public KV getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KV_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KV_fieldAccessorTable;
+    }
+    
+    // required string key = 1;
+    public static final int KEY_FIELD_NUMBER = 1;
+    private boolean hasKey;
+    private java.lang.String key_ = "";
+    public boolean hasKey() { return hasKey; }
+    public java.lang.String getKey() { return key_; }
+    
+    // required string value = 2;
+    public static final int VALUE_FIELD_NUMBER = 2;
+    private boolean hasValue;
+    private java.lang.String value_ = "";
+    public boolean hasValue() { return hasValue; }
+    public java.lang.String getValue() { return value_; }
+    
+    private void initFields() {
+    }
+    public final boolean isInitialized() {
+      if (!hasKey) return false;
+      if (!hasValue) return false;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (hasKey()) {
+        output.writeString(1, getKey());
+      }
+      if (hasValue()) {
+        output.writeString(2, getValue());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (hasKey()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(1, getKey());
+      }
+      if (hasValue()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(2, getValue());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(cn.ict.cacuts.mapreduce.KeyValue.KV prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> {
+      private cn.ict.cacuts.mapreduce.KeyValue.KV result;
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KV.newBuilder()
+      private Builder() {}
+      
+      private static Builder create() {
+        Builder builder = new Builder();
+        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KV();
+        return builder;
+      }
+      
+      protected cn.ict.cacuts.mapreduce.KeyValue.KV internalGetResult() {
+        return result;
+      }
+      
+      public Builder clear() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "Cannot call clear() after build().");
+        }
+        result = new cn.ict.cacuts.mapreduce.KeyValue.KV();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(result);
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return cn.ict.cacuts.mapreduce.KeyValue.KV.getDescriptor();
+      }
+      
+      public cn.ict.cacuts.mapreduce.KeyValue.KV getDefaultInstanceForType() {
+        return cn.ict.cacuts.mapreduce.KeyValue.KV.getDefaultInstance();
+      }
+      
+      public boolean isInitialized() {
+        return result.isInitialized();
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KV build() {
+        if (result != null && !isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return buildPartial();
+      }
+      
+      private cn.ict.cacuts.mapreduce.KeyValue.KV buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        if (!isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return buildPartial();
+      }
+      
+      public cn.ict.cacuts.mapreduce.KeyValue.KV buildPartial() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "build() has already been called on this Builder.");
+        }
+        cn.ict.cacuts.mapreduce.KeyValue.KV returnMe = result;
+        result = null;
+        return returnMe;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof cn.ict.cacuts.mapreduce.KeyValue.KV) {
+          return mergeFrom((cn.ict.cacuts.mapreduce.KeyValue.KV)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KV other) {
+        if (other == cn.ict.cacuts.mapreduce.KeyValue.KV.getDefaultInstance()) return this;
+        if (other.hasKey()) {
+          setKey(other.getKey());
+        }
+        if (other.hasValue()) {
+          setValue(other.getValue());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              setKey(input.readString());
+              break;
+            }
+            case 18: {
+              setValue(input.readString());
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // required string key = 1;
+      public boolean hasKey() {
+        return result.hasKey();
+      }
+      public java.lang.String getKey() {
+        return result.getKey();
+      }
+      public Builder setKey(java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasKey = true;
+        result.key_ = value;
+        return this;
+      }
+      public Builder clearKey() {
+        result.hasKey = false;
+        result.key_ = getDefaultInstance().getKey();
+        return this;
+      }
+      
+      // required string value = 2;
+      public boolean hasValue() {
+        return result.hasValue();
+      }
+      public java.lang.String getValue() {
+        return result.getValue();
+      }
+      public Builder setValue(java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasValue = true;
+        result.value_ = value;
+        return this;
+      }
+      public Builder clearValue() {
+        result.hasValue = false;
+        result.value_ = getDefaultInstance().getValue();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KV)
+    }
+    
+    static {
+      defaultInstance = new KV(true);
+      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KV)
+  }
+  
   public static final class KVPairInt extends
       com.google.protobuf.GeneratedMessage {
     // Use KVPairInt.newBuilder() to construct.
@@ -4142,6 +4473,11 @@ public final class KeyValue {
   }
   
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_cn_ict_cacuts_mapreduce_KV_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_cn_ict_cacuts_mapreduce_KV_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_cn_ict_cacuts_mapreduce_KVPairInt_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -4210,35 +4546,44 @@ public final class KeyValue {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\010kv.proto\022\027cn.ict.cacuts.mapreduce\"\'\n\tK" +
-      "VPairInt\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \001(\005\"=\n\014" +
-      "KVPairIntPar\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \001(\005" +
-      "\022\021\n\tpartition\030\003 \002(\005\"B\n\rKVPairIntData\0221\n\005" +
-      "kvset\030\001 \003(\0132\".cn.ict.cacuts.mapreduce.KV" +
-      "PairInt\"H\n\020KVPairIntParData\0224\n\005kvset\030\001 \003" +
-      "(\0132%.cn.ict.cacuts.mapreduce.KVPairIntPa" +
-      "r\"+\n\rKVPairIntList\022\013\n\003key\030\001 \002(\t\022\r\n\005vlist" +
-      "\030\002 \003(\005\"J\n\021KVPairIntListData\0225\n\005kvset\030\001 \003" +
-      "(\0132&.cn.ict.cacuts.mapreduce.KVPairIntLi",
-      "st\"*\n\014KVPairString\022\013\n\003key\030\001 \002(\t\022\r\n\005value" +
-      "\030\002 \001(\t\"@\n\017KVPairStringPar\022\013\n\003key\030\001 \002(\t\022\r" +
-      "\n\005value\030\002 \001(\t\022\021\n\tpartition\030\003 \002(\005\"H\n\020KVPa" +
-      "irStringData\0224\n\005kvset\030\001 \003(\0132%.cn.ict.cac" +
-      "uts.mapreduce.KVPairString\"N\n\023KVPairStri" +
-      "ngParData\0227\n\005kvset\030\001 \003(\0132(.cn.ict.cacuts" +
-      ".mapreduce.KVPairStringPar\".\n\020KVPairStri" +
-      "ngList\022\013\n\003key\030\001 \002(\t\022\r\n\005vlist\030\002 \003(\t\"P\n\024KV" +
-      "PairStringListData\0228\n\005kvset\030\001 \003(\0132).cn.i" +
-      "ct.cacuts.mapreduce.KVPairStringListB#\n\027",
-      "cn.ict.cacuts.mapreduceB\010KeyValue"
+      "\n\010kv.proto\022\027cn.ict.cacuts.mapreduce\" \n\002K" +
+      "V\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \002(\t\"\'\n\tKVPairI" +
+      "nt\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \001(\005\"=\n\014KVPair" +
+      "IntPar\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \001(\005\022\021\n\tpa" +
+      "rtition\030\003 \002(\005\"B\n\rKVPairIntData\0221\n\005kvset\030" +
+      "\001 \003(\0132\".cn.ict.cacuts.mapreduce.KVPairIn" +
+      "t\"H\n\020KVPairIntParData\0224\n\005kvset\030\001 \003(\0132%.c" +
+      "n.ict.cacuts.mapreduce.KVPairIntPar\"+\n\rK" +
+      "VPairIntList\022\013\n\003key\030\001 \002(\t\022\r\n\005vlist\030\002 \003(\005" +
+      "\"J\n\021KVPairIntListData\0225\n\005kvset\030\001 \003(\0132&.c",
+      "n.ict.cacuts.mapreduce.KVPairIntList\"*\n\014" +
+      "KVPairString\022\013\n\003key\030\001 \002(\t\022\r\n\005value\030\002 \001(\t" +
+      "\"@\n\017KVPairStringPar\022\013\n\003key\030\001 \002(\t\022\r\n\005valu" +
+      "e\030\002 \001(\t\022\021\n\tpartition\030\003 \002(\005\"H\n\020KVPairStri" +
+      "ngData\0224\n\005kvset\030\001 \003(\0132%.cn.ict.cacuts.ma" +
+      "preduce.KVPairString\"N\n\023KVPairStringParD" +
+      "ata\0227\n\005kvset\030\001 \003(\0132(.cn.ict.cacuts.mapre" +
+      "duce.KVPairStringPar\".\n\020KVPairStringList" +
+      "\022\013\n\003key\030\001 \002(\t\022\r\n\005vlist\030\002 \003(\t\"P\n\024KVPairSt" +
+      "ringListData\0228\n\005kvset\030\001 \003(\0132).cn.ict.cac",
+      "uts.mapreduce.KVPairStringListB#\n\027cn.ict" +
+      ".cacuts.mapreduceB\010KeyValue"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_cn_ict_cacuts_mapreduce_KVPairInt_descriptor =
+          internal_static_cn_ict_cacuts_mapreduce_KV_descriptor =
             getDescriptor().getMessageTypes().get(0);
+          internal_static_cn_ict_cacuts_mapreduce_KV_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_cn_ict_cacuts_mapreduce_KV_descriptor,
+              new java.lang.String[] { "Key", "Value", },
+              cn.ict.cacuts.mapreduce.KeyValue.KV.class,
+              cn.ict.cacuts.mapreduce.KeyValue.KV.Builder.class);
+          internal_static_cn_ict_cacuts_mapreduce_KVPairInt_descriptor =
+            getDescriptor().getMessageTypes().get(1);
           internal_static_cn_ict_cacuts_mapreduce_KVPairInt_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairInt_descriptor,
@@ -4246,7 +4591,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntPar_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+            getDescriptor().getMessageTypes().get(2);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntPar_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairIntPar_descriptor,
@@ -4254,7 +4599,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntData_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(3);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairIntData_descriptor,
@@ -4262,7 +4607,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntParData_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntParData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairIntParData_descriptor,
@@ -4270,7 +4615,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntList_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairIntList_descriptor,
@@ -4278,7 +4623,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntListData_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_cn_ict_cacuts_mapreduce_KVPairIntListData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairIntListData_descriptor,
@@ -4286,7 +4631,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairString_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_cn_ict_cacuts_mapreduce_KVPairString_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairString_descriptor,
@@ -4294,7 +4639,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairString.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringPar_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringPar_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairStringPar_descriptor,
@@ -4302,7 +4647,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringData_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairStringData_descriptor,
@@ -4310,7 +4655,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringParData_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(10);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringParData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairStringParData_descriptor,
@@ -4318,7 +4663,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringList_descriptor =
-            getDescriptor().getMessageTypes().get(10);
+            getDescriptor().getMessageTypes().get(11);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairStringList_descriptor,
@@ -4326,7 +4671,7 @@ public final class KeyValue {
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.class,
               cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder.class);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringListData_descriptor =
-            getDescriptor().getMessageTypes().get(11);
+            getDescriptor().getMessageTypes().get(12);
           internal_static_cn_ict_cacuts_mapreduce_KVPairStringListData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_cn_ict_cacuts_mapreduce_KVPairStringListData_descriptor,

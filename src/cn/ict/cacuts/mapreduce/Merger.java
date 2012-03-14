@@ -8,6 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -32,9 +35,48 @@ import cn.ict.cacuts.mapreduce.map.MapContext;
  *
  */
 public class Merger extends PriorityQueue{
-
+	
 	
 	private final static Log LOG = LogFactory.getLog(Merger.class);
+	
+	private Class<? extends Combiner> combinerClass;
+	private Combiner combinerInstance = null; 
+	public long combineUsedTime = 0;
+	public Merger() {
+		this(null);
+	}
+
+	public Merger(Class<? extends Combiner> combinerCls) {
+		this.combinerClass = combinerCls;
+		if (this.combinerClass != null) {
+			try {
+				Constructor<Combiner> meth = (Constructor<Combiner>) this.combinerClass
+						.getConstructor(new Class[0]);
+				meth.setAccessible(true);
+				this.combinerInstance = meth.newInstance();
+				System.out.println("Right Merge combine class:" + this.combinerClass.getName());
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/**
 	 * Merge the intermediate file that map() generate.The function will generate the array of output path whose 
 	 * length equals the number of reduce tasks.  
@@ -74,10 +116,6 @@ public class Merger extends PriorityQueue{
 			System.out.println(output[k].toString());
 		}
 		
-//		for (int i = 0; i < length; i++) {
-//			bais[i] = new ByteArrayInputStream(mcc.getValue(input[i].toString()));
-//			ois[i] = new ObjectInputStream(bais[i]);
-//		}
 		/*record that the number of each part whose records' number equals to 0. 
 		 * In the situation, set the value of isSkipPath[i] to true*/
 		int skipPathNum = 0;
@@ -119,7 +157,7 @@ public class Merger extends PriorityQueue{
 					pair = (KVPairIntPar) pop();
 					String key = pair.getKey();
 					if (!key.equals(originKey)) {
-						list = builder.build();	
+						list = builder.build();
 						writer.appendKVPairIntList(list);
 						builder = KVPairIntList.newBuilder();
 						builder.setKey(key).addVlist(pair.getValue());
@@ -256,7 +294,8 @@ public class Merger extends PriorityQueue{
 	 * @throws FileNotFoundException 
 	 */
 	
-	public  <K extends Object, V extends Object> void merge(Path[] input, Path output, boolean isDelete, DataState state, Class objectClass) throws FileNotFoundException, IOException {
+	public  <K extends Object, V extends Object> void merge(Path[] input, Path output, boolean isDelete, 
+				DataState state, Class objectClass) throws FileNotFoundException, IOException {
 		if (state == DataState.LOCAL_FILE) {
 			mergeOnLocalFile(input, output, isDelete, objectClass);
 		}
@@ -264,7 +303,8 @@ public class Merger extends PriorityQueue{
 			mergeOnMsgPool(input,output,isDelete,objectClass);
 		}
 	}
-	private void mergeOnMsgPool(Path[] input, Path output, boolean isDelete,Class objectClass) {
+	private void mergeOnMsgPool(Path[] input, Path output, boolean isDelete,
+			Class objectClass) {
 		if (objectClass == KVPairIntPar.class) {
 			mergeKVPairIntParOnMsgPool(input, output,isDelete);
 		}
@@ -323,7 +363,7 @@ public class Merger extends PriorityQueue{
 		/*initialize the heap with first record from every file.*/
 		for (int i = 0; i < length && !isSkipPath[i]; i++) {
 				KVPairIntPar tmp = reader[i].readKVPairIntPar();
-				System.out.println("index=" + i +  "hashcode:" + tmp.hashCode());
+//				System.out.println("index=" + i +  "hashcode:" + tmp.hashCode());
 				if(tmp != null) {
 					
 					insert(new KVPairIntParObject(tmp,i));
@@ -354,6 +394,15 @@ public class Merger extends PriorityQueue{
 					builder.addVlist(tmp.getValue());
 				}
 				else {
+					if (this.combinerInstance != null) {
+						long start = System.currentTimeMillis();
+						List combineVlist = this.combinerInstance.combine(originKey,builder.getVlistList());
+						LOG.debug("before combiner:" + builder.toString());
+						builder.clearVlist();
+						builder.addAllVlist(combineVlist);
+						LOG.debug("after combiner:" + builder.toString());
+						combineUsedTime += System.currentTimeMillis() - start;
+					}
 					writer.writeKVPairIntList(builder.build());
 					builder = KVPairIntList.newBuilder();
 					originKey = tmp.getKey();
@@ -431,7 +480,7 @@ public class Merger extends PriorityQueue{
 		/*initialize the heap with first record from every file.*/
 		for (int i = 0; i < length && !isSkipPath[i]; i++) {
 				KVPairIntList tmp = reader[i].readKVPairIntList();
-				System.out.println("index=" + i +  "hashcode:" + tmp.hashCode());
+//				System.out.println("index=" + i +  "hashcode:" + tmp.hashCode());
 				if(tmp != null) {
 					
 					insert(new KVPairIntListObject(tmp,i));
@@ -443,7 +492,7 @@ public class Merger extends PriorityQueue{
 				}
 		}
 		WriteIntoDataBus writer = new WriteIntoDataBus(output.toString());
-		System.out.println(output.toString());
+		LOG.info("The output path is " + output.toString());
 		String originKey = null;
 		//KVPairIntList curList = null;
 		KVPairIntList.Builder builder = null;
