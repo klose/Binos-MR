@@ -8,11 +8,23 @@ public final class KeyValue {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public interface KVOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // required string value = 2;
+    boolean hasValue();
+    String getValue();
+  }
   public static final class KV extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVOrBuilder {
     // Use KV.newBuilder() to construct.
-    private KV() {
-      initFields();
+    private KV(Builder builder) {
+      super(builder);
     }
     private KV(boolean noInit) {}
     
@@ -35,36 +47,100 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KV_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // required string value = 2;
     public static final int VALUE_FIELD_NUMBER = 2;
-    private boolean hasValue;
-    private java.lang.String value_ = "";
-    public boolean hasValue() { return hasValue; }
-    public java.lang.String getValue() { return value_; }
+    private java.lang.Object value_;
+    public boolean hasValue() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getValue() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          value_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getValueBytes() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        value_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     private void initFields() {
+      key_ = "";
+      value_ = "";
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
-      if (!hasValue) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasValue()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      if (hasValue()) {
-        output.writeString(2, getValue());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getValueBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -75,17 +151,24 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
-      if (hasValue()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getValue());
+          .computeBytesSize(2, getValueBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KV parseFrom(
@@ -162,34 +245,53 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KV result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KV.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KV();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KV_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KV internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KV_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KV.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KV();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        value_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -201,33 +303,39 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KV.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KV build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KV result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KV buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KV result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KV buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KV result = new cn.ict.cacuts.mapreduce.KeyValue.KV(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KV returnMe = result;
-        result = null;
-        return returnMe;
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.value_ = value_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -251,6 +359,18 @@ public final class KeyValue {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        if (!hasValue()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -263,68 +383,103 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 18: {
-              setValue(input.readString());
+              bitField0_ |= 0x00000002;
+              value_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // required string value = 2;
+      private java.lang.Object value_ = "";
       public boolean hasValue() {
-        return result.hasValue();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public java.lang.String getValue() {
-        return result.getValue();
+      public String getValue() {
+        java.lang.Object ref = value_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          value_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setValue(java.lang.String value) {
+      public Builder setValue(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasValue = true;
-        result.value_ = value;
+  bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
         return this;
       }
       public Builder clearValue() {
-        result.hasValue = false;
-        result.value_ = getDefaultInstance().getValue();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        value_ = getDefaultInstance().getValue();
+        onChanged();
         return this;
+      }
+      void setValue(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KV)
@@ -332,18 +487,29 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KV(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KV)
   }
   
+  public interface KVPairIntOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // optional int32 value = 2;
+    boolean hasValue();
+    int getValue();
+  }
   public static final class KVPairInt extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairIntOrBuilder {
     // Use KVPairInt.newBuilder() to construct.
-    private KVPairInt() {
-      initFields();
+    private KVPairInt(Builder builder) {
+      super(builder);
     }
     private KVPairInt(boolean noInit) {}
     
@@ -366,35 +532,74 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairInt_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional int32 value = 2;
     public static final int VALUE_FIELD_NUMBER = 2;
-    private boolean hasValue;
-    private int value_ = 0;
-    public boolean hasValue() { return hasValue; }
-    public int getValue() { return value_; }
+    private int value_;
+    public boolean hasValue() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getValue() {
+      return value_;
+    }
     
     private void initFields() {
+      key_ = "";
+      value_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      if (hasValue()) {
-        output.writeInt32(2, getValue());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, value_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -405,17 +610,24 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
-      if (hasValue()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, getValue());
+          .computeInt32Size(2, value_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairInt parseFrom(
@@ -492,34 +704,53 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairInt result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairInt();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairInt_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairInt internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairInt_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairInt();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        value_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -531,33 +762,39 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairInt result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairInt buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairInt result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairInt result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairInt(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairInt returnMe = result;
-        result = null;
-        return returnMe;
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.value_ = value_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -581,6 +818,14 @@ public final class KeyValue {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -593,64 +838,87 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 16: {
-              setValue(input.readInt32());
+              bitField0_ |= 0x00000002;
+              value_ = input.readInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // optional int32 value = 2;
+      private int value_ ;
       public boolean hasValue() {
-        return result.hasValue();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getValue() {
-        return result.getValue();
+        return value_;
       }
       public Builder setValue(int value) {
-        result.hasValue = true;
-        result.value_ = value;
+        bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
         return this;
       }
       public Builder clearValue() {
-        result.hasValue = false;
-        result.value_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        value_ = 0;
+        onChanged();
         return this;
       }
       
@@ -659,18 +927,33 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairInt(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairInt)
   }
   
+  public interface KVPairIntParOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // optional int32 value = 2;
+    boolean hasValue();
+    int getValue();
+    
+    // required int32 partition = 3;
+    boolean hasPartition();
+    int getPartition();
+  }
   public static final class KVPairIntPar extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairIntParOrBuilder {
     // Use KVPairIntPar.newBuilder() to construct.
-    private KVPairIntPar() {
-      initFields();
+    private KVPairIntPar(Builder builder) {
+      super(builder);
     }
     private KVPairIntPar(boolean noInit) {}
     
@@ -693,46 +976,92 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntPar_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional int32 value = 2;
     public static final int VALUE_FIELD_NUMBER = 2;
-    private boolean hasValue;
-    private int value_ = 0;
-    public boolean hasValue() { return hasValue; }
-    public int getValue() { return value_; }
+    private int value_;
+    public boolean hasValue() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public int getValue() {
+      return value_;
+    }
     
     // required int32 partition = 3;
     public static final int PARTITION_FIELD_NUMBER = 3;
-    private boolean hasPartition;
-    private int partition_ = 0;
-    public boolean hasPartition() { return hasPartition; }
-    public int getPartition() { return partition_; }
+    private int partition_;
+    public boolean hasPartition() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public int getPartition() {
+      return partition_;
+    }
     
     private void initFields() {
+      key_ = "";
+      value_ = 0;
+      partition_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
-      if (!hasPartition) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasPartition()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      if (hasValue()) {
-        output.writeInt32(2, getValue());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, value_);
       }
-      if (hasPartition()) {
-        output.writeInt32(3, getPartition());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, partition_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -743,21 +1072,28 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
-      if (hasValue()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, getValue());
+          .computeInt32Size(2, value_);
       }
-      if (hasPartition()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, getPartition());
+          .computeInt32Size(3, partition_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar parseFrom(
@@ -834,34 +1170,55 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntPar_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntPar_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        value_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        partition_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -873,33 +1230,43 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar returnMe = result;
-        result = null;
-        return returnMe;
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.value_ = value_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.partition_ = partition_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -926,6 +1293,18 @@ public final class KeyValue {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        if (!hasPartition()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -938,86 +1317,113 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 16: {
-              setValue(input.readInt32());
+              bitField0_ |= 0x00000002;
+              value_ = input.readInt32();
               break;
             }
             case 24: {
-              setPartition(input.readInt32());
+              bitField0_ |= 0x00000004;
+              partition_ = input.readInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // optional int32 value = 2;
+      private int value_ ;
       public boolean hasValue() {
-        return result.hasValue();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getValue() {
-        return result.getValue();
+        return value_;
       }
       public Builder setValue(int value) {
-        result.hasValue = true;
-        result.value_ = value;
+        bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
         return this;
       }
       public Builder clearValue() {
-        result.hasValue = false;
-        result.value_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        value_ = 0;
+        onChanged();
         return this;
       }
       
       // required int32 partition = 3;
+      private int partition_ ;
       public boolean hasPartition() {
-        return result.hasPartition();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public int getPartition() {
-        return result.getPartition();
+        return partition_;
       }
       public Builder setPartition(int value) {
-        result.hasPartition = true;
-        result.partition_ = value;
+        bitField0_ |= 0x00000004;
+        partition_ = value;
+        onChanged();
         return this;
       }
       public Builder clearPartition() {
-        result.hasPartition = false;
-        result.partition_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        partition_ = 0;
+        onChanged();
         return this;
       }
       
@@ -1026,18 +1432,31 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairIntPar(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairIntPar)
   }
   
+  public interface KVPairIntDataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .cn.ict.cacuts.mapreduce.KVPairInt kvset = 1;
+    java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> 
+        getKvsetList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairInt getKvset(int index);
+    int getKvsetCount();
+    java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder> 
+        getKvsetOrBuilderList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder getKvsetOrBuilder(
+        int index);
+  }
   public static final class KVPairIntData extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairIntDataOrBuilder {
     // Use KVPairIntData.newBuilder() to construct.
-    private KVPairIntData() {
-      initFields();
+    private KVPairIntData(Builder builder) {
+      super(builder);
     }
     private KVPairIntData(boolean noInit) {}
     
@@ -1062,30 +1481,48 @@ public final class KeyValue {
     
     // repeated .cn.ict.cacuts.mapreduce.KVPairInt kvset = 1;
     public static final int KVSET_FIELD_NUMBER = 1;
-    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> kvset_ =
-      java.util.Collections.emptyList();
+    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> kvset_;
     public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> getKvsetList() {
       return kvset_;
     }
-    public int getKvsetCount() { return kvset_.size(); }
+    public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder> 
+        getKvsetOrBuilderList() {
+      return kvset_;
+    }
+    public int getKvsetCount() {
+      return kvset_.size();
+    }
     public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt getKvset(int index) {
+      return kvset_.get(index);
+    }
+    public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder getKvsetOrBuilder(
+        int index) {
       return kvset_.get(index);
     }
     
     private void initFields() {
+      kvset_ = java.util.Collections.emptyList();
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairInt element : getKvsetList()) {
-        if (!element.isInitialized()) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getKvsetCount(); i++) {
+        if (!getKvset(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairInt element : getKvsetList()) {
-        output.writeMessage(1, element);
+      for (int i = 0; i < kvset_.size(); i++) {
+        output.writeMessage(1, kvset_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1096,13 +1533,20 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairInt element : getKvsetList()) {
+      for (int i = 0; i < kvset_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, element);
+          .computeMessageSize(1, kvset_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData parseFrom(
@@ -1179,34 +1623,56 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairIntDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntData_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntData_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getKvsetFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
+        super.clear();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          kvsetBuilder_.clear();
         }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData();
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1218,37 +1684,38 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData(this);
+        int from_bitField0_ = bitField0_;
+        if (kvsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            kvset_ = java.util.Collections.unmodifiableList(kvset_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.kvset_ = kvset_;
+        } else {
+          result.kvset_ = kvsetBuilder_.build();
         }
-        if (result.kvset_ != java.util.Collections.EMPTY_LIST) {
-          result.kvset_ =
-            java.util.Collections.unmodifiableList(result.kvset_);
-        }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData returnMe = result;
-        result = null;
-        return returnMe;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1262,14 +1729,44 @@ public final class KeyValue {
       
       public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData other) {
         if (other == cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData.getDefaultInstance()) return this;
-        if (!other.kvset_.isEmpty()) {
-          if (result.kvset_.isEmpty()) {
-            result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt>();
+        if (kvsetBuilder_ == null) {
+          if (!other.kvset_.isEmpty()) {
+            if (kvset_.isEmpty()) {
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKvsetIsMutable();
+              kvset_.addAll(other.kvset_);
+            }
+            onChanged();
           }
-          result.kvset_.addAll(other.kvset_);
+        } else {
+          if (!other.kvset_.isEmpty()) {
+            if (kvsetBuilder_.isEmpty()) {
+              kvsetBuilder_.dispose();
+              kvsetBuilder_ = null;
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              kvsetBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKvsetFieldBuilder() : null;
+            } else {
+              kvsetBuilder_.addAllMessages(other.kvset_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getKvsetCount(); i++) {
+          if (!getKvset(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -1284,11 +1781,13 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -1303,56 +1802,192 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // repeated .cn.ict.cacuts.mapreduce.KVPairInt kvset = 1;
+      private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> kvset_ =
+        java.util.Collections.emptyList();
+      private void ensureKvsetIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt>(kvset_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairInt, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder> kvsetBuilder_;
+      
       public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> getKvsetList() {
-        return java.util.Collections.unmodifiableList(result.kvset_);
+        if (kvsetBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(kvset_);
+        } else {
+          return kvsetBuilder_.getMessageList();
+        }
       }
       public int getKvsetCount() {
-        return result.getKvsetCount();
+        if (kvsetBuilder_ == null) {
+          return kvset_.size();
+        } else {
+          return kvsetBuilder_.getCount();
+        }
       }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt getKvset(int index) {
-        return result.getKvset(index);
-      }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);
+        } else {
+          return kvsetBuilder_.getMessage(index);
         }
-        result.kvset_.set(index, value);
+      }
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.set(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, value);
+        }
         return this;
       }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder builderForValue) {
-        result.kvset_.set(index, builderForValue.build());
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairInt value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(value);
         }
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt>();
-        }
-        result.kvset_.add(value);
         return this;
       }
-      public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder builderForValue) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt>();
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, value);
         }
-        result.kvset_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addKvset(
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addAllKvset(
           java.lang.Iterable<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairInt> values) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt>();
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          super.addAll(values, kvset_);
+          onChanged();
+        } else {
+          kvsetBuilder_.addAllMessages(values);
         }
-        super.addAll(values, result.kvset_);
         return this;
       }
       public Builder clearKvset() {
-        result.kvset_ = java.util.Collections.emptyList();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          kvsetBuilder_.clear();
+        }
         return this;
+      }
+      public Builder removeKvset(int index) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.remove(index);
+          onChanged();
+        } else {
+          kvsetBuilder_.remove(index);
+        }
+        return this;
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder getKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().getBuilder(index);
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder getKvsetOrBuilder(
+          int index) {
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);  } else {
+          return kvsetBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder> 
+           getKvsetOrBuilderList() {
+        if (kvsetBuilder_ != null) {
+          return kvsetBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(kvset_);
+        }
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder addKvsetBuilder() {
+        return getKvsetFieldBuilder().addBuilder(
+            cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.getDefaultInstance());
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder addKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().addBuilder(
+            index, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.getDefaultInstance());
+      }
+      public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder> 
+           getKvsetBuilderList() {
+        return getKvsetFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairInt, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder> 
+          getKvsetFieldBuilder() {
+        if (kvsetBuilder_ == null) {
+          kvsetBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cn.ict.cacuts.mapreduce.KeyValue.KVPairInt, cn.ict.cacuts.mapreduce.KeyValue.KVPairInt.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntOrBuilder>(
+                  kvset_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          kvset_ = null;
+        }
+        return kvsetBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairIntData)
@@ -1360,18 +1995,31 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairIntData(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairIntData)
   }
   
+  public interface KVPairIntParDataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .cn.ict.cacuts.mapreduce.KVPairIntPar kvset = 1;
+    java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> 
+        getKvsetList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar getKvset(int index);
+    int getKvsetCount();
+    java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder> 
+        getKvsetOrBuilderList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder getKvsetOrBuilder(
+        int index);
+  }
   public static final class KVPairIntParData extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairIntParDataOrBuilder {
     // Use KVPairIntParData.newBuilder() to construct.
-    private KVPairIntParData() {
-      initFields();
+    private KVPairIntParData(Builder builder) {
+      super(builder);
     }
     private KVPairIntParData(boolean noInit) {}
     
@@ -1396,30 +2044,48 @@ public final class KeyValue {
     
     // repeated .cn.ict.cacuts.mapreduce.KVPairIntPar kvset = 1;
     public static final int KVSET_FIELD_NUMBER = 1;
-    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> kvset_ =
-      java.util.Collections.emptyList();
+    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> kvset_;
     public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> getKvsetList() {
       return kvset_;
     }
-    public int getKvsetCount() { return kvset_.size(); }
+    public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder> 
+        getKvsetOrBuilderList() {
+      return kvset_;
+    }
+    public int getKvsetCount() {
+      return kvset_.size();
+    }
     public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar getKvset(int index) {
+      return kvset_.get(index);
+    }
+    public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder getKvsetOrBuilder(
+        int index) {
       return kvset_.get(index);
     }
     
     private void initFields() {
+      kvset_ = java.util.Collections.emptyList();
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar element : getKvsetList()) {
-        if (!element.isInitialized()) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getKvsetCount(); i++) {
+        if (!getKvset(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar element : getKvsetList()) {
-        output.writeMessage(1, element);
+      for (int i = 0; i < kvset_.size(); i++) {
+        output.writeMessage(1, kvset_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1430,13 +2096,20 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar element : getKvsetList()) {
+      for (int i = 0; i < kvset_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, element);
+          .computeMessageSize(1, kvset_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData parseFrom(
@@ -1513,34 +2186,56 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntParData_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntParData_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getKvsetFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
+        super.clear();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          kvsetBuilder_.clear();
         }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData();
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1552,37 +2247,38 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData(this);
+        int from_bitField0_ = bitField0_;
+        if (kvsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            kvset_ = java.util.Collections.unmodifiableList(kvset_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.kvset_ = kvset_;
+        } else {
+          result.kvset_ = kvsetBuilder_.build();
         }
-        if (result.kvset_ != java.util.Collections.EMPTY_LIST) {
-          result.kvset_ =
-            java.util.Collections.unmodifiableList(result.kvset_);
-        }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData returnMe = result;
-        result = null;
-        return returnMe;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1596,14 +2292,44 @@ public final class KeyValue {
       
       public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData other) {
         if (other == cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.getDefaultInstance()) return this;
-        if (!other.kvset_.isEmpty()) {
-          if (result.kvset_.isEmpty()) {
-            result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar>();
+        if (kvsetBuilder_ == null) {
+          if (!other.kvset_.isEmpty()) {
+            if (kvset_.isEmpty()) {
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKvsetIsMutable();
+              kvset_.addAll(other.kvset_);
+            }
+            onChanged();
           }
-          result.kvset_.addAll(other.kvset_);
+        } else {
+          if (!other.kvset_.isEmpty()) {
+            if (kvsetBuilder_.isEmpty()) {
+              kvsetBuilder_.dispose();
+              kvsetBuilder_ = null;
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              kvsetBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKvsetFieldBuilder() : null;
+            } else {
+              kvsetBuilder_.addAllMessages(other.kvset_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getKvsetCount(); i++) {
+          if (!getKvset(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -1618,11 +2344,13 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -1637,56 +2365,192 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // repeated .cn.ict.cacuts.mapreduce.KVPairIntPar kvset = 1;
+      private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> kvset_ =
+        java.util.Collections.emptyList();
+      private void ensureKvsetIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar>(kvset_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder> kvsetBuilder_;
+      
       public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> getKvsetList() {
-        return java.util.Collections.unmodifiableList(result.kvset_);
+        if (kvsetBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(kvset_);
+        } else {
+          return kvsetBuilder_.getMessageList();
+        }
       }
       public int getKvsetCount() {
-        return result.getKvsetCount();
+        if (kvsetBuilder_ == null) {
+          return kvset_.size();
+        } else {
+          return kvsetBuilder_.getCount();
+        }
       }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar getKvset(int index) {
-        return result.getKvset(index);
-      }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);
+        } else {
+          return kvsetBuilder_.getMessage(index);
         }
-        result.kvset_.set(index, value);
+      }
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.set(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, value);
+        }
         return this;
       }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder builderForValue) {
-        result.kvset_.set(index, builderForValue.build());
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(value);
         }
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar>();
-        }
-        result.kvset_.add(value);
         return this;
       }
-      public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder builderForValue) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar>();
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, value);
         }
-        result.kvset_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addKvset(
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addAllKvset(
           java.lang.Iterable<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar> values) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar>();
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          super.addAll(values, kvset_);
+          onChanged();
+        } else {
+          kvsetBuilder_.addAllMessages(values);
         }
-        super.addAll(values, result.kvset_);
         return this;
       }
       public Builder clearKvset() {
-        result.kvset_ = java.util.Collections.emptyList();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          kvsetBuilder_.clear();
+        }
         return this;
+      }
+      public Builder removeKvset(int index) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.remove(index);
+          onChanged();
+        } else {
+          kvsetBuilder_.remove(index);
+        }
+        return this;
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder getKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().getBuilder(index);
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder getKvsetOrBuilder(
+          int index) {
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);  } else {
+          return kvsetBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder> 
+           getKvsetOrBuilderList() {
+        if (kvsetBuilder_ != null) {
+          return kvsetBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(kvset_);
+        }
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder addKvsetBuilder() {
+        return getKvsetFieldBuilder().addBuilder(
+            cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.getDefaultInstance());
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder addKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().addBuilder(
+            index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.getDefaultInstance());
+      }
+      public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder> 
+           getKvsetBuilderList() {
+        return getKvsetFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder> 
+          getKvsetFieldBuilder() {
+        if (kvsetBuilder_ == null) {
+          kvsetBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParOrBuilder>(
+                  kvset_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          kvset_ = null;
+        }
+        return kvsetBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairIntParData)
@@ -1694,18 +2558,30 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairIntParData(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairIntParData)
   }
   
+  public interface KVPairIntListOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // repeated int32 vlist = 2;
+    java.util.List<java.lang.Integer> getVlistList();
+    int getVlistCount();
+    int getVlist(int index);
+  }
   public static final class KVPairIntList extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairIntListOrBuilder {
     // Use KVPairIntList.newBuilder() to construct.
-    private KVPairIntList() {
-      initFields();
+    private KVPairIntList(Builder builder) {
+      super(builder);
     }
     private KVPairIntList(boolean noInit) {}
     
@@ -1728,40 +2604,78 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntList_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // repeated int32 vlist = 2;
     public static final int VLIST_FIELD_NUMBER = 2;
-    private java.util.List<java.lang.Integer> vlist_ =
-      java.util.Collections.emptyList();
-    public java.util.List<java.lang.Integer> getVlistList() {
+    private java.util.List<java.lang.Integer> vlist_;
+    public java.util.List<java.lang.Integer>
+        getVlistList() {
       return vlist_;
     }
-    public int getVlistCount() { return vlist_.size(); }
+    public int getVlistCount() {
+      return vlist_.size();
+    }
     public int getVlist(int index) {
       return vlist_.get(index);
     }
     
     private void initFields() {
+      key_ = "";
+      vlist_ = java.util.Collections.emptyList();;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      for (int element : getVlistList()) {
-        output.writeInt32(2, element);
+      for (int i = 0; i < vlist_.size(); i++) {
+        output.writeInt32(2, vlist_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -1772,15 +2686,15 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
       {
         int dataSize = 0;
-        for (int element : getVlistList()) {
+        for (int i = 0; i < vlist_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(element);
+            .computeInt32SizeNoTag(vlist_.get(i));
         }
         size += dataSize;
         size += 1 * getVlistList().size();
@@ -1788,6 +2702,13 @@ public final class KeyValue {
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList parseFrom(
@@ -1864,34 +2785,53 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntList_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntList_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        vlist_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -1903,37 +2843,40 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        if (result.vlist_ != java.util.Collections.EMPTY_LIST) {
-          result.vlist_ =
-            java.util.Collections.unmodifiableList(result.vlist_);
+        result.key_ = key_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          vlist_ = java.util.Collections.unmodifiableList(vlist_);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList returnMe = result;
-        result = null;
-        return returnMe;
+        result.vlist_ = vlist_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -1951,13 +2894,25 @@ public final class KeyValue {
           setKey(other.getKey());
         }
         if (!other.vlist_.isEmpty()) {
-          if (result.vlist_.isEmpty()) {
-            result.vlist_ = new java.util.ArrayList<java.lang.Integer>();
+          if (vlist_.isEmpty()) {
+            vlist_ = other.vlist_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureVlistIsMutable();
+            vlist_.addAll(other.vlist_);
           }
-          result.vlist_.addAll(other.vlist_);
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -1972,21 +2927,25 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 16: {
-              addVlist(input.readInt32());
+              ensureVlistIsMutable();
+              vlist_.add(input.readInt32());
               break;
             }
             case 18: {
@@ -2002,59 +2961,86 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // repeated int32 vlist = 2;
-      public java.util.List<java.lang.Integer> getVlistList() {
-        return java.util.Collections.unmodifiableList(result.vlist_);
+      private java.util.List<java.lang.Integer> vlist_ = java.util.Collections.emptyList();;
+      private void ensureVlistIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          vlist_ = new java.util.ArrayList<java.lang.Integer>(vlist_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      public java.util.List<java.lang.Integer>
+          getVlistList() {
+        return java.util.Collections.unmodifiableList(vlist_);
       }
       public int getVlistCount() {
-        return result.getVlistCount();
+        return vlist_.size();
       }
       public int getVlist(int index) {
-        return result.getVlist(index);
+        return vlist_.get(index);
       }
-      public Builder setVlist(int index, int value) {
-        result.vlist_.set(index, value);
+      public Builder setVlist(
+          int index, int value) {
+        ensureVlistIsMutable();
+        vlist_.set(index, value);
+        onChanged();
         return this;
       }
       public Builder addVlist(int value) {
-        if (result.vlist_.isEmpty()) {
-          result.vlist_ = new java.util.ArrayList<java.lang.Integer>();
-        }
-        result.vlist_.add(value);
+        ensureVlistIsMutable();
+        vlist_.add(value);
+        onChanged();
         return this;
       }
       public Builder addAllVlist(
           java.lang.Iterable<? extends java.lang.Integer> values) {
-        if (result.vlist_.isEmpty()) {
-          result.vlist_ = new java.util.ArrayList<java.lang.Integer>();
-        }
-        super.addAll(values, result.vlist_);
+        ensureVlistIsMutable();
+        super.addAll(values, vlist_);
+        onChanged();
         return this;
       }
       public Builder clearVlist() {
-        result.vlist_ = java.util.Collections.emptyList();
+        vlist_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
         return this;
       }
       
@@ -2063,18 +3049,31 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairIntList(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairIntList)
   }
   
+  public interface KVPairIntListDataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .cn.ict.cacuts.mapreduce.KVPairIntList kvset = 1;
+    java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> 
+        getKvsetList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList getKvset(int index);
+    int getKvsetCount();
+    java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder> 
+        getKvsetOrBuilderList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder getKvsetOrBuilder(
+        int index);
+  }
   public static final class KVPairIntListData extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairIntListDataOrBuilder {
     // Use KVPairIntListData.newBuilder() to construct.
-    private KVPairIntListData() {
-      initFields();
+    private KVPairIntListData(Builder builder) {
+      super(builder);
     }
     private KVPairIntListData(boolean noInit) {}
     
@@ -2099,30 +3098,48 @@ public final class KeyValue {
     
     // repeated .cn.ict.cacuts.mapreduce.KVPairIntList kvset = 1;
     public static final int KVSET_FIELD_NUMBER = 1;
-    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> kvset_ =
-      java.util.Collections.emptyList();
+    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> kvset_;
     public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> getKvsetList() {
       return kvset_;
     }
-    public int getKvsetCount() { return kvset_.size(); }
+    public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder> 
+        getKvsetOrBuilderList() {
+      return kvset_;
+    }
+    public int getKvsetCount() {
+      return kvset_.size();
+    }
     public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList getKvset(int index) {
+      return kvset_.get(index);
+    }
+    public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder getKvsetOrBuilder(
+        int index) {
       return kvset_.get(index);
     }
     
     private void initFields() {
+      kvset_ = java.util.Collections.emptyList();
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList element : getKvsetList()) {
-        if (!element.isInitialized()) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getKvsetCount(); i++) {
+        if (!getKvset(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList element : getKvsetList()) {
-        output.writeMessage(1, element);
+      for (int i = 0; i < kvset_.size(); i++) {
+        output.writeMessage(1, kvset_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -2133,13 +3150,20 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList element : getKvsetList()) {
+      for (int i = 0; i < kvset_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, element);
+          .computeMessageSize(1, kvset_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData parseFrom(
@@ -2216,34 +3240,56 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntListData_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairIntListData_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getKvsetFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
+        super.clear();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          kvsetBuilder_.clear();
         }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData();
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -2255,37 +3301,38 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData(this);
+        int from_bitField0_ = bitField0_;
+        if (kvsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            kvset_ = java.util.Collections.unmodifiableList(kvset_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.kvset_ = kvset_;
+        } else {
+          result.kvset_ = kvsetBuilder_.build();
         }
-        if (result.kvset_ != java.util.Collections.EMPTY_LIST) {
-          result.kvset_ =
-            java.util.Collections.unmodifiableList(result.kvset_);
-        }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData returnMe = result;
-        result = null;
-        return returnMe;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2299,14 +3346,44 @@ public final class KeyValue {
       
       public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData other) {
         if (other == cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListData.getDefaultInstance()) return this;
-        if (!other.kvset_.isEmpty()) {
-          if (result.kvset_.isEmpty()) {
-            result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList>();
+        if (kvsetBuilder_ == null) {
+          if (!other.kvset_.isEmpty()) {
+            if (kvset_.isEmpty()) {
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKvsetIsMutable();
+              kvset_.addAll(other.kvset_);
+            }
+            onChanged();
           }
-          result.kvset_.addAll(other.kvset_);
+        } else {
+          if (!other.kvset_.isEmpty()) {
+            if (kvsetBuilder_.isEmpty()) {
+              kvsetBuilder_.dispose();
+              kvsetBuilder_ = null;
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              kvsetBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKvsetFieldBuilder() : null;
+            } else {
+              kvsetBuilder_.addAllMessages(other.kvset_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getKvsetCount(); i++) {
+          if (!getKvset(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -2321,11 +3398,13 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -2340,56 +3419,192 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // repeated .cn.ict.cacuts.mapreduce.KVPairIntList kvset = 1;
+      private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> kvset_ =
+        java.util.Collections.emptyList();
+      private void ensureKvsetIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList>(kvset_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder> kvsetBuilder_;
+      
       public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> getKvsetList() {
-        return java.util.Collections.unmodifiableList(result.kvset_);
+        if (kvsetBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(kvset_);
+        } else {
+          return kvsetBuilder_.getMessageList();
+        }
       }
       public int getKvsetCount() {
-        return result.getKvsetCount();
+        if (kvsetBuilder_ == null) {
+          return kvset_.size();
+        } else {
+          return kvsetBuilder_.getCount();
+        }
       }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList getKvset(int index) {
-        return result.getKvset(index);
-      }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);
+        } else {
+          return kvsetBuilder_.getMessage(index);
         }
-        result.kvset_.set(index, value);
+      }
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.set(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, value);
+        }
         return this;
       }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder builderForValue) {
-        result.kvset_.set(index, builderForValue.build());
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(value);
         }
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList>();
-        }
-        result.kvset_.add(value);
         return this;
       }
-      public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder builderForValue) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList>();
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, value);
         }
-        result.kvset_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addKvset(
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addAllKvset(
           java.lang.Iterable<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList> values) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList>();
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          super.addAll(values, kvset_);
+          onChanged();
+        } else {
+          kvsetBuilder_.addAllMessages(values);
         }
-        super.addAll(values, result.kvset_);
         return this;
       }
       public Builder clearKvset() {
-        result.kvset_ = java.util.Collections.emptyList();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          kvsetBuilder_.clear();
+        }
         return this;
+      }
+      public Builder removeKvset(int index) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.remove(index);
+          onChanged();
+        } else {
+          kvsetBuilder_.remove(index);
+        }
+        return this;
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder getKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().getBuilder(index);
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder getKvsetOrBuilder(
+          int index) {
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);  } else {
+          return kvsetBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder> 
+           getKvsetOrBuilderList() {
+        if (kvsetBuilder_ != null) {
+          return kvsetBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(kvset_);
+        }
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder addKvsetBuilder() {
+        return getKvsetFieldBuilder().addBuilder(
+            cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.getDefaultInstance());
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder addKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().addBuilder(
+            index, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.getDefaultInstance());
+      }
+      public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder> 
+           getKvsetBuilderList() {
+        return getKvsetFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder> 
+          getKvsetFieldBuilder() {
+        if (kvsetBuilder_ == null) {
+          kvsetBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairIntListOrBuilder>(
+                  kvset_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          kvset_ = null;
+        }
+        return kvsetBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairIntListData)
@@ -2397,18 +3612,29 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairIntListData(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairIntListData)
   }
   
+  public interface KVPairStringOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // optional string value = 2;
+    boolean hasValue();
+    String getValue();
+  }
   public static final class KVPairString extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairStringOrBuilder {
     // Use KVPairString.newBuilder() to construct.
-    private KVPairString() {
-      initFields();
+    private KVPairString(Builder builder) {
+      super(builder);
     }
     private KVPairString(boolean noInit) {}
     
@@ -2431,35 +3657,96 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairString_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional string value = 2;
     public static final int VALUE_FIELD_NUMBER = 2;
-    private boolean hasValue;
-    private java.lang.String value_ = "";
-    public boolean hasValue() { return hasValue; }
-    public java.lang.String getValue() { return value_; }
+    private java.lang.Object value_;
+    public boolean hasValue() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getValue() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          value_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getValueBytes() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        value_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     private void initFields() {
+      key_ = "";
+      value_ = "";
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      if (hasValue()) {
-        output.writeString(2, getValue());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getValueBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -2470,17 +3757,24 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
-      if (hasValue()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getValue());
+          .computeBytesSize(2, getValueBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairString parseFrom(
@@ -2557,34 +3851,53 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairString result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairString.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairString();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairString_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairString internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairString_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairString.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairString();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        value_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -2596,33 +3909,39 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairString.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairString build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairString result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairString buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairString result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairString buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairString result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairString(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairString returnMe = result;
-        result = null;
-        return returnMe;
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.value_ = value_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2646,6 +3965,14 @@ public final class KeyValue {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2658,68 +3985,103 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 18: {
-              setValue(input.readString());
+              bitField0_ |= 0x00000002;
+              value_ = input.readBytes();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // optional string value = 2;
+      private java.lang.Object value_ = "";
       public boolean hasValue() {
-        return result.hasValue();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public java.lang.String getValue() {
-        return result.getValue();
+      public String getValue() {
+        java.lang.Object ref = value_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          value_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setValue(java.lang.String value) {
+      public Builder setValue(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasValue = true;
-        result.value_ = value;
+  bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
         return this;
       }
       public Builder clearValue() {
-        result.hasValue = false;
-        result.value_ = getDefaultInstance().getValue();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        value_ = getDefaultInstance().getValue();
+        onChanged();
         return this;
+      }
+      void setValue(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairString)
@@ -2727,18 +4089,33 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairString(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairString)
   }
   
+  public interface KVPairStringParOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // optional string value = 2;
+    boolean hasValue();
+    String getValue();
+    
+    // required int32 partition = 3;
+    boolean hasPartition();
+    int getPartition();
+  }
   public static final class KVPairStringPar extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairStringParOrBuilder {
     // Use KVPairStringPar.newBuilder() to construct.
-    private KVPairStringPar() {
-      initFields();
+    private KVPairStringPar(Builder builder) {
+      super(builder);
     }
     private KVPairStringPar(boolean noInit) {}
     
@@ -2761,46 +4138,114 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringPar_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // optional string value = 2;
     public static final int VALUE_FIELD_NUMBER = 2;
-    private boolean hasValue;
-    private java.lang.String value_ = "";
-    public boolean hasValue() { return hasValue; }
-    public java.lang.String getValue() { return value_; }
+    private java.lang.Object value_;
+    public boolean hasValue() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    public String getValue() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          value_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getValueBytes() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        value_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // required int32 partition = 3;
     public static final int PARTITION_FIELD_NUMBER = 3;
-    private boolean hasPartition;
-    private int partition_ = 0;
-    public boolean hasPartition() { return hasPartition; }
-    public int getPartition() { return partition_; }
+    private int partition_;
+    public boolean hasPartition() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public int getPartition() {
+      return partition_;
+    }
     
     private void initFields() {
+      key_ = "";
+      value_ = "";
+      partition_ = 0;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
-      if (!hasPartition) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasPartition()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      if (hasValue()) {
-        output.writeString(2, getValue());
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getValueBytes());
       }
-      if (hasPartition()) {
-        output.writeInt32(3, getPartition());
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, partition_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2811,21 +4256,28 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
-      if (hasValue()) {
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(2, getValue());
+          .computeBytesSize(2, getValueBytes());
       }
-      if (hasPartition()) {
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, getPartition());
+          .computeInt32Size(3, partition_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar parseFrom(
@@ -2902,34 +4354,55 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringPar_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringPar_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        value_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        partition_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -2941,33 +4414,43 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar returnMe = result;
-        result = null;
-        return returnMe;
+        result.key_ = key_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.value_ = value_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.partition_ = partition_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -2994,6 +4477,18 @@ public final class KeyValue {
         return this;
       }
       
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        if (!hasPartition()) {
+          
+          return false;
+        }
+        return true;
+      }
+      
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -3006,89 +4501,128 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 18: {
-              setValue(input.readString());
+              bitField0_ |= 0x00000002;
+              value_ = input.readBytes();
               break;
             }
             case 24: {
-              setPartition(input.readInt32());
+              bitField0_ |= 0x00000004;
+              partition_ = input.readInt32();
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // optional string value = 2;
+      private java.lang.Object value_ = "";
       public boolean hasValue() {
-        return result.hasValue();
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public java.lang.String getValue() {
-        return result.getValue();
+      public String getValue() {
+        java.lang.Object ref = value_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          value_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setValue(java.lang.String value) {
+      public Builder setValue(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasValue = true;
-        result.value_ = value;
+  bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
         return this;
       }
       public Builder clearValue() {
-        result.hasValue = false;
-        result.value_ = getDefaultInstance().getValue();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        value_ = getDefaultInstance().getValue();
+        onChanged();
         return this;
+      }
+      void setValue(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000002;
+        value_ = value;
+        onChanged();
       }
       
       // required int32 partition = 3;
+      private int partition_ ;
       public boolean hasPartition() {
-        return result.hasPartition();
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public int getPartition() {
-        return result.getPartition();
+        return partition_;
       }
       public Builder setPartition(int value) {
-        result.hasPartition = true;
-        result.partition_ = value;
+        bitField0_ |= 0x00000004;
+        partition_ = value;
+        onChanged();
         return this;
       }
       public Builder clearPartition() {
-        result.hasPartition = false;
-        result.partition_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        partition_ = 0;
+        onChanged();
         return this;
       }
       
@@ -3097,18 +4631,31 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairStringPar(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairStringPar)
   }
   
+  public interface KVPairStringDataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .cn.ict.cacuts.mapreduce.KVPairString kvset = 1;
+    java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString> 
+        getKvsetList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairString getKvset(int index);
+    int getKvsetCount();
+    java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder> 
+        getKvsetOrBuilderList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder getKvsetOrBuilder(
+        int index);
+  }
   public static final class KVPairStringData extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairStringDataOrBuilder {
     // Use KVPairStringData.newBuilder() to construct.
-    private KVPairStringData() {
-      initFields();
+    private KVPairStringData(Builder builder) {
+      super(builder);
     }
     private KVPairStringData(boolean noInit) {}
     
@@ -3133,30 +4680,48 @@ public final class KeyValue {
     
     // repeated .cn.ict.cacuts.mapreduce.KVPairString kvset = 1;
     public static final int KVSET_FIELD_NUMBER = 1;
-    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString> kvset_ =
-      java.util.Collections.emptyList();
+    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString> kvset_;
     public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString> getKvsetList() {
       return kvset_;
     }
-    public int getKvsetCount() { return kvset_.size(); }
+    public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder> 
+        getKvsetOrBuilderList() {
+      return kvset_;
+    }
+    public int getKvsetCount() {
+      return kvset_.size();
+    }
     public cn.ict.cacuts.mapreduce.KeyValue.KVPairString getKvset(int index) {
+      return kvset_.get(index);
+    }
+    public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder getKvsetOrBuilder(
+        int index) {
       return kvset_.get(index);
     }
     
     private void initFields() {
+      kvset_ = java.util.Collections.emptyList();
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairString element : getKvsetList()) {
-        if (!element.isInitialized()) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getKvsetCount(); i++) {
+        if (!getKvset(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairString element : getKvsetList()) {
-        output.writeMessage(1, element);
+      for (int i = 0; i < kvset_.size(); i++) {
+        output.writeMessage(1, kvset_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -3167,13 +4732,20 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairString element : getKvsetList()) {
+      for (int i = 0; i < kvset_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, element);
+          .computeMessageSize(1, kvset_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData parseFrom(
@@ -3250,34 +4822,56 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairStringDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringData_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringData_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getKvsetFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
+        super.clear();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          kvsetBuilder_.clear();
         }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData();
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -3289,37 +4883,38 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData(this);
+        int from_bitField0_ = bitField0_;
+        if (kvsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            kvset_ = java.util.Collections.unmodifiableList(kvset_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.kvset_ = kvset_;
+        } else {
+          result.kvset_ = kvsetBuilder_.build();
         }
-        if (result.kvset_ != java.util.Collections.EMPTY_LIST) {
-          result.kvset_ =
-            java.util.Collections.unmodifiableList(result.kvset_);
-        }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData returnMe = result;
-        result = null;
-        return returnMe;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -3333,14 +4928,44 @@ public final class KeyValue {
       
       public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData other) {
         if (other == cn.ict.cacuts.mapreduce.KeyValue.KVPairStringData.getDefaultInstance()) return this;
-        if (!other.kvset_.isEmpty()) {
-          if (result.kvset_.isEmpty()) {
-            result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairString>();
+        if (kvsetBuilder_ == null) {
+          if (!other.kvset_.isEmpty()) {
+            if (kvset_.isEmpty()) {
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKvsetIsMutable();
+              kvset_.addAll(other.kvset_);
+            }
+            onChanged();
           }
-          result.kvset_.addAll(other.kvset_);
+        } else {
+          if (!other.kvset_.isEmpty()) {
+            if (kvsetBuilder_.isEmpty()) {
+              kvsetBuilder_.dispose();
+              kvsetBuilder_ = null;
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              kvsetBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKvsetFieldBuilder() : null;
+            } else {
+              kvsetBuilder_.addAllMessages(other.kvset_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getKvsetCount(); i++) {
+          if (!getKvset(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -3355,11 +4980,13 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -3374,56 +5001,192 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // repeated .cn.ict.cacuts.mapreduce.KVPairString kvset = 1;
+      private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString> kvset_ =
+        java.util.Collections.emptyList();
+      private void ensureKvsetIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairString>(kvset_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairString, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder> kvsetBuilder_;
+      
       public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString> getKvsetList() {
-        return java.util.Collections.unmodifiableList(result.kvset_);
+        if (kvsetBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(kvset_);
+        } else {
+          return kvsetBuilder_.getMessageList();
+        }
       }
       public int getKvsetCount() {
-        return result.getKvsetCount();
+        if (kvsetBuilder_ == null) {
+          return kvset_.size();
+        } else {
+          return kvsetBuilder_.getCount();
+        }
       }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairString getKvset(int index) {
-        return result.getKvset(index);
-      }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);
+        } else {
+          return kvsetBuilder_.getMessage(index);
         }
-        result.kvset_.set(index, value);
+      }
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.set(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, value);
+        }
         return this;
       }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder builderForValue) {
-        result.kvset_.set(index, builderForValue.build());
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairString value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(value);
         }
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairString>();
-        }
-        result.kvset_.add(value);
         return this;
       }
-      public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder builderForValue) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairString>();
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, value);
         }
-        result.kvset_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addKvset(
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addAllKvset(
           java.lang.Iterable<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairString> values) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairString>();
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          super.addAll(values, kvset_);
+          onChanged();
+        } else {
+          kvsetBuilder_.addAllMessages(values);
         }
-        super.addAll(values, result.kvset_);
         return this;
       }
       public Builder clearKvset() {
-        result.kvset_ = java.util.Collections.emptyList();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          kvsetBuilder_.clear();
+        }
         return this;
+      }
+      public Builder removeKvset(int index) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.remove(index);
+          onChanged();
+        } else {
+          kvsetBuilder_.remove(index);
+        }
+        return this;
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder getKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().getBuilder(index);
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder getKvsetOrBuilder(
+          int index) {
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);  } else {
+          return kvsetBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder> 
+           getKvsetOrBuilderList() {
+        if (kvsetBuilder_ != null) {
+          return kvsetBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(kvset_);
+        }
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder addKvsetBuilder() {
+        return getKvsetFieldBuilder().addBuilder(
+            cn.ict.cacuts.mapreduce.KeyValue.KVPairString.getDefaultInstance());
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder addKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().addBuilder(
+            index, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.getDefaultInstance());
+      }
+      public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder> 
+           getKvsetBuilderList() {
+        return getKvsetFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairString, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder> 
+          getKvsetFieldBuilder() {
+        if (kvsetBuilder_ == null) {
+          kvsetBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cn.ict.cacuts.mapreduce.KeyValue.KVPairString, cn.ict.cacuts.mapreduce.KeyValue.KVPairString.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringOrBuilder>(
+                  kvset_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          kvset_ = null;
+        }
+        return kvsetBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairStringData)
@@ -3431,18 +5194,31 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairStringData(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairStringData)
   }
   
+  public interface KVPairStringParDataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .cn.ict.cacuts.mapreduce.KVPairStringPar kvset = 1;
+    java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> 
+        getKvsetList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar getKvset(int index);
+    int getKvsetCount();
+    java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder> 
+        getKvsetOrBuilderList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder getKvsetOrBuilder(
+        int index);
+  }
   public static final class KVPairStringParData extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairStringParDataOrBuilder {
     // Use KVPairStringParData.newBuilder() to construct.
-    private KVPairStringParData() {
-      initFields();
+    private KVPairStringParData(Builder builder) {
+      super(builder);
     }
     private KVPairStringParData(boolean noInit) {}
     
@@ -3467,30 +5243,48 @@ public final class KeyValue {
     
     // repeated .cn.ict.cacuts.mapreduce.KVPairStringPar kvset = 1;
     public static final int KVSET_FIELD_NUMBER = 1;
-    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> kvset_ =
-      java.util.Collections.emptyList();
+    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> kvset_;
     public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> getKvsetList() {
       return kvset_;
     }
-    public int getKvsetCount() { return kvset_.size(); }
+    public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder> 
+        getKvsetOrBuilderList() {
+      return kvset_;
+    }
+    public int getKvsetCount() {
+      return kvset_.size();
+    }
     public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar getKvset(int index) {
+      return kvset_.get(index);
+    }
+    public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder getKvsetOrBuilder(
+        int index) {
       return kvset_.get(index);
     }
     
     private void initFields() {
+      kvset_ = java.util.Collections.emptyList();
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar element : getKvsetList()) {
-        if (!element.isInitialized()) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getKvsetCount(); i++) {
+        if (!getKvset(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar element : getKvsetList()) {
-        output.writeMessage(1, element);
+      for (int i = 0; i < kvset_.size(); i++) {
+        output.writeMessage(1, kvset_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -3501,13 +5295,20 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar element : getKvsetList()) {
+      for (int i = 0; i < kvset_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, element);
+          .computeMessageSize(1, kvset_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData parseFrom(
@@ -3584,34 +5385,56 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringParData_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringParData_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getKvsetFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
+        super.clear();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          kvsetBuilder_.clear();
         }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData();
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -3623,37 +5446,38 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData(this);
+        int from_bitField0_ = bitField0_;
+        if (kvsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            kvset_ = java.util.Collections.unmodifiableList(kvset_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.kvset_ = kvset_;
+        } else {
+          result.kvset_ = kvsetBuilder_.build();
         }
-        if (result.kvset_ != java.util.Collections.EMPTY_LIST) {
-          result.kvset_ =
-            java.util.Collections.unmodifiableList(result.kvset_);
-        }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData returnMe = result;
-        result = null;
-        return returnMe;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -3667,14 +5491,44 @@ public final class KeyValue {
       
       public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData other) {
         if (other == cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParData.getDefaultInstance()) return this;
-        if (!other.kvset_.isEmpty()) {
-          if (result.kvset_.isEmpty()) {
-            result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar>();
+        if (kvsetBuilder_ == null) {
+          if (!other.kvset_.isEmpty()) {
+            if (kvset_.isEmpty()) {
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKvsetIsMutable();
+              kvset_.addAll(other.kvset_);
+            }
+            onChanged();
           }
-          result.kvset_.addAll(other.kvset_);
+        } else {
+          if (!other.kvset_.isEmpty()) {
+            if (kvsetBuilder_.isEmpty()) {
+              kvsetBuilder_.dispose();
+              kvsetBuilder_ = null;
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              kvsetBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKvsetFieldBuilder() : null;
+            } else {
+              kvsetBuilder_.addAllMessages(other.kvset_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getKvsetCount(); i++) {
+          if (!getKvset(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -3689,11 +5543,13 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -3708,56 +5564,192 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // repeated .cn.ict.cacuts.mapreduce.KVPairStringPar kvset = 1;
+      private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> kvset_ =
+        java.util.Collections.emptyList();
+      private void ensureKvsetIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar>(kvset_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder> kvsetBuilder_;
+      
       public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> getKvsetList() {
-        return java.util.Collections.unmodifiableList(result.kvset_);
+        if (kvsetBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(kvset_);
+        } else {
+          return kvsetBuilder_.getMessageList();
+        }
       }
       public int getKvsetCount() {
-        return result.getKvsetCount();
+        if (kvsetBuilder_ == null) {
+          return kvset_.size();
+        } else {
+          return kvsetBuilder_.getCount();
+        }
       }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar getKvset(int index) {
-        return result.getKvset(index);
-      }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);
+        } else {
+          return kvsetBuilder_.getMessage(index);
         }
-        result.kvset_.set(index, value);
+      }
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.set(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, value);
+        }
         return this;
       }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder builderForValue) {
-        result.kvset_.set(index, builderForValue.build());
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(value);
         }
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar>();
-        }
-        result.kvset_.add(value);
         return this;
       }
-      public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder builderForValue) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar>();
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, value);
         }
-        result.kvset_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addKvset(
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addAllKvset(
           java.lang.Iterable<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar> values) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar>();
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          super.addAll(values, kvset_);
+          onChanged();
+        } else {
+          kvsetBuilder_.addAllMessages(values);
         }
-        super.addAll(values, result.kvset_);
         return this;
       }
       public Builder clearKvset() {
-        result.kvset_ = java.util.Collections.emptyList();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          kvsetBuilder_.clear();
+        }
         return this;
+      }
+      public Builder removeKvset(int index) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.remove(index);
+          onChanged();
+        } else {
+          kvsetBuilder_.remove(index);
+        }
+        return this;
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder getKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().getBuilder(index);
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder getKvsetOrBuilder(
+          int index) {
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);  } else {
+          return kvsetBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder> 
+           getKvsetOrBuilderList() {
+        if (kvsetBuilder_ != null) {
+          return kvsetBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(kvset_);
+        }
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder addKvsetBuilder() {
+        return getKvsetFieldBuilder().addBuilder(
+            cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.getDefaultInstance());
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder addKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().addBuilder(
+            index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.getDefaultInstance());
+      }
+      public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder> 
+           getKvsetBuilderList() {
+        return getKvsetFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder> 
+          getKvsetFieldBuilder() {
+        if (kvsetBuilder_ == null) {
+          kvsetBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringPar.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringParOrBuilder>(
+                  kvset_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          kvset_ = null;
+        }
+        return kvsetBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairStringParData)
@@ -3765,18 +5757,30 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairStringParData(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairStringParData)
   }
   
+  public interface KVPairStringListOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // required string key = 1;
+    boolean hasKey();
+    String getKey();
+    
+    // repeated string vlist = 2;
+    java.util.List<String> getVlistList();
+    int getVlistCount();
+    String getVlist(int index);
+  }
   public static final class KVPairStringList extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairStringListOrBuilder {
     // Use KVPairStringList.newBuilder() to construct.
-    private KVPairStringList() {
-      initFields();
+    private KVPairStringList(Builder builder) {
+      super(builder);
     }
     private KVPairStringList(boolean noInit) {}
     
@@ -3799,40 +5803,78 @@ public final class KeyValue {
       return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringList_fieldAccessorTable;
     }
     
+    private int bitField0_;
     // required string key = 1;
     public static final int KEY_FIELD_NUMBER = 1;
-    private boolean hasKey;
-    private java.lang.String key_ = "";
-    public boolean hasKey() { return hasKey; }
-    public java.lang.String getKey() { return key_; }
+    private java.lang.Object key_;
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    public String getKey() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          key_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getKeyBytes() {
+      java.lang.Object ref = key_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        key_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
     
     // repeated string vlist = 2;
     public static final int VLIST_FIELD_NUMBER = 2;
-    private java.util.List<java.lang.String> vlist_ =
-      java.util.Collections.emptyList();
-    public java.util.List<java.lang.String> getVlistList() {
+    private com.google.protobuf.LazyStringList vlist_;
+    public java.util.List<String>
+        getVlistList() {
       return vlist_;
     }
-    public int getVlistCount() { return vlist_.size(); }
-    public java.lang.String getVlist(int index) {
+    public int getVlistCount() {
+      return vlist_.size();
+    }
+    public String getVlist(int index) {
       return vlist_.get(index);
     }
     
     private void initFields() {
+      key_ = "";
+      vlist_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      if (!hasKey) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      if (hasKey()) {
-        output.writeString(1, getKey());
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getKeyBytes());
       }
-      for (java.lang.String element : getVlistList()) {
-        output.writeString(2, element);
+      for (int i = 0; i < vlist_.size(); i++) {
+        output.writeBytes(2, vlist_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -3843,15 +5885,15 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      if (hasKey()) {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeStringSize(1, getKey());
+          .computeBytesSize(1, getKeyBytes());
       }
       {
         int dataSize = 0;
-        for (java.lang.String element : getVlistList()) {
+        for (int i = 0; i < vlist_.size(); i++) {
           dataSize += com.google.protobuf.CodedOutputStream
-            .computeStringSizeNoTag(element);
+            .computeBytesSizeNoTag(vlist_.getByteString(i));
         }
         size += dataSize;
         size += 1 * getVlistList().size();
@@ -3859,6 +5901,13 @@ public final class KeyValue {
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList parseFrom(
@@ -3935,34 +5984,53 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringList_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringList_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
-        }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList();
+        super.clear();
+        key_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        vlist_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -3974,37 +6042,41 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
         }
-        if (result.vlist_ != java.util.Collections.EMPTY_LIST) {
-          result.vlist_ =
-            java.util.Collections.unmodifiableList(result.vlist_);
+        result.key_ = key_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          vlist_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              vlist_);
+          bitField0_ = (bitField0_ & ~0x00000002);
         }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList returnMe = result;
-        result = null;
-        return returnMe;
+        result.vlist_ = vlist_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -4022,13 +6094,25 @@ public final class KeyValue {
           setKey(other.getKey());
         }
         if (!other.vlist_.isEmpty()) {
-          if (result.vlist_.isEmpty()) {
-            result.vlist_ = new java.util.ArrayList<java.lang.String>();
+          if (vlist_.isEmpty()) {
+            vlist_ = other.vlist_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureVlistIsMutable();
+            vlist_.addAll(other.vlist_);
           }
-          result.vlist_.addAll(other.vlist_);
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -4043,87 +6127,123 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
             }
             case 10: {
-              setKey(input.readString());
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
               break;
             }
             case 18: {
-              addVlist(input.readString());
+              ensureVlistIsMutable();
+              vlist_.add(input.readBytes());
               break;
             }
           }
         }
       }
       
+      private int bitField0_;
       
       // required string key = 1;
+      private java.lang.Object key_ = "";
       public boolean hasKey() {
-        return result.hasKey();
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public java.lang.String getKey() {
-        return result.getKey();
+      public String getKey() {
+        java.lang.Object ref = key_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          key_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
       }
-      public Builder setKey(java.lang.String value) {
+      public Builder setKey(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.hasKey = true;
-        result.key_ = value;
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
         return this;
       }
       public Builder clearKey() {
-        result.hasKey = false;
-        result.key_ = getDefaultInstance().getKey();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
         return this;
+      }
+      void setKey(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
       }
       
       // repeated string vlist = 2;
-      public java.util.List<java.lang.String> getVlistList() {
-        return java.util.Collections.unmodifiableList(result.vlist_);
+      private com.google.protobuf.LazyStringList vlist_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureVlistIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          vlist_ = new com.google.protobuf.LazyStringArrayList(vlist_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      public java.util.List<String>
+          getVlistList() {
+        return java.util.Collections.unmodifiableList(vlist_);
       }
       public int getVlistCount() {
-        return result.getVlistCount();
+        return vlist_.size();
       }
-      public java.lang.String getVlist(int index) {
-        return result.getVlist(index);
+      public String getVlist(int index) {
+        return vlist_.get(index);
       }
-      public Builder setVlist(int index, java.lang.String value) {
+      public Builder setVlist(
+          int index, String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  result.vlist_.set(index, value);
+  ensureVlistIsMutable();
+        vlist_.set(index, value);
+        onChanged();
         return this;
       }
-      public Builder addVlist(java.lang.String value) {
+      public Builder addVlist(String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  if (result.vlist_.isEmpty()) {
-          result.vlist_ = new java.util.ArrayList<java.lang.String>();
-        }
-        result.vlist_.add(value);
+  ensureVlistIsMutable();
+        vlist_.add(value);
+        onChanged();
         return this;
       }
       public Builder addAllVlist(
-          java.lang.Iterable<? extends java.lang.String> values) {
-        if (result.vlist_.isEmpty()) {
-          result.vlist_ = new java.util.ArrayList<java.lang.String>();
-        }
-        super.addAll(values, result.vlist_);
+          java.lang.Iterable<String> values) {
+        ensureVlistIsMutable();
+        super.addAll(values, vlist_);
+        onChanged();
         return this;
       }
       public Builder clearVlist() {
-        result.vlist_ = java.util.Collections.emptyList();
+        vlist_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
         return this;
+      }
+      void addVlist(com.google.protobuf.ByteString value) {
+        ensureVlistIsMutable();
+        vlist_.add(value);
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairStringList)
@@ -4131,18 +6251,31 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairStringList(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
     // @@protoc_insertion_point(class_scope:cn.ict.cacuts.mapreduce.KVPairStringList)
   }
   
+  public interface KVPairStringListDataOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated .cn.ict.cacuts.mapreduce.KVPairStringList kvset = 1;
+    java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> 
+        getKvsetList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList getKvset(int index);
+    int getKvsetCount();
+    java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder> 
+        getKvsetOrBuilderList();
+    cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder getKvsetOrBuilder(
+        int index);
+  }
   public static final class KVPairStringListData extends
-      com.google.protobuf.GeneratedMessage {
+      com.google.protobuf.GeneratedMessage
+      implements KVPairStringListDataOrBuilder {
     // Use KVPairStringListData.newBuilder() to construct.
-    private KVPairStringListData() {
-      initFields();
+    private KVPairStringListData(Builder builder) {
+      super(builder);
     }
     private KVPairStringListData(boolean noInit) {}
     
@@ -4167,30 +6300,48 @@ public final class KeyValue {
     
     // repeated .cn.ict.cacuts.mapreduce.KVPairStringList kvset = 1;
     public static final int KVSET_FIELD_NUMBER = 1;
-    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> kvset_ =
-      java.util.Collections.emptyList();
+    private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> kvset_;
     public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> getKvsetList() {
       return kvset_;
     }
-    public int getKvsetCount() { return kvset_.size(); }
+    public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder> 
+        getKvsetOrBuilderList() {
+      return kvset_;
+    }
+    public int getKvsetCount() {
+      return kvset_.size();
+    }
     public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList getKvset(int index) {
+      return kvset_.get(index);
+    }
+    public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder getKvsetOrBuilder(
+        int index) {
       return kvset_.get(index);
     }
     
     private void initFields() {
+      kvset_ = java.util.Collections.emptyList();
     }
+    private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList element : getKvsetList()) {
-        if (!element.isInitialized()) return false;
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      for (int i = 0; i < getKvsetCount(); i++) {
+        if (!getKvset(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
+      memoizedIsInitialized = 1;
       return true;
     }
     
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList element : getKvsetList()) {
-        output.writeMessage(1, element);
+      for (int i = 0; i < kvset_.size(); i++) {
+        output.writeMessage(1, kvset_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -4201,13 +6352,20 @@ public final class KeyValue {
       if (size != -1) return size;
     
       size = 0;
-      for (cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList element : getKvsetList()) {
+      for (int i = 0; i < kvset_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, element);
+          .computeMessageSize(1, kvset_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
     
     public static cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData parseFrom(
@@ -4284,34 +6442,56 @@ public final class KeyValue {
     }
     public Builder toBuilder() { return newBuilder(this); }
     
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> {
-      private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData result;
-      
-      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData.newBuilder()
-      private Builder() {}
-      
-      private static Builder create() {
-        Builder builder = new Builder();
-        builder.result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData();
-        return builder;
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringListData_descriptor;
       }
       
-      protected cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData internalGetResult() {
-        return result;
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return cn.ict.cacuts.mapreduce.KeyValue.internal_static_cn_ict_cacuts_mapreduce_KVPairStringListData_fieldAccessorTable;
+      }
+      
+      // Construct using cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getKvsetFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
       }
       
       public Builder clear() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "Cannot call clear() after build().");
+        super.clear();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        } else {
+          kvsetBuilder_.clear();
         }
-        result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData();
         return this;
       }
       
       public Builder clone() {
-        return create().mergeFrom(result);
+        return create().mergeFrom(buildPartial());
       }
       
       public com.google.protobuf.Descriptors.Descriptor
@@ -4323,37 +6503,38 @@ public final class KeyValue {
         return cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData.getDefaultInstance();
       }
       
-      public boolean isInitialized() {
-        return result.isInitialized();
-      }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData build() {
-        if (result != null && !isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
-        return buildPartial();
+        return result;
       }
       
       private cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData buildParsed()
           throws com.google.protobuf.InvalidProtocolBufferException {
-        if (!isInitialized()) {
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData result = buildPartial();
+        if (!result.isInitialized()) {
           throw newUninitializedMessageException(
             result).asInvalidProtocolBufferException();
         }
-        return buildPartial();
+        return result;
       }
       
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData buildPartial() {
-        if (result == null) {
-          throw new IllegalStateException(
-            "build() has already been called on this Builder.");
+        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData result = new cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData(this);
+        int from_bitField0_ = bitField0_;
+        if (kvsetBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            kvset_ = java.util.Collections.unmodifiableList(kvset_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.kvset_ = kvset_;
+        } else {
+          result.kvset_ = kvsetBuilder_.build();
         }
-        if (result.kvset_ != java.util.Collections.EMPTY_LIST) {
-          result.kvset_ =
-            java.util.Collections.unmodifiableList(result.kvset_);
-        }
-        cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData returnMe = result;
-        result = null;
-        return returnMe;
+        onBuilt();
+        return result;
       }
       
       public Builder mergeFrom(com.google.protobuf.Message other) {
@@ -4367,14 +6548,44 @@ public final class KeyValue {
       
       public Builder mergeFrom(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData other) {
         if (other == cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListData.getDefaultInstance()) return this;
-        if (!other.kvset_.isEmpty()) {
-          if (result.kvset_.isEmpty()) {
-            result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList>();
+        if (kvsetBuilder_ == null) {
+          if (!other.kvset_.isEmpty()) {
+            if (kvset_.isEmpty()) {
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKvsetIsMutable();
+              kvset_.addAll(other.kvset_);
+            }
+            onChanged();
           }
-          result.kvset_.addAll(other.kvset_);
+        } else {
+          if (!other.kvset_.isEmpty()) {
+            if (kvsetBuilder_.isEmpty()) {
+              kvsetBuilder_.dispose();
+              kvsetBuilder_ = null;
+              kvset_ = other.kvset_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              kvsetBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getKvsetFieldBuilder() : null;
+            } else {
+              kvsetBuilder_.addAllMessages(other.kvset_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
+      }
+      
+      public final boolean isInitialized() {
+        for (int i = 0; i < getKvsetCount(); i++) {
+          if (!getKvset(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
       }
       
       public Builder mergeFrom(
@@ -4389,11 +6600,13 @@ public final class KeyValue {
           switch (tag) {
             case 0:
               this.setUnknownFields(unknownFields.build());
+              onChanged();
               return this;
             default: {
               if (!parseUnknownField(input, unknownFields,
                                      extensionRegistry, tag)) {
                 this.setUnknownFields(unknownFields.build());
+                onChanged();
                 return this;
               }
               break;
@@ -4408,56 +6621,192 @@ public final class KeyValue {
         }
       }
       
+      private int bitField0_;
       
       // repeated .cn.ict.cacuts.mapreduce.KVPairStringList kvset = 1;
+      private java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> kvset_ =
+        java.util.Collections.emptyList();
+      private void ensureKvsetIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList>(kvset_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder> kvsetBuilder_;
+      
       public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> getKvsetList() {
-        return java.util.Collections.unmodifiableList(result.kvset_);
+        if (kvsetBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(kvset_);
+        } else {
+          return kvsetBuilder_.getMessageList();
+        }
       }
       public int getKvsetCount() {
-        return result.getKvsetCount();
+        if (kvsetBuilder_ == null) {
+          return kvset_.size();
+        } else {
+          return kvsetBuilder_.getCount();
+        }
       }
       public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList getKvset(int index) {
-        return result.getKvset(index);
-      }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);
+        } else {
+          return kvsetBuilder_.getMessage(index);
         }
-        result.kvset_.set(index, value);
+      }
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.set(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, value);
+        }
         return this;
       }
-      public Builder setKvset(int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder builderForValue) {
-        result.kvset_.set(index, builderForValue.build());
+      public Builder setKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.setMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList value) {
-        if (value == null) {
-          throw new NullPointerException();
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(value);
         }
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList>();
-        }
-        result.kvset_.add(value);
         return this;
       }
-      public Builder addKvset(cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder builderForValue) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList>();
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList value) {
+        if (kvsetBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureKvsetIsMutable();
+          kvset_.add(index, value);
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, value);
         }
-        result.kvset_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addKvset(
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      public Builder addKvset(
+          int index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder builderForValue) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          kvsetBuilder_.addMessage(index, builderForValue.build());
+        }
         return this;
       }
       public Builder addAllKvset(
           java.lang.Iterable<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList> values) {
-        if (result.kvset_.isEmpty()) {
-          result.kvset_ = new java.util.ArrayList<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList>();
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          super.addAll(values, kvset_);
+          onChanged();
+        } else {
+          kvsetBuilder_.addAllMessages(values);
         }
-        super.addAll(values, result.kvset_);
         return this;
       }
       public Builder clearKvset() {
-        result.kvset_ = java.util.Collections.emptyList();
+        if (kvsetBuilder_ == null) {
+          kvset_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          kvsetBuilder_.clear();
+        }
         return this;
+      }
+      public Builder removeKvset(int index) {
+        if (kvsetBuilder_ == null) {
+          ensureKvsetIsMutable();
+          kvset_.remove(index);
+          onChanged();
+        } else {
+          kvsetBuilder_.remove(index);
+        }
+        return this;
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder getKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().getBuilder(index);
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder getKvsetOrBuilder(
+          int index) {
+        if (kvsetBuilder_ == null) {
+          return kvset_.get(index);  } else {
+          return kvsetBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      public java.util.List<? extends cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder> 
+           getKvsetOrBuilderList() {
+        if (kvsetBuilder_ != null) {
+          return kvsetBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(kvset_);
+        }
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder addKvsetBuilder() {
+        return getKvsetFieldBuilder().addBuilder(
+            cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.getDefaultInstance());
+      }
+      public cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder addKvsetBuilder(
+          int index) {
+        return getKvsetFieldBuilder().addBuilder(
+            index, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.getDefaultInstance());
+      }
+      public java.util.List<cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder> 
+           getKvsetBuilderList() {
+        return getKvsetFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder> 
+          getKvsetFieldBuilder() {
+        if (kvsetBuilder_ == null) {
+          kvsetBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringList.Builder, cn.ict.cacuts.mapreduce.KeyValue.KVPairStringListOrBuilder>(
+                  kvset_,
+                  ((bitField0_ & 0x00000001) == 0x00000001),
+                  getParentForChildren(),
+                  isClean());
+          kvset_ = null;
+        }
+        return kvsetBuilder_;
       }
       
       // @@protoc_insertion_point(builder_scope:cn.ict.cacuts.mapreduce.KVPairStringListData)
@@ -4465,7 +6814,6 @@ public final class KeyValue {
     
     static {
       defaultInstance = new KVPairStringListData(true);
-      cn.ict.cacuts.mapreduce.KeyValue.internalForceInit();
       defaultInstance.initFields();
     }
     
@@ -4686,8 +7034,6 @@ public final class KeyValue {
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
   }
-  
-  public static void internalForceInit() {}
   
   // @@protoc_insertion_point(outer_class_scope)
 }

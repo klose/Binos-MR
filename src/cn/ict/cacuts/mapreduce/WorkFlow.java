@@ -149,7 +149,7 @@ public class WorkFlow {
 			}
 		}
 		Tunnel tunnel1_2 = new Tunnel(phase1, phase2, tmp.toArray(new Channel[0]), TransmitType.HTTP);
-		//Tunnel tunnel1_2 = new Tunnel(phase1, phase2, tmp.toArray(new Channel[0]), TransmitType.MESSAGE);
+//		Tunnel tunnel1_2 = new Tunnel(phase1, phase2, tmp.toArray(new Channel[0]), TransmitType.MESSAGE);
 		channelManager.addTunnel(tunnel1_2);
 		analisisCompile(channelManager);
 	}

@@ -42,7 +42,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	private final int numberOfReduce ;
 	private final DataState dataState ;
 	////public int size = 1024 * 1024;
-	public final long size = 1024 *1024 * 10; // set the memory used by map task	
+	public final long size = 1024 *1024 * 80; // set the memory used by map task	
 	
 	private KVPairIntParData.Builder inputPairs = KVPairIntParData.newBuilder();
 
