@@ -7,7 +7,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +31,7 @@ import cn.ict.binos.transmit.BinosURL;
 import cn.ict.cacuts.mapreduce.Combiner;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairInt;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntData;
+import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntList;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntPar;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData;
 import cn.ict.cacuts.mapreduce.KeyValue.KVPairIntParData.Builder;
@@ -44,9 +50,9 @@ public class DealMapOutUtil<KEY, VALUE> {
 	////public int size = 1024 * 1024;
 	public final long size = 1024 *1024 * 10; // set the memory used by map task	
 	
-	private KVPairIntParData.Builder inputPairs = KVPairIntParData.newBuilder();
+	//private KVPairIntParData.Builder inputPairs = KVPairIntParData.newBuilder();
 
-	private final ArrayList[] lists;
+	//private final ArrayList[] lists;
 	private String[] fileName;
 	public  String[] mapOutFileIndex = null;//suppose there are no more than 100 interfile
 //	private final int[] innerFileIndex;
@@ -58,7 +64,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	private final AtomicIntegerArray currentObjectsIndex;
 	//private final String[] writeBytesIndex; //each record represents as ***,***,***, meaning that the files separate.
 	//private final String[] writeObjectsIndex;// each record represents as ***,***,***, meaning that the objects separate.
-
+	
 	private KVPairIntPar element;
 	private volatile KVPairIntPar[] sortedArray;
 	private static long capacity = 0; // current capacity
@@ -73,7 +79,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 	private volatile boolean isAllHandle = false;
 	private List <Thread> allThreads = new CopyOnWriteArrayList<Thread>(); 
 	private final String tempMapOutFilesPathPrefix;
-	
+	private Map[] intermediateData; 
 	public DealMapOutUtil(String[] outputPath, String tempMapOutFilesPathPrefix, DataState state) {
 		this(outputPath, tempMapOutFilesPathPrefix,state, null);
 	}
@@ -83,10 +89,12 @@ public class DealMapOutUtil<KEY, VALUE> {
 		this.dataState = state;
 		this.tempMapOutFilesPathPrefix = tempMapOutFilesPathPrefix;
 		this.numberOfReduce = outputPath.length;
-		this.lists = new ArrayList[this.numberOfReduce];
+		//this.lists = new ArrayList[this.numberOfReduce];
 		this.currentObjectsIndex = new AtomicIntegerArray(this.numberOfReduce);
+		this.intermediateData  = new TreeMap[this.numberOfReduce];
 		for (int i = 0; i < this.numberOfReduce; i++) {
 			currentObjectsIndex.set(i, 0);
+			this.intermediateData[i] = new TreeMap<String, ArrayList<Integer>> ();
 		}
 		if (combineClassName != null) {
 			try {
@@ -106,78 +114,115 @@ public class DealMapOutUtil<KEY, VALUE> {
 		//LOG.info("receive key=" + key + " value=" + value);
 		partitionedNum = hashPartitioner.getPartition(key, numberOfReduce);
 		currentObjectsIndex.addAndGet(partitionedNum, 1);
-		element = KVPairIntPar.newBuilder().setKey(key.toString()).
-				setValue(Integer.parseInt(value.toString())).setPartition(partitionedNum).build();
-		int elementSize = element.getSerializedSize();
-		//currentBytesIndex.addAndGet(partitionedNum, elementSize);
-		capacity += element.getSerializedSize();
-		inputPairs.addKvset(element);
-		if (capacity >= size) {
+		/*KVPairIntList.Builder tmp = KVPairIntList.newBuilder();
+		if (this.intermediateData[this.partitionedNum].containsKey(key)) {
+			KVPairIntList v =  (KVPairIntList) (this.intermediateData[this.partitionedNum].get(key));
+			tmp.setKey(key.toString()).addAllVlist(v.getVlistList()).addVlist((Integer) value);
+		}
+		else {
+			tmp.setKey(key.toString()).
+					addVlist(Integer.parseInt(value.toString()));
+		}
+		this.intermediateData[this.partitionedNum].put(key, tmp.build());*/
+		List<Integer> l ;
+		if (this.intermediateData[this.partitionedNum].containsKey(key)) {
+			l = (List<Integer>) this.intermediateData[this.partitionedNum].get(key);
+			l.add((Integer) value);
+		}
+		else {
+			l = new ArrayList<Integer>();
+			l.add((Integer) value);
+		}
+		this.intermediateData[this.partitionedNum].put(key, l);
+		
+		
+//		int elementSize = element.getSerializedSize();
+//		//currentBytesIndex.addAndGet(partitionedNum, elementSize);
+//		capacity += element.getSerializedSize();
+//		inputPairs.addKvset(element);
+		if (++capacity >= size) {
 			// notify the thread to write the inputPairs to File
-			launchSortAndWrite(inputPairs.clone(), tmpDataNum.incrementAndGet(), currentObjectsIndex);
+			launchSortAndWrite(this.intermediateData, tmpDataNum.incrementAndGet(), currentObjectsIndex);
 			capacity = 0;
-			inputPairs.clear();
+			
 			//dealFileIndexContext();
 			for (int i = 0; i < numberOfReduce; i++) {
 				currentObjectsIndex.set(i, 0);
+				this.intermediateData[i].clear();
 			}
 		}	
 	}
-	private void launchSortAndWrite(KVPairIntParData.Builder value, int num, AtomicIntegerArray index) {
+	private void launchSortAndWrite(Map[] value, int num, AtomicIntegerArray index) {
 		/*copy the number of objects in each section.*/
 		int [] tmpIndex = new int[this.numberOfReduce];
+		List<KVPairIntList> [] writeArray = new ArrayList[this.numberOfReduce];
 		for (int i = 0; i < this.numberOfReduce; i++) {
-			tmpIndex[i] = index.get(i);
+			writeArray[i] = new ArrayList<KVPairIntList>();
+			for (Object tmp:value[i].keySet()) {
+				KVPairIntList t = KVPairIntList.newBuilder().setKey(tmp.toString()).
+						addAllVlist((Iterable<? extends Integer>) value[i].get(tmp)).build();
+				writeArray[i].add(t);
+			}
 		}
-		Thread tmp = new SortWriteThread(value, num, tmpIndex);
+		Thread tmp = new WriteThread(writeArray, num);
 		allThreads.add(tmp);
 		tmp.start();
 	}
-	class SortWriteThread extends Thread {
-		KVPairIntParData.Builder value;
+	class WriteThread extends Thread {
+		List[] values;
 		int tmpNum;
-		int[] tmpIndex;
-		public SortWriteThread(KVPairIntParData.Builder value, int num, int[] tmpIndex) {
-			this.value = value;
+		
+		public WriteThread(List[] values, int num) {
+			this.values = values;
 			this.tmpNum = num;
-			this.tmpIndex = tmpIndex;
+			
 		}
 		public void run() {	
-			dealReceivedUtil(this.value, this.tmpNum, this.tmpIndex);
+			dealReceivedUtil(this.values, this.tmpNum);
 		}
 	
 	}
-	public void dealReceivedUtil(KVPairIntParData.Builder value, int tmpFileNum, int[] tmpIndex) {
-		saveDatas(sortDatas(value), tmpFileNum, tmpIndex);
+	public void dealReceivedUtil(List[] values, int tmpFileNum) {
+		saveDatas(values, tmpFileNum);
 	}
 
-//	private void dealFileIndexContext() {
-//		for (int i = 0; i < this.numberOfReduce; i++) {
-//			writeBytesIndex[i] += currentBytesIndex.get(i) + ",";
-//			writeObjectsIndex[i] += currentObjectsIndex.get(i) + ",";			
+
+
+
+//	private KVPairIntPar[] sortDatas(KVPairIntParData.Builder value) {
+//		long start = System.currentTimeMillis();
+//		KVPairIntPar[] ss = value.getKvsetList().toArray(new KVPairIntPar[0]);
+//		Map<String, List<Integer>> sortedMap = new TreeMap<String, List<Integer>>();
+//		List<KVPairIntPar> result = new ArrayList<KVPairIntPar>(ss.length);
+//		for (int i = 0; i < ss.length; i++) {
+//			if (sortedMap.containsKey(ss[i].getKey())) {
+//				sortedMap.get(ss[i]).add(ss[i].getValue());
+//			}
+//			else {
+//				List<Integer> list = new ArrayList<Integer>();
+//				list.add(ss[i].getValue());
+//			}
+//			sortedMap.put(ss[i].getKey(), i);
 //		}
+//		
+//		for (int i = 0; i < ss.length; i++) {
+//			
+//		}
+//		
+//		System.out.println("inputPairs.toArray: + size=" + ss.length + " "+ (System.currentTimeMillis() - start) + "ms");
+//		Arrays.sort(ss, 
+//				SortStructedData.getComparator());
+//		LOG.info("sort:" + (System.currentTimeMillis() - start) + "ms");
+//		return ss;
 //	}
 
-
-	private KVPairIntPar[] sortDatas(KVPairIntParData.Builder value) {
-		long start = System.currentTimeMillis();
-		KVPairIntPar[] ss = value.getKvsetList().toArray(new KVPairIntPar[0]);	
-		System.out.println("inputPairs.toArray: + size=" + ss.length + " "+ (System.currentTimeMillis() - start) + "ms");
-		Arrays.sort(ss, 
-				SortStructedData.getComparator());
-		LOG.info("sort:" + (System.currentTimeMillis() - start) + "ms");
-		return ss;
-	}
-
-	private void saveDatas(KVPairIntPar[] sortedArray, int tmpNum, int[] tmpIndex) {
+	private void saveDatas(List[] values, int tmpNum) {
 		String dataName = tempMapOutFilesPathPrefix + tmpNum;
 		long start = System.currentTimeMillis();
-		int startIndex = 0;
 		for (int i = 0 ; i < this.numberOfReduce; i++) {
 			WriteIntoDataBus writer = new WriteIntoDataBus(dataName+"-" + i);
-			writer.executeWrite(sortedArray, startIndex, startIndex + tmpIndex[i]);
+			writer.writeKVPairIntListArray(values[i]);
 			writer.close();
-			startIndex += tmpIndex[i];
 		}
 		LOG.info("write:" + (System.currentTimeMillis() - start) + "ms");
 	}
@@ -211,7 +256,7 @@ public class DealMapOutUtil<KEY, VALUE> {
 					LOG.info(this.outputPath.toString());
 					LOG.info(dataState);
 					try {
-						merge.merge(this.inputPath,  this.outputPath, true, dataState, KVPairIntPar.class);
+						merge.merge(this.inputPath,  this.outputPath, true, dataState, KVPairIntList.class);
 						LOG.info("merge:" + (System.currentTimeMillis() - start) + "ms");
 						LOG.info("combine in merge: " + merge.combineUsedTime + "ms");
 					} catch (IOException e) {
@@ -245,13 +290,21 @@ public class DealMapOutUtil<KEY, VALUE> {
 //	}
 	public void FinishedReceive() {
 		
-		if (inputPairs.getKvsetCount() > 0) {
-			LOG.info("mapper process only one intermediate file");
+		if (capacity > 0) {
+			//LOG.info("mapper process only one intermediate file");
 			int [] tmpIndex = new int[this.numberOfReduce];
+	
+			List[] writeArray = new ArrayList[this.numberOfReduce];
 			for (int i = 0; i < this.numberOfReduce; i++) {
-				tmpIndex[i] = currentObjectsIndex.get(i);
+				writeArray[i] = new ArrayList<KVPairIntList>();
+				for (Object tmp:this.intermediateData[i].keySet()) {
+					KVPairIntList t = KVPairIntList.newBuilder().setKey(tmp.toString()).
+							addAllVlist((Iterable<? extends Integer>)this.intermediateData[i].get(tmp)).build();
+					writeArray[i].add(t);
+				}
 			}
-			dealReceivedUtil(inputPairs, tmpDataNum.incrementAndGet(), tmpIndex);
+			dealReceivedUtil(writeArray, tmpDataNum.incrementAndGet());
+			
 		}
 		for (Thread tmp: allThreads) {
 			try {

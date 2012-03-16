@@ -114,6 +114,19 @@ public class WriteIntoDataBus {
 			e.printStackTrace();
 		}
 	}
+	public void writeKVPairIntListArray(List<KVPairIntList> values) {
+		try {
+			for (KVPairIntList tmp: values) {
+				tmp.writeDelimitedTo(baos);
+			}
+			baos.writeTo(fout);
+			baos.reset();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	private void putKVPairIntArray(KVPairInt[] values) {
 		
 		try {

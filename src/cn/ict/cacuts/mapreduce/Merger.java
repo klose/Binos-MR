@@ -511,6 +511,15 @@ public class Merger extends PriorityQueue{
 					builder.addAllVlist(tmp.getVlistList());
 				}
 				else {
+					if (this.combinerInstance != null) {
+						long start = System.currentTimeMillis();
+						List combineVlist = this.combinerInstance.combine(originKey,builder.getVlistList());
+						LOG.debug("before combiner:" + builder.toString());
+						builder.clearVlist();
+						builder.addAllVlist(combineVlist);
+						LOG.debug("after combiner:" + builder.toString());
+						combineUsedTime += System.currentTimeMillis() - start;
+					}
 					writer.writeKVPairIntList(builder.build());
 					builder = KVPairIntList.newBuilder();
 					originKey = tmp.getKey();
@@ -518,6 +527,7 @@ public class Merger extends PriorityQueue{
 				}
 			}
 			else {
+				
 				originKey =  tmp.getKey();
 				builder = KVPairIntList.newBuilder();
 				builder.setKey(originKey).addAllVlist(tmp.getVlistList());
